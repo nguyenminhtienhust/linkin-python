@@ -33,7 +33,13 @@ if __name__ == "__main__":
     jobs = driver.find_elements(By.TAG_NAME,"article")
     for job in jobs:
         job_id = job.get_attribute("data-job-id")
-        print(job_id)
+        job_detail_url = "https://www.jobstreet.com.my/job/" + job_id
+        print(job_detail_url)
+        root_window = driver.window_handles[0]
+        driver.execute_script("window.open('');")
+        job_detail_window = driver.window_handles[1]
+        driver.switch_to.window(job_detail_window)
+        
         time.sleep(2)
     
 

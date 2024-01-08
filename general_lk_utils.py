@@ -15,6 +15,12 @@ from urllib.parse import urlparse, parse_qs, urlencode, urlunparse
 import requests
 from configparser import ConfigParser
 import psycopg2
+import validators
+import phonenumbers
+
+def validate_mobile_number(mobile_number):
+    pattern = re.compile(r'^\+((?:9[679]|8[035789]|6[789]|5[90]|42|3[578]|2[1-689])|9[0-58]|8[1246]|6[0-6]|5[1-8]|4[013-9]|3[0-469]|2[70]|7|1)(?:\W*\d){0,13}\d$')
+    return bool(pattern.match(mobile_number))
 
 def connect():
     """ Connect to the PostgreSQL database server """
@@ -77,28 +83,28 @@ def login_crm():
     print(type(jsondata))
     data = requests.post(login_api,json=jsondata,headers=headers)
     if data.status_code != 200:
-        print('fail')
         print(data.status_code)
         print(data.reason)
     else:
-        print('done')
         json_object = data.json()
         return json_object["access_token"]
 
-def check_lead_existed(access_token,name):
-    headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
-    check_api = "https://crm.fitech.com.vn/Api/V8/module/Leads?fields=name&page[size]=100000&page[number]=1"
-    data = requests.get(check_api,headers=headers)
+def check_lead_existed(name):
+    headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+    check_api = "http://68.183.189.171:8080/leads/check"
+    jsondata = {"name":name}
+    print(jsondata)
+
+    data = requests.post(check_api,json=jsondata,headers=headers)
     if data.status_code != 200:
-        print('fail')
         print(data.status_code)
         print(data.reason)
     else:
-        print('done')
         json_object = data.json()
         print(json_object)
+        return json_object["data"]
 
-def add_new_lead(access_token,company_name,title,address,content):
+def add_new_lead(access_token,company_name,title,address,phone_mobile,website,content):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
@@ -107,13 +113,16 @@ def add_new_lead(access_token,company_name,title,address,content):
      "attributes": {
          "title": title,
          "last_name": company_name,
+         "phone_mobile": phone_mobile,
+         "website": website,
+         "primary_address_country": address,
          "description": content
      }
     }
     }
     
     print(jsondata)
-    time.sleep(10)
+    time.sleep(2)
     data = requests.post(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
         print('fail')
@@ -123,49 +132,18 @@ def add_new_lead(access_token,company_name,title,address,content):
         print('done')
         json_object = data.json()
         print(json_object)
-    
-
-def add_new_task(access_token,company_name,content):
-    #POST {{suitecrm.url}}/Api/V8/module
-    headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
-    module_api = "https://crm.fitech.com.vn/Api/V8/module"
-    
-    jsondata =  {
-    "data": {
-     "type": "Tasks",
-     "attributes": {
-         "name": company_name,
-         "description": content
-     }
-    }
-    }
-    
-    print(jsondata)
-    time.sleep(10)
-    data = requests.post(module_api,json=jsondata,headers=headers)
-    if data.status_code != 200:
-        print('fail')
-        print(data.status_code)
-        print(data.reason)
-    else:
-        print('done')
-        json_object = data.json()
-        print(json_object)
-    
-    
-    
-    
+        
 def get_job_detail(driver,job_id,access_token):
     root_window = driver.window_handles[0]
     driver.execute_script("window.open('');")
     job_detail_window = driver.window_handles[1]
     driver.switch_to.window(job_detail_window)
 
-    time.sleep(3)
+    time.sleep(2)
     job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
     print(job_detail_url)
     driver.get(job_detail_url)
-    time.sleep(3)
+    time.sleep(2)
     
     current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
     print(current_job_title)
@@ -173,14 +151,13 @@ def get_job_detail(driver,job_id,access_token):
     infos_list = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
     company_url = infos_list.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
     company_name = infos_list.find_element(By.CSS_SELECTOR,"a").text
-    real_company_url =  "org-top-card-primary-actions__action"
     
     print("Company URL: " + company_url)
-    time.sleep(3)
+    time.sleep(2)
 
     job_des = driver.find_element(By.ID,"job-details").text
     print("Job Des: " + job_des)
-    time.sleep(3)
+    time.sleep(2)
 
     #company screen
     driver.execute_script("window.open('');")
@@ -194,63 +171,43 @@ def get_job_detail(driver,job_id,access_token):
     full_content = '\n'.join([full_content, "Job đang tuyển dụng: " + current_job_title])
 
     driver.get(company_about_url)
-    time.sleep(3)
+    time.sleep(2)
         
     text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
     address = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")
     index = 0
+    website_company = ""
+    email_company = ""
+    phone_company = ""
     
     for text in text_bodys:
         time.sleep(2)
-        sub_content = str(index) + ": " +  text.text 
-        full_content = '\n'.join([full_content, sub_content])
+        sub_content = str(index) + ": " +  text.text
+        if(validators.domain(text.text)):
+            website_company = text.text
+        if(validators.email(text.text)):
+            email_company = text.text
+        if(len(text.text) < 15):
+            print(text.text)
+            if (validate_mobile_number(text.text)):
+               print(text.text)
+               phone_company = text.text
         index = index + 1
-            
-    
-    
+                
     full_content = '\n'.join([full_content, job_des])
 
-    time.sleep(5)
+    time.sleep(2)
     
-    # driver.execute_script("window.open('');")
-    # jobs_company_window = driver.window_handles[3]
-    # driver.switch_to.window(jobs_company_window)
-    # jobs_company_url = company_url.replace("/life", "/jobs")
-    # driver.get(jobs_company_url)
-    # time.sleep(3)
-    # show_all_button = driver.find_element(By.CLASS_NAME,"link-without-hover-visited")
-    # show_all_button.click()
-    # time.sleep(3)
+    if(not check_lead_existed(company_name)):
+        add_new_lead(access_token=access_token,company_name=company_name,title= current_job_title,address=address,phone_mobile=phone_company,website=website_company,content=full_content)
+    else:
+        print("")
     
-    #add task
-    #check_lead_existed(access_token=access_token,name="tiktok")
-    time.sleep(20)
-    add_new_lead(access_token=access_token,company_name=company_name,title= current_job_title,address=address,content=full_content)
-
-    #get list jobs
-    # jobs = driver.find_elements(By.CLASS_NAME,"job-card-container__link")
-    # print("Please Zoom in then press Enter")
-    # count = len(jobs)
-    # #input()
-    # print(count)
-    
-    # for job in jobs:
-    #     time.sleep(3)
-    #     try:
-    #         job_title = job.text
-    #         print(job_title)
-    #     except Exception:
-    #         print(Exception)
-        
-    # driver.close()#close  jobs_company_window
-    # time.sleep(2)
-    #driver.switch_to.window(company_window)
     time.sleep(2)
     driver.close()#close  company_window
     driver.switch_to.window(job_detail_window)
     time.sleep(2)
     driver.close()#close  job_detail_window
-    time.sleep(3)
     driver.switch_to.window(root_window)  
 
 def get_lk_credentials(path="./lk_credentials.json"):
@@ -270,9 +227,9 @@ def enter_ids_on_lk_signin(driver, email, password):
         By.CSS_SELECTOR,
         "#organic-div > form > div.login__form_action_container > button",
     )
-    time.sleep(1)
+    time.sleep(2)
     submitElement.click()
-    time.sleep(5)
+    time.sleep(2)
 
 
 def get_lk_url_from_sales_lk_url(url):
@@ -287,7 +244,7 @@ def select_contract_lk(driver):
         By.CSS_SELECTOR, SELECT_CONTRACT_BUTTON_SELECTOR
     )
     contract_filter.click()
-    time.sleep(4)
+    time.sleep(2)
     return
 
 

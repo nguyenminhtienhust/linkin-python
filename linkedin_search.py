@@ -221,11 +221,7 @@ def scrap_lksn_pages(
     return total_info
             
 if __name__ == "__main__":
-    # connection = connect()
-    # connection.execute("SELECT * FROM companies")
-    # connection.fetchall()
     access_token = login_crm()
-    print(access_token)
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting the driver...")
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
@@ -255,18 +251,18 @@ if __name__ == "__main__":
     titleInputElement.clear()
     jobs_names = [".net developer","java developer","ios developer","android developer","flutter developer","php developer"]
     
-    titleInputElement.send_keys(jobs_names[1])
+    titleInputElement.send_keys(jobs_names[0])
     
     locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
     locationInputElement.clear()
     countries = ["Malaysia","Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
-    locationInputElement.send_keys(countries[3])
+    locationInputElement.send_keys(countries[5])
 
     #jobs-search-box__submit-button
     
     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
     searchButton.click()
-    time.sleep(5)
+    time.sleep(2)
     
     #get list jobs
     # jobs = driver.find_elements(By.CSS_SELECTOR,"#main > div > div:nth-child(1) > div > ul > li > div")
@@ -277,10 +273,9 @@ if __name__ == "__main__":
     print("Total jobs:" + str(count))
     
     for job in jobs:
-        time.sleep(3)
+        time.sleep(2)
         job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
         print(job_title)
-        
         job_id = job.get_attribute("data-job-id")
         print(job_id)
         get_job_detail(driver,job_id,access_token)
