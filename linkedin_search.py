@@ -15,12 +15,21 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
-
+import os
+import shutil
+import json
+import requests
+import urllib.request
+import time
+import psycopg2
 import pandas as pd
+
 from general_lk_utils import (
     get_lk_credentials,
     enter_ids_on_lk_signin,
-    get_job_detail
+    get_job_detail,
+    login_crm,
+    connect
 )
 
 SCROLL_TO_BOTTOM_COMMAND = (
@@ -210,19 +219,21 @@ def scrap_lksn_pages(
         )
         total_info += info
     return total_info
-
-
+            
 if __name__ == "__main__":
-    
+    # connection = connect()
+    # connection.execute("SELECT * FROM companies")
+    # connection.fetchall()
+    access_token = login_crm()
+    print(access_token)
     home_url = "https://www.linkedin.com/jobs/search"
-
     print("Starting the driver...")
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
     # Start the webdriver without any logs
     driver = webdriver.Chrome(options=Options())
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
-
+  
     print("Inputting the credentials...")
     lk_credentials = get_lk_credentials(LK_CREDENTIALS_PATH)
     enter_ids_on_lk_signin(driver, lk_credentials["email"], lk_credentials["password"])
@@ -242,46 +253,35 @@ if __name__ == "__main__":
     #titleInputElement = driver.find_element(By.ID, "jobs-search-box-keyword-id-ember100")
     titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
     titleInputElement.clear()
-    titleInputElement.send_keys("ios developer")
+    jobs_names = [".net developer","java developer","ios developer","android developer","flutter developer","php developer"]
+    
+    titleInputElement.send_keys(jobs_names[1])
     
     locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
     locationInputElement.clear()
-    locationInputElement.send_keys("Malaysia")
+    countries = ["Malaysia","Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
+    locationInputElement.send_keys(countries[3])
 
     #jobs-search-box__submit-button
     
     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
     searchButton.click()
-    time.sleep(10)
+    time.sleep(5)
     
     #get list jobs
-    jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
     # jobs = driver.find_elements(By.CSS_SELECTOR,"#main > div > div:nth-child(1) > div > ul > li > div")
     print("Please Zoom in then press Enter")
+    input()
+    jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
     count = len(jobs)
-    #input()
-    print(count)
+    print("Total jobs:" + str(count))
     
     for job in jobs:
-        #window_before = driver.window_handles[0]
-        #print(job.get_dom_attribute)
-        #job.click()
         time.sleep(3)
-        #job-details-jobs-unified-top-card__job-title
-        #job_detail = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title")
-        # job_detail = driver.find_element(By.CSS_SELECTOR,"#main > div> div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1)")
-        # print(job_detail.text)
-        # job_detail.click()
-        #job_detail.click()
-        #window_after = driver.window_handles[-1]
-        #driver.switch_to.window(window_after)
+        job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
+        print(job_title)
         
-        #jobs = driver.find_elements(By.CLASS_NAME,"#main > div > div:nth-child(2) > div > div:nth-child(2) > div > div:nth-child(1) > div > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > div:nth-child(1) > h2 > a")
-        # time.sleep(3)
-        # print(job)
-        # time.sleep(3)
         job_id = job.get_attribute("data-job-id")
         print(job_id)
-        get_job_detail(driver,job_id)
+        get_job_detail(driver,job_id,access_token)
 
-    #driver.close()
