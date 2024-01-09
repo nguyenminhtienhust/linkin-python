@@ -114,7 +114,9 @@ def add_new_lead(access_token,company_name,title,address,phone,website,content):
          "title": title,
          "last_name": company_name,
          "phone_mobile": phone,
-         "office_phone": phone,
+         "phone_work": phone,
+         "phone_home": phone,
+         "phone_other": phone,
          "website": website,
          "primary_address_country": address,
          "description": content
