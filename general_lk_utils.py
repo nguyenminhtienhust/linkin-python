@@ -104,7 +104,7 @@ def check_lead_existed(name):
         print(json_object)
         return json_object["data"]
 
-def add_new_lead(access_token,company_name,title,address,phone_mobile,website,content):
+def add_new_lead(access_token,company_name,title,address,phone,website,content):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
@@ -113,7 +113,8 @@ def add_new_lead(access_token,company_name,title,address,phone_mobile,website,co
      "attributes": {
          "title": title,
          "last_name": company_name,
-         "phone_mobile": phone_mobile,
+         "phone_mobile": phone,
+         "office_phone": phone,
          "website": website,
          "primary_address_country": address,
          "description": content
@@ -139,76 +140,62 @@ def get_job_detail(driver,job_id,access_token):
     job_detail_window = driver.window_handles[1]
     driver.switch_to.window(job_detail_window)
 
-    time.sleep(2)
     job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
     print(job_detail_url)
     driver.get(job_detail_url)
-    time.sleep(2)
+    time.sleep(5)
     
-    current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
-    print(current_job_title)
-    
+    current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
     infos_list = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
     company_url = infos_list.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
     company_name = infos_list.find_element(By.CSS_SELECTOR,"a").text
-    
-    print("Company URL: " + company_url)
-    time.sleep(2)
+    if(check_lead_existed(company_name)):
+        print("Leads đã tồn tại. Bỏ qua....")
+        driver.close()#close  job_detail_window
+        driver.switch_to.window(root_window)
+        return
 
     job_des = driver.find_element(By.ID,"job-details").text
-    print("Job Des: " + job_des)
-    time.sleep(2)
 
     #company screen
     driver.execute_script("window.open('');")
     company_window = driver.window_handles[2]
     driver.switch_to.window(company_window)
-    
+    time.sleep(5)
     full_content = ""
 
     company_about_url = company_url.replace("/life", "/about")
     full_content = '\n'.join([full_content, company_about_url])
-    full_content = '\n'.join([full_content, "Job đang tuyển dụng: " + current_job_title])
+    full_content = '\n'.join([full_content, "\nJob đang tuyển dụng: " + current_job_title])
+    full_content = '\n'.join([full_content, job_detail_url + "\n"])
 
     driver.get(company_about_url)
-    time.sleep(2)
+    time.sleep(5)
         
     text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
-    address = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")
+    address = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")[1].text
+    print("Address:" + address)
+    
     index = 0
     website_company = ""
-    email_company = ""
     phone_company = ""
     
     for text in text_bodys:
-        time.sleep(2)
-        sub_content = str(index) + ": " +  text.text
-        if(validators.domain(text.text)):
+        print(text.text)
+        sub_content = text.text
+        full_content = '\n'.join([full_content, sub_content[:350]])
+        if(("http" in text.text) or (".com" in text.text) or ("www" in text.text)):
             website_company = text.text
-        if(validators.email(text.text)):
-            email_company = text.text
-        if(len(text.text) < 15):
-            print(text.text)
-            if (validate_mobile_number(text.text)):
-               print(text.text)
-               phone_company = text.text
+        if("Phone number is" in text.text):
+            phone_company = text.text.split("Phone number is")[0]
         index = index + 1
                 
-    full_content = '\n'.join([full_content, job_des])
+    add_new_lead(access_token=access_token,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
 
-    time.sleep(2)
-    
-    if(not check_lead_existed(company_name)):
-        add_new_lead(access_token=access_token,company_name=company_name,title= current_job_title,address=address,phone_mobile=phone_company,website=website_company,content=full_content)
-    else:
-        print("")
-    
-    time.sleep(2)
     driver.close()#close  company_window
     driver.switch_to.window(job_detail_window)
-    time.sleep(2)
     driver.close()#close  job_detail_window
-    driver.switch_to.window(root_window)  
+    driver.switch_to.window(root_window)
 
 def get_lk_credentials(path="./lk_credentials.json"):
     f = open(path)

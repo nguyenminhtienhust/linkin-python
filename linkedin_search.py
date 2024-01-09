@@ -23,6 +23,7 @@ import urllib.request
 import time
 import psycopg2
 import pandas as pd
+import random
 
 from general_lk_utils import (
     get_lk_credentials,
@@ -223,13 +224,21 @@ def scrap_lksn_pages(
 if __name__ == "__main__":
     access_token = login_crm()
     home_url = "https://www.linkedin.com/jobs/search"
-    print("Starting the driver...")
+    print("Starting Clone...")
+    
+    jobs_names = ["Objective C","swift","ios","kotlin",".net","java","android","flutter","php","Database","Azure","DevOps","NodeJS","Software Architect","Spring","Python","Ruby","Django","AWS","AngularJS"]
+    job_name = random.choice(jobs_names)
+    print("Job: " + job_name)
+    
+    countries = ["Malaysia","Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
+    country = random.choice(countries)
+    print("Country: " + country)
+    
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    # Start the webdriver without any logs
     driver = webdriver.Chrome(options=Options())
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
-  
+    
     print("Inputting the credentials...")
     lk_credentials = get_lk_credentials(LK_CREDENTIALS_PATH)
     enter_ids_on_lk_signin(driver, lk_credentials["email"], lk_credentials["password"])
@@ -249,14 +258,11 @@ if __name__ == "__main__":
     #titleInputElement = driver.find_element(By.ID, "jobs-search-box-keyword-id-ember100")
     titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
     titleInputElement.clear()
-    jobs_names = [".net developer","java developer","ios developer","android developer","flutter developer","php developer"]
-    
-    titleInputElement.send_keys(jobs_names[0])
+    titleInputElement.send_keys(job_name)
     
     locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
     locationInputElement.clear()
-    countries = ["Malaysia","Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
-    locationInputElement.send_keys(countries[5])
+    locationInputElement.send_keys(country)
 
     #jobs-search-box__submit-button
     
@@ -277,6 +283,5 @@ if __name__ == "__main__":
         job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
         print(job_title)
         job_id = job.get_attribute("data-job-id")
-        print(job_id)
         get_job_detail(driver,job_id,access_token)
 
