@@ -32,6 +32,8 @@ if __name__ == "__main__":
     
     jobs = driver.find_elements(By.TAG_NAME,"article")
     for job in jobs:
+        print(job)
+        continue
         job_id = job.get_attribute("data-job-id")
         job_detail_url = "https://www.jobstreet.com.my/job/" + job_id
         print(job_detail_url)
@@ -39,7 +41,16 @@ if __name__ == "__main__":
         driver.execute_script("window.open('');")
         job_detail_window = driver.window_handles[1]
         driver.switch_to.window(job_detail_window)
+        driver.get(job_detail_url)
+        time.sleep(5)
+        #_126xumx1
+        company_info = driver.find_element(By.CLASS_NAME,"_1wkzzauf")
+        print(company_info)
         
+        company_url = company_info.get_attribute("href")
+        print("Company URL: " + company_url)
+        company_name = company_info.text
+        print("Company Name:" + company_name)
         time.sleep(2)
     
 
