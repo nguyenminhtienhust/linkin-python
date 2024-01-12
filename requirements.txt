@@ -108,4 +108,3 @@ psycopg2==2.9.9
 psycopg2-binary==2.9.9
 validators==0.22.0
 phonenumbers==8.13.27
-

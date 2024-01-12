@@ -177,8 +177,9 @@ def get_job_detail(driver,job_id,access_token):
     time.sleep(5)
         
     text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
-    address = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")[1].text
-    print("Address:" + address)
+    if len(text_bodys) > 1:
+        address = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")[1].text
+        print("Address:" + address)
     
     index = 0
     website_company = ""
