@@ -226,11 +226,11 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
-    jobs_names = ["Objective C","swift","ios","kotlin",".net","java","android","flutter","php","Database","Azure","DevOps","NodeJS","Software Architect","Spring","Python","Ruby","Django","AWS","AngularJS"]
+    jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails ","Ruby","Golang","Django","Angular","AngularJS","C language","Dart","JavaScript","C++","Objective C","swift","ios","kotlin",".net","java","android","flutter","php","Database","Azure","DevOps","NodeJS","Software Architect","Spring","Python","Ruby","Django","AWS","AngularJS","VueJS","Wordpress","Software Architect","React Native","Oracle",""]
     job_name = random.choice(jobs_names)
     print("Job: " + job_name)
     
-    countries = ["Malaysia","Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
+    countries = ["Malaysia"]#,"Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
     country = random.choice(countries)
     print("Country: " + country)
     
@@ -268,6 +268,7 @@ if __name__ == "__main__":
     
     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
     searchButton.click()
+    searchButton.accessible_name
     time.sleep(2)
     
     #get list jobs

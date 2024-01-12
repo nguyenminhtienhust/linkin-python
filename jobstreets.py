@@ -11,6 +11,14 @@ from selenium.webdriver.common.keys import Keys
 
 import pandas as pd
 
+from general_lk_utils import (
+    get_lk_credentials,
+    enter_ids_on_lk_signin,
+    get_job_detail,
+    login_crm,
+    connect,
+    hasClass
+)
 
 if __name__ == "__main__":
     job_url = "https://www.jobstreet.com.my/ios-developer-jobs/in-Malaysia"
@@ -32,9 +40,12 @@ if __name__ == "__main__":
     
     jobs = driver.find_elements(By.TAG_NAME,"article")
     for job in jobs:
-        print(job)
-        continue
+        print(job.text)
         job_id = job.get_attribute("data-job-id")
+        job_title = job.get_attribute("aria-label")
+        print(job_id)
+        print(job_title)
+        
         job_detail_url = "https://www.jobstreet.com.my/job/" + job_id
         print(job_detail_url)
         root_window = driver.window_handles[0]
@@ -44,14 +55,25 @@ if __name__ == "__main__":
         driver.get(job_detail_url)
         time.sleep(5)
         #_126xumx1
-        company_info = driver.find_element(By.CLASS_NAME,"_1wkzzauf")
-        print(company_info)
+        company_info = driver.find_elements(By.CLASS_NAME,"_1d0g9qk4")
+        for (index,info) in enumerate(company_info):
+            print(str(index) + ": " + info.text)
         
-        company_url = company_info.get_attribute("href")
-        print("Company URL: " + company_url)
-        company_name = company_info.text
+        company_name = company_info[29].text
         print("Company Name:" + company_name)
+
+        #_126xumx1
+        all_a = driver.find_elements(By.TAG_NAME,"a")
+        for a in all_a:
+            if hasClass(a,"_126xumx1"):
+                company_url = driver.find_element(By.CLASS_NAME,"_126xumx1").get_attribute("href")
+                print("Company URL: " + company_url)
+            else:
+                continue
+
         time.sleep(2)
+        driver.close()#close  company_window
+        driver.switch_to.window(root_window)
     
 
     

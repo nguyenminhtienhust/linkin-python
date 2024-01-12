@@ -8,6 +8,8 @@ from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
+
+
 import random
 import json
 import re
@@ -257,3 +259,13 @@ def remove_url_parameter(url, param):
     )
 
     return new_url
+
+def hasClass(element,class_search: str):
+    classes = element.get_attribute("class");
+    list = classes.split(" ")
+    for item in list:
+        if item == class_search:
+            return True
+        else:
+            continue
+    return False
