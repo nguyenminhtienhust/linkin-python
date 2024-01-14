@@ -222,7 +222,6 @@ def scrap_lksn_pages(
     return total_info
             
 if __name__ == "__main__":
-    access_token = login_crm()
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
@@ -279,10 +278,11 @@ if __name__ == "__main__":
     count = len(jobs)
     print("Total jobs:" + str(count))
     
+    access_token = login_crm()
     for job in jobs:
         time.sleep(2)
         job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
         print(job_title)
         job_id = job.get_attribute("data-job-id")
-        get_job_detail(driver,job_id,access_token)
+        get_job_detail(driver,job_id,access_token,country)
 

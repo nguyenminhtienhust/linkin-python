@@ -9,6 +9,7 @@ from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
 from datetime import datetime
+from datetime import date
 import random
 import json
 import re
@@ -103,7 +104,7 @@ def check_lead_existed(name):
     else:
         json_object = data.json()
         print(json_object)
-        return json_object["data"] == None
+        return json_object["data"]
     
 def add_new_account(access_token,name,phone,website,address):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
@@ -150,7 +151,6 @@ def add_new_lead(access_token,company_name,title,address,phone,website,content):
          "phone_other": phone,
          "website": website,
          "account_name": company_name,
-        "account_type": "Customer",
          "primary_address_country": address,
          "description": content
      }
@@ -185,7 +185,6 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
          "phone_other": phone,
          "website": website,
          "account_name": company_name,
-         "account_type": "Customer",
          "primary_address_country": address,
          "description": content
      }
@@ -194,7 +193,7 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
     
     print(jsondata)
     time.sleep(2)
-    data = requests.post(module_api,json=jsondata,headers=headers)
+    data = requests.patch(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
         print('fail')
         print(data.status_code)
@@ -204,7 +203,7 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
         json_object = data.json()
         print(json_object)
     
-def get_job_detail(driver,job_id,access_token):
+def get_job_detail(driver,job_id,access_token,country):
     root_window = driver.window_handles[0]
     driver.execute_script("window.open('');")
     job_detail_window = driver.window_handles[1]
@@ -217,8 +216,12 @@ def get_job_detail(driver,job_id,access_token):
     
     current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
     infos_list = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
-    company_url = infos_list.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
-    company_name = infos_list.find_element(By.CSS_SELECTOR,"a").text
+    company_element = infos_list.find_element(By.TAG_NAME,"a")
+    if company_element is None:
+        print("company_url is empty")
+    else:
+        company_url = infos_list.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
+        company_name = company_element.text
     
     #job_des = driver.find_element(By.ID,"job-details").text
 
@@ -236,8 +239,12 @@ def get_job_detail(driver,job_id,access_token):
         
     text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
     if len(text_bodys) > 1:
-        address = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")[1].text
-        print("Address:" + address)
+        address_element = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")
+        if (len(address_element) > 0 ):
+            address = address_element[1].text
+        else:
+            address = country
+    print("Address:" + address)
     
     index = 0
     website_company = ""
@@ -279,13 +286,17 @@ def get_job_detail(driver,job_id,access_token):
     job_containers = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
     count = len(job_containers)
     print("Total jobs:" + str(count))
-    
+    should_change_status = False
+    last_time = datetime(2023, 1 , 1)
     for job_item in job_containers:
         full_content = '\n'.join([full_content, "#####"])
         sub_content = ""
         
         time_string = job_item.find_element(By.TAG_NAME,"time").get_attribute("datetime")
-        sub_content = '\n'.join([sub_content, time_string])
+        datetime_object = datetime.strptime(time_string, '%Y-%m-%d') #2024-01-08
+        if datetime_object > last_time:
+            last_time = datetime_object
+        sub_content = ''.join([sub_content, time_string.replace("\n","")])
         
         job_title = job_item.find_element(By.CLASS_NAME,"job-card-list__title").text
         sub_content = '\n'.join([sub_content, job_title])
@@ -297,14 +308,18 @@ def get_job_detail(driver,job_id,access_token):
         sub_content = '\n'.join([sub_content, job_url])
 
         full_content = '\n'.join([full_content, sub_content])
-                
-        #datetime_object = datetime.strptime(time_string, '%Y-%m-%d') #2024-01-08        
+    last_time_string = last_time.strftime("%Y-%m-%d")
+    full_content = '\n'.join([full_content, "#####"])
+    full_content = '\n'.join([full_content, last_time_string])
+            
     lead_id = check_lead_existed(company_name)
-    if (lead_id is not None):
-        print("\n\nstarting edit:......\n\n")
-        edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
+    print("\nLead id:" + lead_id + "\n")
+    if (lead_id == ""):
+        print("\n\nStarting add new:......\n\n")
+        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
     else:
-        add_new_lead(access_token=access_token,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
+        print("\n\nStarting edit:......\n\n")
+        edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
     driver.close()#close  jobs_window
     #jobs_window
     driver.switch_to.window(jobs_window)
