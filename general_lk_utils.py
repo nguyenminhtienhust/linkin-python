@@ -19,6 +19,7 @@ from configparser import ConfigParser
 import psycopg2
 import validators
 import phonenumbers
+from cs50 import SQL
 
 def validate_mobile_number(mobile_number):
     pattern = re.compile(r'^\+((?:9[679]|8[035789]|6[789]|5[90]|42|3[578]|2[1-689])|9[0-58]|8[1246]|6[0-6]|5[1-8]|4[013-9]|3[0-469]|2[70]|7|1)(?:\W*\d){0,13}\d$')
@@ -91,6 +92,19 @@ def login_crm():
         json_object = data.json()
         return json_object["access_token"]
 
+def get_min_sale():
+    headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+    check_api = "http://68.183.189.171:9999/leads/find-minimum-sale"
+    data = requests.get(check_api,headers=headers)
+    if data.status_code != 200:
+        print(data.status_code)
+        print(data.reason)
+    else:
+        json_object = data.json()
+        print(json_object)
+        return json_object["data"]
+    
+    
 def check_lead_existed(name):
     headers = {'Content-Type': "application/json", 'Accept': "application/json"}
     check_api = "http://68.183.189.171:9999/leads/check"
@@ -136,7 +150,7 @@ def add_new_account(access_token,name,phone,website,address):
         json_object = data.json()
         print(json_object)
         
-def add_new_lead(access_token,company_name,title,address,phone,website,content):
+def add_new_lead(access_token,company_name,title,address,phone,website,content,assigned_user_id):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
@@ -152,6 +166,7 @@ def add_new_lead(access_token,company_name,title,address,phone,website,content):
          "website": website,
          "account_name": company_name,
          "primary_address_country": address,
+         "assigned_user_id": assigned_user_id,
          "description": content
      }
     }
@@ -196,15 +211,14 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
     data = requests.patch(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
         print('fail')
-        print(data.status_code)
-        print(data.reason)
     else:
-        print('done')
         json_object = data.json()
         print(json_object)
     
 def get_job_detail(driver,job_id,access_token,country):
     root_window = driver.window_handles[0]
+    
+    #job detail windo
     driver.execute_script("window.open('');")
     job_detail_window = driver.window_handles[1]
     driver.switch_to.window(job_detail_window)
@@ -215,14 +229,18 @@ def get_job_detail(driver,job_id,access_token,country):
     time.sleep(5)
     
     current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-    infos_list = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
-    company_element = infos_list.find_element(By.TAG_NAME,"a")
-    if company_element is None:
+    infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
+    address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
+    address = address_element.text
+    print(address)
+
+    company_element = infos_element.find_element(By.TAG_NAME,"a")
+    
+    if not company_element:
         print("company_url is empty")
     else:
-        company_url = infos_list.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
+        company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
         company_name = company_element.text
-    
     #job_des = driver.find_element(By.ID,"job-details").text
 
     #company screen
@@ -230,35 +248,50 @@ def get_job_detail(driver,job_id,access_token,country):
     company_window = driver.window_handles[2]
     driver.switch_to.window(company_window)
     time.sleep(5)
-    full_content = ""
 
     company_about_url = company_url.replace("/life", "/about")
     driver.get(company_about_url)
-    full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
     time.sleep(5)
-        
-    text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
-    if len(text_bodys) > 1:
-        address_element = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")
-        if (len(address_element) > 0 ):
-            address = address_element[1].text
-        else:
-            address = country
-    print("Address:" + address)
+    full_content = ""
+    full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
+
+    wrap_section = driver.find_element(By.CLASS_NAME,"org-grid__content-height-enforcer")
+    dds = wrap_section.find_elements(By.TAG_NAME,"dd")
     
     index = 0
     website_company = ""
     phone_company = ""
     
-    for text in text_bodys:
-        print(text.text)
-        #sub_content = text.text
-        #full_content = '\n'.join([full_content, sub_content[:350]])
-        if(("http" in text.text) or (".com" in text.text) or ("www" in text.text)):
-            website_company = text.text
-        if("Phone number is" in text.text):
-            phone_company = text.text.split("Phone number is")[0]
+    for dd in dds:
+        print(dd.text)
+        if(("http" in dd.text) or (".com" in dd.text) or ("www" in dd.text)):
+            website_company = dd.text
+        if("Phone number is" in dd.text):
+            phone_company = dd.text.split("Phone number is")[0]
         index = index + 1
+    input()
+    
+    
+    # text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
+    # if len(text_bodys) > 1:
+    #     address_element = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")
+    #     if (len(address_element) > 0 ):
+    #         address = address_element[1].text
+    #     else:
+    #         address = country
+    # print("Address:" + address)
+    
+    
+    
+    # for text in text_bodys:
+    #     print(text.text)
+    #     #sub_content = text.text
+    #     #full_content = '\n'.join([full_content, sub_content[:350]])
+    #     if(("http" in text.text) or (".com" in text.text) or ("www" in text.text)):
+    #         website_company = text.text
+    #     if("Phone number is" in text.text):
+    #         phone_company = text.text.split("Phone number is")[0]
+    #     index = index + 1
         
     #Get List Job:
     #https://www.linkedin.com/company/mindvalley/jobs/            
@@ -316,12 +349,14 @@ def get_job_detail(driver,job_id,access_token,country):
     print("\nLead id:" + lead_id + "\n")
     if (lead_id == ""):
         print("\n\nStarting add new:......\n\n")
-        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
+        assigned_user_id = get_min_sale()
+        print("Assigned User Id:" + assigned_user_id)
+        time.sleep(2)
+        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,phone=phone_company,website=website_company,content=full_content,assigned_user_id=assigned_user_id)
     else:
         print("\n\nStarting edit:......\n\n")
         edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
-    driver.close()#close  jobs_window
-    #jobs_window
+    driver.close()#close  list_jobs_detail_window
     driver.switch_to.window(jobs_window)
     driver.close()#close  company_window
     driver.switch_to.window(job_detail_window)
@@ -333,7 +368,6 @@ def get_lk_credentials(path="./lk_credentials.json"):
     data = json.load(f)
     f.close()
     return data
-
 
 def enter_ids_on_lk_signin(driver, email, password):
     time.sleep(2)
