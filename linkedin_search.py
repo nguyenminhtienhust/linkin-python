@@ -225,12 +225,12 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
-    jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails ","Ruby","Golang","Django","Angular","AngularJS","C language","Dart","JavaScript","C++","Objective C","swift","ios","kotlin",".net","java","android","flutter","php","Database","Azure","DevOps","NodeJS","Software Architect","Spring","Python","Ruby","Django","AWS","AngularJS","VueJS","Wordpress","Software Architect","React Native","Oracle",""]
-    job_name = random.choice(jobs_names)
+    jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","Software Architect","React Native  developer","Oracle Database"]
+    job_name = "ios developer"#random.choice(jobs_names)
     print("Job: " + job_name)
     
     countries = ["Malaysia"]#,"Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
-    country = random.choice(countries)
+    country = "Malaysia" #random.choice(countries)
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
@@ -270,19 +270,56 @@ if __name__ == "__main__":
     searchButton.accessible_name
     time.sleep(2)
     
+    page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
+    
     #get list jobs
     # jobs = driver.find_elements(By.CSS_SELECTOR,"#main > div > div:nth-child(1) > div > ul > li > div")
     print("Please Zoom in then press Enter")
     input()
+   
+    
+    jobs_fail = ["Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
+    
+    keys_fail = ["Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
+    
+    access_token = login_crm()
+    
     jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
     count = len(jobs)
     print("Total jobs:" + str(count))
-    
-    access_token = login_crm()
     for job in jobs:
         time.sleep(2)
-        job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text
+        job_title = driver.find_element(By.CLASS_NAME,"job-card-list__title").text
         print(job_title)
+        for key_fail in keys_fail:
+            if key_fail in job_title:
+                continue
+        for job_fail in jobs_fail:
+            if job_fail == job_title:
+                continue
         job_id = job.get_attribute("data-job-id")
         get_job_detail(driver,job_id,access_token,country)
-
+    #Go to next page
+    page_index = 0
+    for page_indicator in page_indicators:
+        if page_index == 0:
+            continue
+        else:
+            button = page_indicator.find_element(By.TAG_NAME,"button")
+            button.click()
+            time.sleep(5)
+            jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
+            count = len(jobs)
+            print("Total jobs:" + str(count))
+            for job in jobs:
+                time.sleep(2)
+                job_title = driver.find_element(By.CLASS_NAME,"job-card-list__title").text
+                print(job_title)
+                for key_fail in keys_fail:
+                    if key_fail in job_title:
+                        continue
+                for job_fail in jobs_fail:
+                    if job_fail == job_title:
+                        continue
+                job_id = job.get_attribute("data-job-id")
+                get_job_detail(driver,job_id,access_token,country)
