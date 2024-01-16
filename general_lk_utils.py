@@ -136,16 +136,12 @@ def add_new_account(access_token,name,phone,website,address):
      }
     }
     }
-    
-    print(jsondata)
     time.sleep(2)
     data = requests.post(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
-        print('fail')
         print(data.status_code)
         print(data.reason)
     else:
-        print('done')
         json_object = data.json()
         print(json_object)
         
@@ -165,7 +161,7 @@ def add_new_lead(access_token,company_name,title,address,phone,website,content,a
          "website": website,
          "account_name": company_name,
          "primary_address_country": address,
-         "assigned_user_id": assigned_user_id,
+         #"assigned_user_id": assigned_user_id,
          "description": content
      }
     }
@@ -216,7 +212,6 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
     
 def get_job_detail(driver,job_id,access_token,country):
     root_window = driver.window_handles[0]
-    
     #job detail windo
     driver.execute_script("window.open('');")
     job_detail_window = driver.window_handles[1]
@@ -241,7 +236,6 @@ def get_job_detail(driver,job_id,access_token,country):
         company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
         company_name = company_element.text
     #job_des = driver.find_element(By.ID,"job-details").text
-
     #company screen
     driver.execute_script("window.open('');")
     company_window = driver.window_handles[2]
@@ -268,43 +262,17 @@ def get_job_detail(driver,job_id,access_token,country):
         if("Phone number is" in dd.text):
             phone_company = dd.text.split("Phone number is")[0]
         index = index + 1
-    input()
     
-    
-    # text_bodys = driver.find_elements(By.CLASS_NAME,"text-body-medium")
-    # if len(text_bodys) > 1:
-    #     address_element = driver.find_elements(By.CLASS_NAME,"org-top-card-summary-info-list__info-item")
-    #     if (len(address_element) > 0 ):
-    #         address = address_element[1].text
-    #     else:
-    #         address = country
-    # print("Address:" + address)
-    
-    
-    
-    # for text in text_bodys:
-    #     print(text.text)
-    #     #sub_content = text.text
-    #     #full_content = '\n'.join([full_content, sub_content[:350]])
-    #     if(("http" in text.text) or (".com" in text.text) or ("www" in text.text)):
-    #         website_company = text.text
-    #     if("Phone number is" in text.text):
-    #         phone_company = text.text.split("Phone number is")[0]
-    #     index = index + 1
-        
     #Get List Job:
     #https://www.linkedin.com/company/mindvalley/jobs/            
     #Jobs Company Screen
     driver.execute_script("window.open('');")
     jobs_window = driver.window_handles[3]
     driver.switch_to.window(jobs_window)
-    
     jobs_list_company_url = company_url.replace("/life", "/jobs")
-
     driver.get(jobs_list_company_url)
     full_content = '\n Link danh sách công việc: '.join([full_content, jobs_list_company_url])
     time.sleep(5)
-    #org-jobs-recently-posted-jobs-module__show-all-jobs-btn
     button_show_all_jobs = driver.find_element(By.CLASS_NAME,"org-jobs-recently-posted-jobs-module__show-all-jobs-btn")
     link_all_jobs = button_show_all_jobs.find_element(By.TAG_NAME,"a").get_attribute("href")
     print(link_all_jobs) 
@@ -323,7 +291,6 @@ def get_job_detail(driver,job_id,access_token,country):
     for job_item in job_containers:
         full_content = '\n'.join([full_content, "#####"])
         sub_content = ""
-        
         time_string = job_item.find_element(By.TAG_NAME,"time").get_attribute("datetime")
         datetime_object = datetime.strptime(time_string, '%Y-%m-%d') #2024-01-08
         if datetime_object > last_time:
@@ -348,10 +315,10 @@ def get_job_detail(driver,job_id,access_token,country):
     print("\nLead id:" + lead_id + "\n")
     if (lead_id == ""):
         print("\n\nStarting add new:......\n\n")
-        assigned_user_id = get_min_sale()
-        print("Assigned User Id:" + assigned_user_id)
+        #assigned_user_id = get_min_sale()
+        #print("Assigned User Id:" + assigned_user_id)
         time.sleep(2)
-        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,phone=phone_company,website=website_company,content=full_content,assigned_user_id=assigned_user_id)
+        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,phone=phone_company,website=website_company,content=full_content,assigned_user_id="assigned_user_id")
     else:
         print("\n\nStarting edit:......\n\n")
         edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
