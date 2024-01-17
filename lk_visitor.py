@@ -16,7 +16,7 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-from general_lk_utils import (
+from utils import (
     get_lk_credentials,
     enter_ids_on_lk_signin,
 )

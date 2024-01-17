@@ -7,7 +7,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 import pandas as pd
-from general_lk_utils import (
+from utils import (
     remove_url_parameter,
     get_lk_credentials,
     enter_ids_on_lk_signin,

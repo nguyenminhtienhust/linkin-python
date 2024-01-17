@@ -25,18 +25,17 @@ import psycopg2
 import pandas as pd
 import random
 
-from general_lk_utils import (
+from utils import (
     get_lk_credentials,
     enter_ids_on_lk_signin,
     get_job_detail,
-    login_crm,
-    connect
+    login_crm
 )
 
 SCROLL_TO_BOTTOM_COMMAND = (
     "document.getElementById('search-results-container').scrollTop+=100000;"
 )
-LK_CREDENTIALS_PATH = "./lk_credentials.json"
+LK_CREDENTIALS_PATH = "./credentials.json"
 
 
 def get_name_info_from_result_el(result_el):
@@ -273,7 +272,6 @@ if __name__ == "__main__":
     input()
     
     jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
-    
     keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
     
     access_token = login_crm()
