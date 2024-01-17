@@ -145,7 +145,7 @@ def add_new_account(access_token,name,phone,website,address):
         json_object = data.json()
         print(json_object)
         
-def add_new_lead(access_token,company_name,title,address,phone,website,content,assigned_user_id):
+def add_new_lead(access_token,company_name,title,address,other_address,phone,website,content,assigned_user_id):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
@@ -161,6 +161,7 @@ def add_new_lead(access_token,company_name,title,address,phone,website,content,a
          "website": website,
          "account_name": company_name,
          "primary_address_country": address,
+         "alt_address_street": other_address,
          #"assigned_user_id": assigned_user_id,
          "description": content
      }
@@ -179,7 +180,7 @@ def add_new_lead(access_token,company_name,title,address,phone,website,content,a
         json_object = data.json()
         print(json_object)
         
-def edit_new_lead(access_token,id,company_name,title,address,phone,website,content):
+def edit_new_lead(access_token,id,company_name,title,address,other_address,phone,website,content):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
@@ -196,6 +197,7 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
          "website": website,
          "account_name": company_name,
          "primary_address_country": address,
+         "alt_address_street": other_address,
          "description": content
      }
     }
@@ -210,24 +212,24 @@ def edit_new_lead(access_token,id,company_name,title,address,phone,website,conte
         json_object = data.json()
         print(json_object)
     
-def get_job_detail(driver,job_id,access_token,country):
+def get_job_detail(driver,job_id,access_token,address):
     root_window = driver.window_handles[0]
-    #job detail windo
+    
+    #1 job detail window 
     driver.execute_script("window.open('');")
     job_detail_window = driver.window_handles[1]
     driver.switch_to.window(job_detail_window)
+    time.sleep(2)
 
     job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
     print(job_detail_url)
     driver.get(job_detail_url)
-    time.sleep(5)
+    time.sleep(10)
     
     current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
     infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
     address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
-    address = address_element.text
-    print(address)
-
+    other_address = address_element.text
     company_element = infos_element.find_element(By.TAG_NAME,"a")
     
     if not company_element:
@@ -235,16 +237,17 @@ def get_job_detail(driver,job_id,access_token,country):
     else:
         company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
         company_name = company_element.text
-    #job_des = driver.find_element(By.ID,"job-details").text
-    #company screen
+
+    #2 company screen
     driver.execute_script("window.open('');")
     company_window = driver.window_handles[2]
     driver.switch_to.window(company_window)
-    time.sleep(5)
+    time.sleep(2)
 
     company_about_url = company_url.replace("/life", "/about")
     driver.get(company_about_url)
-    time.sleep(5)
+    time.sleep(10)
+    
     full_content = ""
     full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
 
@@ -265,39 +268,52 @@ def get_job_detail(driver,job_id,access_token,country):
     
     #Get List Job:
     #https://www.linkedin.com/company/mindvalley/jobs/            
-    #Jobs Company Screen
+    #3 Jobs Company Screen
     driver.execute_script("window.open('');")
     jobs_window = driver.window_handles[3]
     driver.switch_to.window(jobs_window)
+    time.sleep(2)
+
     jobs_list_company_url = company_url.replace("/life", "/jobs")
     driver.get(jobs_list_company_url)
     full_content = '\n Link danh sách công việc: '.join([full_content, jobs_list_company_url])
-    time.sleep(5)
+    time.sleep(10)
+    
     button_show_all_jobs = driver.find_element(By.CLASS_NAME,"org-jobs-recently-posted-jobs-module__show-all-jobs-btn")
     link_all_jobs = button_show_all_jobs.find_element(By.TAG_NAME,"a").get_attribute("href")
     print(link_all_jobs) 
     
-    #Clone All Jobs
+    #4 Clone All Jobs
     driver.execute_script("window.open('');")
     list_jobs_detail_window = driver.window_handles[4]
     driver.switch_to.window(list_jobs_detail_window)
+    time.sleep(2)
+    
     driver.get(link_all_jobs)
-    time.sleep(5)
+    time.sleep(10)
     job_containers = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
     count = len(job_containers)
     print("Total jobs:" + str(count))
     should_change_status = False
     last_time = datetime(2023, 1 , 1)
+    jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
+    keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
+    
     for job_item in job_containers:
         full_content = '\n'.join([full_content, "#####"])
         sub_content = ""
         time_string = job_item.find_element(By.TAG_NAME,"time").get_attribute("datetime")
+        job_title = job_item.find_element(By.CLASS_NAME,"job-card-list__title").text
+        for key_fail in keys_fail:
+            if key_fail in job_title:
+                continue
+        for job_fail in jobs_fail:
+            if job_fail == job_title:
+                continue
         datetime_object = datetime.strptime(time_string, '%Y-%m-%d') #2024-01-08
         if datetime_object > last_time:
             last_time = datetime_object
         sub_content = ''.join([sub_content, time_string.replace("\n","")])
-        
-        job_title = job_item.find_element(By.CLASS_NAME,"job-card-list__title").text
         sub_content = '\n'.join([sub_content, job_title])
         
         specific_address = job_item.find_element(By.CLASS_NAME,"job-card-container__metadata-item ").text
@@ -310,7 +326,7 @@ def get_job_detail(driver,job_id,access_token,country):
     last_time_string = last_time.strftime("%Y-%m-%d")
     full_content = '\n'.join([full_content, "#####"])
     full_content = '\n'.join([full_content, last_time_string])
-            
+    
     lead_id = check_lead_existed(company_name)
     print("\nLead id:" + lead_id + "\n")
     if (lead_id == ""):
@@ -318,15 +334,24 @@ def get_job_detail(driver,job_id,access_token,country):
         #assigned_user_id = get_min_sale()
         #print("Assigned User Id:" + assigned_user_id)
         time.sleep(2)
-        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,phone=phone_company,website=website_company,content=full_content,assigned_user_id="assigned_user_id")
+        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,other_address=other_address,phone=phone_company,website=website_company,content=full_content,assigned_user_id="assigned_user_id")
     else:
         print("\n\nStarting edit:......\n\n")
-        edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,phone=phone_company,website=website_company,content=full_content)
-    driver.close()#close  list_jobs_detail_window
+        edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,other_address=other_address,phone=phone_company,website=website_company,content=full_content)
+    driver.close()#4 close  list_jobs_detail_window
+    
     driver.switch_to.window(jobs_window)
-    driver.close()#close  company_window
+    driver.close()#3 close  jobs_window
+    time.sleep(1)
+
+    driver.switch_to.window(company_window)
+    driver.close()#2 close  company_window
+    time.sleep(1)
+
     driver.switch_to.window(job_detail_window)
-    driver.close()#close  job_detail_window
+    driver.close()#1 close  job_detail_window
+    time.sleep(1)
+
     driver.switch_to.window(root_window)
 
 def get_lk_credentials(path="./lk_credentials.json"):

@@ -225,12 +225,12 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
-    jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","Software Architect","React Native  developer","Oracle Database"]
-    job_name = "ios developer"#random.choice(jobs_names)
+    jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","React Native  developer","Oracle Database"]
+    job_name = "Ruby developer"#random.choice(jobs_names)
     print("Job: " + job_name)
     
     countries = ["Malaysia"]#,"Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
-    country = "Malaysia" #random.choice(countries)
+    country = "Singapore" #random.choice(countries)
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
@@ -254,7 +254,6 @@ if __name__ == "__main__":
 
     #await driver.wait(until.elementLocated(By.className('link')), 1000);
 
-    #titleInputElement = driver.find_element(By.ID, "jobs-search-box-keyword-id-ember100")
     titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
     titleInputElement.clear()
     titleInputElement.send_keys(job_name)
@@ -262,34 +261,32 @@ if __name__ == "__main__":
     locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
     locationInputElement.clear()
     locationInputElement.send_keys(country)
-
-    #jobs-search-box__submit-button
     
     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
     searchButton.click()
     searchButton.accessible_name
     time.sleep(2)
-    
+
     page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
     
-    #get list jobs
-    # jobs = driver.find_elements(By.CSS_SELECTOR,"#main > div > div:nth-child(1) > div > ul > li > div")
     print("Please Zoom in then press Enter")
     input()
-   
     
-    jobs_fail = ["Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
+    jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
     
-    keys_fail = ["Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
+    keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
     
     access_token = login_crm()
     
-    jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
+    jobs = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
     count = len(jobs)
     print("Total jobs:" + str(count))
+    address = ""
     for job in jobs:
         time.sleep(2)
         job_title = driver.find_element(By.CLASS_NAME,"job-card-list__title").text
+        address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
+        print("Address: " + address)
         print(job_title)
         for key_fail in keys_fail:
             if key_fail in job_title:
@@ -297,7 +294,7 @@ if __name__ == "__main__":
         for job_fail in jobs_fail:
             if job_fail == job_title:
                 continue
-        job_id = job.get_attribute("data-job-id")
+        job_id = job.get_attribute("data-occludable-job-id")
         get_job_detail(driver,job_id,access_token,country)
     #Go to next page
     page_index = 0
@@ -322,4 +319,4 @@ if __name__ == "__main__":
                     if job_fail == job_title:
                         continue
                 job_id = job.get_attribute("data-job-id")
-                get_job_detail(driver,job_id,access_token,country)
+                get_job_detail(driver,job_id,access_token,address)
