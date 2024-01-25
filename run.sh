@@ -1,1 +1,1 @@
-python3 clone_linkedin.py
+python3 linkedin.py
