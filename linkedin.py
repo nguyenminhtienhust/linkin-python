@@ -225,7 +225,7 @@ if __name__ == "__main__":
     print("Starting Clone...")
     
     jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","React Native  developer","Oracle Database"]
-    job_name = "Ruby developer"#random.choice(jobs_names)
+    job_name = "Fullstack developer"#random.choice(jobs_names)
     print("Job: " + job_name)
     
     countries = ["Malaysia"]#,"Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]

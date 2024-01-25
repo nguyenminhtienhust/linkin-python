@@ -266,18 +266,21 @@ def get_job_detail(driver,job_id,access_token,address):
             phone_company = dd.text.split("Phone number is")[0]
         index = index + 1
     
+    full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
+
     #Get List Job:
     #https://www.linkedin.com/company/mindvalley/jobs/            
     #3 Jobs Company Screen
-    driver.execute_script("window.open('');")
-    jobs_window = driver.window_handles[3]
-    driver.switch_to.window(jobs_window)
-    time.sleep(2)
+    #driver.execute_script("window.open('');")
+    #jobs_window = driver.window_handles[3]
+    #driver.switch_to.window(jobs_window)
+    #time.sleep(2)
 
-    jobs_list_company_url = company_url.replace("/life", "/jobs")
-    driver.get(jobs_list_company_url)
-    full_content = '\n Link danh sách công việc: '.join([full_content, jobs_list_company_url])
-    time.sleep(10)
+    #jobs_list_company_url = company_url.replace("/life", "/jobs")
+    #driver.get(jobs_list_company_url)
+
+    #full_content = '\n Link danh sách công việc: '.join([full_content, jobs_list_company_url])
+    #time.sleep(10)
     
     button_show_all_jobs = driver.find_element(By.CLASS_NAME,"org-jobs-recently-posted-jobs-module__show-all-jobs-btn")
     link_all_jobs = button_show_all_jobs.find_element(By.TAG_NAME,"a").get_attribute("href")
@@ -299,33 +302,33 @@ def get_job_detail(driver,job_id,access_token,address):
     jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
     keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
     
-    for job_item in job_containers:
-        full_content = '\n'.join([full_content, "#####"])
-        sub_content = ""
-        time_string = job_item.find_element(By.TAG_NAME,"time").get_attribute("datetime")
-        job_title = job_item.find_element(By.CLASS_NAME,"job-card-list__title").text
-        for key_fail in keys_fail:
-            if key_fail in job_title:
-                continue
-        for job_fail in jobs_fail:
-            if job_fail == job_title:
-                continue
-        datetime_object = datetime.strptime(time_string, '%Y-%m-%d') #2024-01-08
-        if datetime_object > last_time:
-            last_time = datetime_object
-        sub_content = ''.join([sub_content, time_string.replace("\n","")])
-        sub_content = '\n'.join([sub_content, job_title])
+    # for job_item in job_containers:
+    #     full_content = '\n'.join([full_content, "#####"])
+    #     sub_content = ""
+    #     time_string = job_item.find_element(By.TAG_NAME,"time").get_attribute("datetime")
+    #     job_title = job_item.find_element(By.CLASS_NAME,"job-card-list__title").text
+    #     for key_fail in keys_fail:
+    #         if key_fail in job_title:
+    #             continue
+    #     for job_fail in jobs_fail:
+    #         if job_fail == job_title:
+    #             continue
+    #     datetime_object = datetime.strptime(time_string, '%Y-%m-%d') #2024-01-08
+    #     if datetime_object > last_time:
+    #         last_time = datetime_object
+    #     sub_content = ''.join([sub_content, time_string.replace("\n","")])
+    #     sub_content = '\n'.join([sub_content, job_title])
         
-        specific_address = job_item.find_element(By.CLASS_NAME,"job-card-container__metadata-item ").text
-        sub_content = '\n'.join([sub_content, specific_address])
+    #     specific_address = job_item.find_element(By.CLASS_NAME,"job-card-container__metadata-item ").text
+    #     sub_content = '\n'.join([sub_content, specific_address])
 
-        job_url = job_item.find_element(By.CLASS_NAME,"job-card-container__link").get_attribute("href")
-        sub_content = '\n'.join([sub_content, job_url])
+    #     job_url = job_item.find_element(By.CLASS_NAME,"job-card-container__link").get_attribute("href")
+    #     sub_content = '\n'.join([sub_content, job_url])
 
-        full_content = '\n'.join([full_content, sub_content])
-    last_time_string = last_time.strftime("%Y-%m-%d")
-    full_content = '\n'.join([full_content, "#####"])
-    full_content = '\n'.join([full_content, last_time_string])
+    #     full_content = '\n'.join([full_content, sub_content])
+    # last_time_string = last_time.strftime("%Y-%m-%d")
+    # full_content = '\n'.join([full_content, "#####"])
+    # full_content = '\n'.join([full_content, last_time_string])
     
     lead_id = check_lead_existed(company_name)
     print("\nLead id:" + lead_id + "\n")
@@ -340,9 +343,9 @@ def get_job_detail(driver,job_id,access_token,address):
         edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,other_address=other_address,phone=phone_company,website=website_company,content=full_content)
     driver.close()#4 close  list_jobs_detail_window
     
-    driver.switch_to.window(jobs_window)
-    driver.close()#3 close  jobs_window
-    time.sleep(1)
+    #driver.switch_to.window(jobs_window)
+    #driver.close()#3 close  jobs_window
+    #time.sleep(1)
 
     driver.switch_to.window(company_window)
     driver.close()#2 close  company_window
