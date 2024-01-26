@@ -282,18 +282,18 @@ def get_job_detail(driver,job_id,access_token,address):
     #full_content = '\n Link danh sách công việc: '.join([full_content, jobs_list_company_url])
     #time.sleep(10)
     
-    button_show_all_jobs = driver.find_element(By.CLASS_NAME,"org-jobs-recently-posted-jobs-module__show-all-jobs-btn")
-    link_all_jobs = button_show_all_jobs.find_element(By.TAG_NAME,"a").get_attribute("href")
-    print(link_all_jobs) 
+    #button_show_all_jobs = driver.find_element(By.CLASS_NAME,"org-jobs-recently-posted-jobs-module__show-all-jobs-btn")
+    #link_all_jobs = button_show_all_jobs.find_element(By.TAG_NAME,"a").get_attribute("href")
+    #print(link_all_jobs) 
     
     #4 Clone All Jobs
-    driver.execute_script("window.open('');")
-    list_jobs_detail_window = driver.window_handles[4]
-    driver.switch_to.window(list_jobs_detail_window)
+    #driver.execute_script("window.open('');")
+    #list_jobs_detail_window = driver.window_handles[3]
+    #driver.switch_to.window(list_jobs_detail_window)
     time.sleep(2)
     
-    driver.get(link_all_jobs)
-    time.sleep(10)
+    #driver.get(link_all_jobs)
+    #time.sleep(10)
     job_containers = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
     count = len(job_containers)
     print("Total jobs:" + str(count))
@@ -341,7 +341,7 @@ def get_job_detail(driver,job_id,access_token,address):
     else:
         print("\n\nStarting edit:......\n\n")
         edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,other_address=other_address,phone=phone_company,website=website_company,content=full_content)
-    driver.close()#4 close  list_jobs_detail_window
+    #driver.close()#4 close  list_jobs_detail_window
     
     #driver.switch_to.window(jobs_window)
     #driver.close()#3 close  jobs_window
