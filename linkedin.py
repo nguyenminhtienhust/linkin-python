@@ -224,8 +224,8 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
-    jobs_names = ["Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","React Native  developer","Oracle Database"]
-    job_name = "ios developer"#random.choice(jobs_names)
+    jobs_names = [".Net","Java","Android","Flutter","Php","Mobile Application Developer","Web Developer","Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","React Native  developer","Oracle Database"]
+    job_name = ".Net"#random.choice(jobs_names)
     print("Job: " + job_name)
     
     countries = ["Malaysia"]#,"Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
