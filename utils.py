@@ -264,7 +264,7 @@ def get_job_detail(driver,job_id,access_token,address):
         time.sleep(2)
 
         send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-        #send_button.submit()
+        send_button.submit()
         
         time.sleep(2)
     except NoSuchElementException:
