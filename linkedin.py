@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 import time
 from selenium import webdriver
-from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import os
@@ -224,16 +224,21 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
-    jobs_names = [".Net","Java","Android","Flutter","Php","Mobile Application Developer","Web Developer","Remote developer","Fullstack Engineer","Ruby on Rails developer ","Ruby developer","Golang developer","Django developer","AngularJS developer","C language","Dart developer","JavaScript","C++ developer","Objective C","ios developer","kotlin developer",".Net","Java","Android","Flutter","Php","Database","Azure","DevOps","NodeJS","Software Architect","Python developer","Django developer","AWS  developer","AngularJS  developer","VueJS  developer","React Native  developer","Oracle Database"]
-    job_name = ".Net"#random.choice(jobs_names)
+    jobs_names = ["Android","ios","Objective C","kotlin developer","Flutter","Dart developer",
+                  "React Native","Mobile Application",".Net","Java","C language",
+                  "Python","C++","Php","ReactJS","NextJS",
+                  "AngularJS","VueJS  developer","Django","Ruby","Fullstack Engineer",
+                  "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
+                  "Database","Oracle Database"]
+    job_name = jobs_names[7]
     print("Job: " + job_name)
     
-    countries = ["Malaysia"]#,"Singapore","Hong Kong SAR","New Zealand","Thailand","Australia"]
-    country = "Malaysia" #random.choice(countries)
+    countries = ["Singapore","Hong Kong SAR","New Zealand","Thailand","Australia","Malaysia"]
+    country = countries[3]
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    driver = webdriver.Chrome(options=Options())
+    driver = webdriver.Firefox(options=Options())
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
