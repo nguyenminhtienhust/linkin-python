@@ -246,35 +246,94 @@ def get_job_detail(driver,job_id,access_token,address):
         company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
         company_name = company_element.text
 
-    ######Message entry-point
-    # try:
-    #     entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
-    #     message_button = entry_point.find_element(By.TAG_NAME,"button")
-    #     message_button.click()
-    #     time.sleep(2)
+    #####Message entry-point
+    try:
+        entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
+        message_button = entry_point.find_element(By.TAG_NAME,"button")
+        message_button.click()
+        time.sleep(2)
 
-    #     message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-    #     message_title_input = message_box.find_element(By.TAG_NAME,"input")
-    #     message_title_input.send_keys("Hello")
-    #     time.sleep(2)
+        message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+        message_title_input = message_box.find_element(By.TAG_NAME,"input")
+        message_title_input.send_keys("Hello")
+        time.sleep(2)
 
-    #     message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-    #     message_content_input.clear()
-    #     message_content_input.send_keys(" I want to apply this job, please contact with me!")
-    #     time.sleep(2)
+        message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+        message_content_input.clear()
+        message_content_input.send_keys(" I want to apply this job, please contact with me!")
+        time.sleep(2)
 
-    #     send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-    #     send_button.submit()
+        send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+        #send_button.submit()
         
-    #     time.sleep(2)
-    # except NoSuchElementException:
-    #     print("no")
-    
+        time.sleep(2)
+    except NoSuchElementException:
+        print("no")
     time.sleep(10)
+    
+    hirer_profile = ""
+    hirer_website = ""
+    hirer_phone = ""
+    hirer_address = ""
+    hirer_email = ""
+    hirer_other = ""
 
+    #Get Hirer Link
+    try:
+        hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
+        hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
+        print(hirer_link)
+        #Open Info of Hirer
+        driver.execute_script("window.open('');")
+        hired_window = driver.window_handles[2]
+        driver.switch_to.window(hired_window)
+        driver.get(hirer_link)
+        time.sleep(5)
+
+        #pv-top-card-v2-ctas
+        hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+        hirer_detail_button = hirer_detail.find_element(By.TAG_NAME,"button")
+        text_hirer_button = hirer_detail_button.find_element(By.TAG_NAME,"span")
+        if (text_hirer_button == "Connect"):
+            hirer_detail_button.click()
+            print("click")
+        elif(text_hirer_button == "Pending"):
+            print("Pending")
+        else:
+            contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+            driver.execute_script("window.open('');")
+            hired_window = driver.window_handles[3]
+            driver.switch_to.window(hired_window)
+            driver.get(contact_info_link)
+            time.sleep(5)
+            
+            contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
+            for contact_info_detail in contact_info_list:
+                contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
+                contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__ci-container")
+                print(contact_info_header.text)
+                print(contact_info_content.text)
+                if "email" in contact_info_header.text.lower():
+                    hirer_email = contact_info_content.text
+                elif "profile" in contact_info_header.text.lower():
+                    hirer_profile = contact_info_content.text
+                elif "website" in contact_info_header.text.lower():
+                   hirer_website = contact_info_content.text
+                elif "address" in contact_info_header.text.lower():
+                   hirer_address = contact_info_content.text
+                elif "phone" in contact_info_header.text.lower():
+                   hirer_phone = contact_info_content.text
+                else:
+                    hirer_other = contact_info_content.text
+        
+    except NoSuchElementException:
+        print("Can not find")
+
+    
+    
     #2 company screen
     driver.execute_script("window.open('');")
-    company_window = driver.window_handles[2]
+    company_window = driver.window_handles[3]
     driver.switch_to.window(company_window)
     time.sleep(2)
 

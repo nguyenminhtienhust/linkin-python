@@ -224,17 +224,17 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
-    jobs_names = ["Android","ios","Objective C","kotlin developer","Flutter","Dart developer",
+    jobs_names = ["Android","ios remote","Objective C","kotlin developer","Flutter","Dart developer",
                   "React Native","Mobile Application",".Net","Java","C language",
                   "Python","C++","Php","ReactJS","NextJS",
                   "AngularJS","VueJS  developer","Django","Ruby","Fullstack Engineer",
                   "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
                   "Database","Oracle Database"]
-    job_name = jobs_names[7]
+    job_name = jobs_names[1]
     print("Job: " + job_name)
     
     countries = ["Singapore","Hong Kong SAR","New Zealand","Thailand","Australia","Malaysia"]
-    country = countries[3]
+    country = countries[0]
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
