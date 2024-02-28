@@ -112,11 +112,28 @@ def get_min_sale():
         return json_object["data"]
     
     
+def check_company_existed(name):
+    headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+    check_api = "http://68.183.189.171:9999/accounts/check"
+    jsondata = {"name":name}
+    # Ha cmt
+    #print(jsondata)
+
+    data = requests.post(check_api,json=jsondata,headers=headers)
+    if data.status_code != 200:
+        print(data.status_code)
+        print(data.reason)
+    else:
+        json_object = data.json()
+        print(json_object)
+        return json_object["data"]
+        
 def check_lead_existed(name):
     headers = {'Content-Type': "application/json", 'Accept': "application/json"}
     check_api = "http://68.183.189.171:9999/leads/check"
     jsondata = {"name":name}
-    print(jsondata)
+    # Ha cmt
+    #print(jsondata)
 
     data = requests.post(check_api,json=jsondata,headers=headers)
     if data.status_code != 200:
@@ -131,19 +148,18 @@ def add_new_account(access_token,name,phone,website,address):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
-    "data": {
-     "type": "Account",
-     "attributes": {
+  "data": {
+    "type": "Accounts",
+    "attributes": {
          "account_type": "Customer",
          "name": name,
          "phone_office": phone,
          "phone_alternate": phone,
          "website": website,
-         "primary_address_country": address,
-         "description": "content"
-     }
+         "billing_country" : address
     }
-    }
+  }
+}
     time.sleep(2)
     data = requests.post(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
@@ -152,8 +168,35 @@ def add_new_account(access_token,name,phone,website,address):
     else:
         json_object = data.json()
         print(json_object)
-        
-def add_new_lead(access_token,company_name,title,address,other_address,phone,website,content,assigned_user_id):
+
+def edit_account(access_token,account_id,name,phone,website,address):
+    headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
+    module_api = "https://crm.fitech.com.vn/Api/V8/module"
+    jsondata =  {
+    "data": {
+     "type": "accounts",
+     "id": account_id,
+     "attributes": {
+         "account_type": "Customer",
+         "name": name,
+         "phone_office": phone,
+         "phone_alternate": phone,
+         "website": website,
+         "billing_country" : address
+     }
+    }
+    }
+    time.sleep(2)
+    data = requests.patch(module_api,json=jsondata,headers=headers)
+    if data.status_code != 200:
+        print(data.status_code)
+        print(data.reason)
+    else:
+        json_object = data.json()
+        print(json_object)
+     
+     
+def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
@@ -162,12 +205,15 @@ def add_new_lead(access_token,company_name,title,address,other_address,phone,web
      "attributes": {
          "title": title,
          "last_name": company_name,
-         "phone_mobile": phone,
-         "phone_work": phone,
-         "phone_home": phone,
-         "phone_other": phone,
+         "phone_mobile": hirer_phone,
+         "phone_work": phone_company,
+         "phone_home": hirer_phone,
+         "phone_other": hirer_phone,
          "website": website,
          "account_name": company_name,
+         "account_id" : company_id,
+         "first_name" : job_id,
+         "status" : lead_status,
          "primary_address_country": address,
          "alt_address_street": other_address,
          #"assigned_user_id": assigned_user_id,
@@ -175,8 +221,8 @@ def add_new_lead(access_token,company_name,title,address,other_address,phone,web
      }
     }
     }
-    
-    print(jsondata)
+    # Ha cmt
+    #print(jsondata)
     time.sleep(2)
     data = requests.post(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
@@ -188,34 +234,40 @@ def add_new_lead(access_token,company_name,title,address,other_address,phone,web
         json_object = data.json()
         print(json_object)
         
-def edit_new_lead(access_token,id,company_name,title,address,other_address,phone,website,content):
+def edit_new_lead(access_token,lead_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content, lead_status):
     headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
     module_api = "https://crm.fitech.com.vn/Api/V8/module"
     jsondata =  {
     "data": {
      "type": "Leads",
-     "id": id,
+     "id": lead_id,
      "attributes": {
          "title": title,
          "last_name": company_name,
-         "phone_mobile": phone,
-         "phone_work": phone,
-         "phone_home": phone,
-         "phone_other": phone,
+         "account_id" : company_id,
+         "phone_mobile": hirer_phone,
+         "phone_work": phone_company,
+         "phone_home": hirer_phone,
+         "phone_other": hirer_phone,
          "website": website,
          "account_name": company_name,
+         "account_id" : company_id,
+         "first_name" : job_id,
          "primary_address_country": address,
          "alt_address_street": other_address,
+         "status" : lead_status,
          "description": content
      }
     }
     }
-    
-    print(jsondata)
+    # Ha cmt
+    #print(jsondata)
     time.sleep(2)
     data = requests.patch(module_api,json=jsondata,headers=headers)
     if data.status_code != 200:
         print('fail')
+        print(data.status_code)
+        print(data.reason)
     else:
         json_object = data.json()
         print(json_object)
@@ -233,20 +285,23 @@ def get_job_detail(driver,job_id,access_token,address):
     print(job_detail_url)
     driver.get(job_detail_url)
     time.sleep(10)
+    try :
+        current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
+        infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
+        address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
+        other_address = address_element.text
+        company_element = infos_element.find_element(By.TAG_NAME,"a")
     
-    current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-    infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
-    address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
-    other_address = address_element.text
-    company_element = infos_element.find_element(By.TAG_NAME,"a")
-    
-    if not company_element:
-        print("company_url is empty")
-    else:
-        company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
-        company_name = company_element.text
-
+        if not company_element:
+            print("company_url is empty")
+        else:
+            company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
+            company_name = company_element.text
+    except NoSuchElementException:
+        print("not found job title")
+        pass
     #####Message entry-point
+    isMessaged = "No"
     try:
         entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
         message_button = entry_point.find_element(By.TAG_NAME,"button")
@@ -261,14 +316,15 @@ def get_job_detail(driver,job_id,access_token,address):
         message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
         message_content_input.clear()
         message_content_input.send_keys(" I want to apply this job, please contact with me!")
-        time.sleep(2)
-
-        send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-        send_button.submit()
+        time.sleep(2)  
         
+        send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+        send_button.submit()        
         time.sleep(2)
+        isMessaged = "Yes"
     except NoSuchElementException:
-        print("no")
+        print("not found message box")       
+        pass
     time.sleep(10)
     
     hirer_profile = ""
@@ -284,12 +340,11 @@ def get_job_detail(driver,job_id,access_token,address):
         hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
         print(hirer_link)
         #Open Info of Hirer
-        driver.execute_script("window.open('');")
-        hired_window = driver.window_handles[2]
-        driver.switch_to.window(hired_window)
+        #driver.execute_script("window.open('');")
+        #hired_window = driver.window_handles[2]
+        #driver.switch_to.window(hired_window)
         driver.get(hirer_link)
         time.sleep(5)
-
         #pv-top-card-v2-ctas
         hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
         hirer_detail_button = hirer_detail.find_element(By.TAG_NAME,"button")
@@ -301,18 +356,16 @@ def get_job_detail(driver,job_id,access_token,address):
             print("Pending")
         else:
             contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
-            driver.execute_script("window.open('');")
-            hired_window = driver.window_handles[3]
-            driver.switch_to.window(hired_window)
+            #driver.execute_script("window.open('');")
+            #hired_window = driver.window_handles[3]
+            #driver.switch_to.window(hired_window)
             driver.get(contact_info_link)
             time.sleep(5)
-            
             contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
             for contact_info_detail in contact_info_list:
                 contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
                 contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__ci-container")
-                print(contact_info_header.text)
-                print(contact_info_content.text)
+                print("contact_info_header:" + contact_info_header.text)
                 if "email" in contact_info_header.text.lower():
                     hirer_email = contact_info_content.text
                 elif "profile" in contact_info_header.text.lower():
@@ -328,12 +381,14 @@ def get_job_detail(driver,job_id,access_token,address):
         
     except NoSuchElementException:
         print("Can not find")
-
+        pass
+        
+    print("\nhirer_email:" + hirer_email + "\nhirer_profile:" + hirer_profile + "\nhirer_website:" + hirer_website + "\nhirer_phone:" + hirer_phone)
     
     
     #2 company screen
     driver.execute_script("window.open('');")
-    company_window = driver.window_handles[3]
+    company_window = driver.window_handles[2]
     driver.switch_to.window(company_window)
     time.sleep(2)
 
@@ -352,7 +407,8 @@ def get_job_detail(driver,job_id,access_token,address):
     phone_company = ""
     
     for dd in dds:
-        print(dd.text)
+    # Ha cmt
+        #print(dd.text)
         if(("http" in dd.text) or (".com" in dd.text) or ("www" in dd.text)):
             website_company = dd.text
         if("Phone number is" in dd.text):
@@ -360,6 +416,8 @@ def get_job_detail(driver,job_id,access_token,address):
         index = index + 1
     
     full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
+    if(isMessaged == "Yes"):
+        full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
 
     #Get List Job:
     #https://www.linkedin.com/company/mindvalley/jobs/            
@@ -394,18 +452,33 @@ def get_job_detail(driver,job_id,access_token,address):
     last_time = datetime(2023, 1 , 1)
     jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
     keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
-    
-    lead_id = check_lead_existed(company_name)
-    print("\nLead id:" + lead_id + "\n")
+    lead_status = "New"
+    if(hirer_profile == "" and hirer_email == "" and hirer_website == "" and phone_company == "" and isMessaged == "No" and hirer_phone == ""):
+        lead_status = "Recycled"
+    if(hirer_profile != ""):
+        full_content = '\n Trang cá nhân nhà tuyển dụng: '.join([full_content, hirer_profile])
+    company_id = check_company_existed(company_name)
+    website = website_company
+    if(hirer_website != ""):
+        website = hirer_website
+    print("\ncompany_id:" + company_id + "\ncompany_id:" + company_name + "\n" + "lead_status: " + lead_status + "\nwebsite" + website_company)
+    if(company_id == ""):
+        print("\n\nStarting add new account:......\n\n")
+        add_new_account(access_token = access_token, name = company_name, phone = phone_company, website = website_company, address = address)
+    else:
+        print("\n\nStarting editing account:......\n\n")
+        edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company, address = address)
+    company_id = check_company_existed(company_name)
+    lead_id = check_lead_existed(job_id)
     if (lead_id == ""):
         print("\n\nStarting add new:......\n\n")
         #assigned_user_id = get_min_sale()
         #print("Assigned User Id:" + assigned_user_id)
         time.sleep(2)
-        add_new_lead(access_token=access_token,company_name=company_name,title=current_job_title,address=address,other_address=other_address,phone=phone_company,website=website_company,content=full_content,assigned_user_id="assigned_user_id")
+        add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = hirer_email,website=website,content=full_content,assigned_user_id="assigned_user_id", lead_status = lead_status)
     else:
         print("\n\nStarting edit:......\n\n")
-        edit_new_lead(access_token=access_token,id=lead_id,company_name=company_name,title= current_job_title,address=address,other_address=other_address,phone=phone_company,website=website_company,content=full_content)
+        edit_new_lead(access_token=access_token,lead_id =company_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = hirer_email,website=website,content=full_content, lead_status = lead_status)
     
     driver.switch_to.window(company_window)
     driver.close()#2 close  company_window

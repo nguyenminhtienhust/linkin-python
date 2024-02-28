@@ -230,11 +230,11 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Ruby","Fullstack Engineer",
                   "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
                   "Database","Oracle Database"]
-    job_name = jobs_names[1]
+    job_name = jobs_names[18]
     print("Job: " + job_name)
     
     countries = ["Singapore","Hong Kong SAR","New Zealand","Thailand","Australia","Malaysia"]
-    country = countries[0]
+    country = countries[5]
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
@@ -287,10 +287,13 @@ if __name__ == "__main__":
     address = ""
     for job in jobs:
         time.sleep(2)
-        job_title = driver.find_element(By.CLASS_NAME,"job-card-list__title").text
-        address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
-        print("Address: " + address)
-        print(job_title)
+        try:
+            job_title = driver.find_element(By.CLASS_NAME,"job-card-list__title").text
+            address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
+            print("Address: " + address)
+            print(job_title)
+        except NoSuchElementException:  #spelling error making this code not work as expected
+            pass
         for key_fail in keys_fail:
             if key_fail in job_title:
                 continue
