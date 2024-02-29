@@ -230,7 +230,7 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Ruby","Fullstack Engineer",
                   "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
                   "Database","Oracle Database"]
-    job_name = jobs_names[18]
+    job_name = jobs_names[24]
     print("Job: " + job_name)
     
     countries = ["Singapore","Hong Kong SAR","New Zealand","Thailand","Australia","Malaysia"]
