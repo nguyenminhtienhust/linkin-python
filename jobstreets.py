@@ -62,14 +62,13 @@ if __name__ == "__main__":
         
         time.sleep(5)
         #_126xumx1
-        company_info = driver.find_elements(By.CLASS_NAME,"_1d0g9qk4")
+        title = driver.find_element(By.CLASS_NAME,"_94v4wp")
         # for (index,info) in enumerate(company_info):
         #     print(str(index) + ": " + info.text)
-        
-        job_title = company_info[28].text
+        job_title = title.text
         print("Job Title:" + job_title)
-
-        company_name = company_info[29].text
+        job_info = driver.find_elements(By.CLASS_NAME,"_94v4wd")
+        company_name = job_info[0].text
         print("Company Name:" + company_name)
         
         #szurmz6

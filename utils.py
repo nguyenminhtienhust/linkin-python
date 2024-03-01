@@ -544,16 +544,18 @@ def get_job_detail(driver,job_id,access_token,address):
 		print("\n\nStarting editing account:......\n\n")
 		edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company, address = address)
 	company_id = check_company_existed(company_name)
-	lead_id = check_lead_existed(job_id)
-	if (lead_id == ""):
-		print("\n\nStarting add new:......\n\n")
-		#assigned_user_id = get_min_sale()
-		#print("Assigned User Id:" + assigned_user_id)
-		time.sleep(2)
-		add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = hirer_email,website=website,content=full_content,assigned_user_id="assigned_user_id", lead_status = lead_status)
+	lower_title = current_job_title.lower()
+	if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title):
+		print("Job not suitable")
 	else:
-		print("\n\nStarting edit:......\n\n")
-		edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = hirer_email,website=website,content=full_content, lead_status = lead_status)
+		lead_id = check_lead_existed(job_id)
+		if (lead_id == ""):
+			print("\n\nStarting add new:......\n\n")
+			time.sleep(2)
+			add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = hirer_email,website=website,content=full_content,assigned_user_id="assigned_user_id", lead_status = lead_status)
+		else:
+			print("\n\nStarting edit:......\n\n")
+			edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = hirer_email,website=website,content=full_content, lead_status = lead_status)
 	#lead_id = check_lead_existed(job_id)
 	#hirer_email = 'tran.habk0605@gmail.com'
 	#if(hirer_email != ""):

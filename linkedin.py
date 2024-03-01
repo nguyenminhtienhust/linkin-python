@@ -20,7 +20,6 @@ import shutil
 import json
 import requests
 import urllib.request
-import time
 import psycopg2
 import pandas as pd
 import random
@@ -230,11 +229,11 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Ruby","Fullstack Engineer",
                   "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
                   "Database","Oracle Database"]
-    job_name = jobs_names[24]
+    job_name = jobs_names[6]
     print("Job: " + job_name)
     
     countries = ["Singapore","Hong Kong SAR","New Zealand","Thailand","Australia","Malaysia"]
-    country = countries[5]
+    country = countries[0]
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
