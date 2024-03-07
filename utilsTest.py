@@ -157,9 +157,9 @@ def add_new_account(access_token,name,phone,website,address):
 	  "name": name,
 	  "account_type": "Customer",
    	  "phone_office": phone,
-      "phone_alternate": phone,
-      "website": website,
-      "billing_address_country" : address
+	  "phone_alternate": phone,
+	  "website": website,
+	  "billing_address_country" : address
 	}
   }
 }
@@ -183,9 +183,9 @@ def edit_account(access_token,account_id,name,phone,website,address):
 	  "name": name,
 	  "account_type": "Customer",
    	  "phone_office": phone,
-      "phone_alternate": phone,
-      "website": website,
-      "billing_address_country" : address
+	  "phone_alternate": phone,
+	  "website": website,
+	  "billing_address_country" : address
 	}
   }
 }
@@ -204,9 +204,9 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
   "data": {
-    "type": "Leads",
-    "attributes": {
-      "first_name": job_id,
+	"type": "Leads",
+	"attributes": {
+	  "first_name": job_id,
 	  "last_name": company_name,
 	  "phone_work": phone_company,
 	  "phone_mobile": hirer_phone,
@@ -221,7 +221,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "description": content,
 	  "title": title,
 	  "email1": hirer_email
-    }
+	}
   }
 }
 	# Ha cmt
@@ -243,10 +243,10 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	print(hirer_email)
 	jsondata =  {
   "data": {
-    "type": "Leads",
+	"type": "Leads",
 	"id" : lead_id,
-    "attributes": {
-      "first_name": job_id,
+	"attributes": {
+	  "first_name": job_id,
 	  "last_name": company_name,
 	  "phone_work": phone_company,
 	  "phone_mobile": hirer_phone,
@@ -261,7 +261,7 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "title": title,
 	  "description": content,
 	  "email1" : hirer_email
-    }
+	}
   }
 }
 	# Ha cmt
@@ -350,6 +350,75 @@ def edit_email_lead(access_token,email_lead_id,email_id):
 		json_object = data.json()
 		print(json_object)
 
+def check_contact(name):
+	headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+	check_api = "http://68.183.189.171:9999/contact/check"
+	jsondata = {"name":name}
+	# Ha cmt
+	#print(jsondata)
+
+	data = requests.post(check_api,json=jsondata,headers=headers)
+	if data.status_code != 200:
+		print("check_contact" + data.status_code)
+		print("\ncheck_contact" + data.reason)
+	else:
+		json_object = data.json()
+		return json_object["data"]
+
+def add_contact(access_token,title, name, email, phone, des):
+	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
+	module_api = "https://crm.fitech.com.vn/Api/V8/module"
+	jsondata =  {
+  "data": {
+	"type": "contacts",
+	"attributes": {
+	  "last_name": name,
+	  "title": title
+	}
+  }
+}
+
+def edit_contact(access_token, id , title, name, email, phone, des):
+	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
+	module_api = "https://crm.fitech.com.vn/Api/V8/module"
+	jsondata =  {
+  "data": {
+	"type": "contacts",
+	"id" : id,
+	"attributes": {
+	  "last_name": name,
+	  "title": title
+	}
+  }
+}
+	# Ha cmt
+	#print(jsondata)
+	time.sleep(2)
+	data = requests.post(module_api,json=jsondata,headers=headers)
+	if data.status_code != 200:
+		print('fail')
+		print(data.status_code)
+		print(data.reason)
+	else:
+		print('done')
+		json_object = data.json()
+		print(json_object)
+
+def get_contact_description(id):
+	headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+	check_api = "http://68.183.189.171:9999/contact/getdescription"
+	jsondata = {"name":id}
+	# Ha cmt
+	#print(jsondata)
+
+	data = requests.post(check_api,json=jsondata,headers=headers)
+	if data.status_code != 200:
+		print("check_contact" + data.status_code)
+		print("\ncheck_contact" + data.reason)
+	else:
+		json_object = data.json()
+		return json_object["data"]
+
 def test(driver,job_id,access_token,address):
 	root_window = driver.window_handles[0]
 	#1 job detail window 
@@ -375,9 +444,12 @@ def test(driver,job_id,access_token,address):
 			company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
 			company_name = company_element.text
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
-		print(job_detail)
-		emails = re.findall(r"[a-z0-9\.\-+_]+@[a-z0-9\.\-+_]+\.[a-z]+", job_detail)
-		print(emails)
+		job_emails = re.findall(r"[a-z0-9A-Z\.\-+_]+@[a-z0-9A-Z\.\-+_]+\.[a-zA-Z]+", job_detail)
+		job_detail = "it is +84914979558"
+		job_phones = re.findall(r'\+?[1-9][0-9 .\-\(\)]{8,}[0-9]', job_detail)
+		print(job_phones)
+		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name ").text
+		print(hirer_name)
 	except NoSuchElementException:
 		print("not found job title")
 		pass
@@ -422,8 +494,10 @@ def get_job_detail(driver,job_id,access_token,address):
 	#####Message entry-point
 	isMessaged = "No"
 	hirer_name = ""
+	hirer_title = ""
 	try:
 		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name ").text
+		hirer_title = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-job-title").text 
 		entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
 		message_button = entry_point.find_element(By.TAG_NAME,"button")
 		message_button.click()
@@ -597,24 +671,17 @@ def get_job_detail(driver,job_id,access_token,address):
 		else:
 			print("\n\nStarting edit:......\n\n")
 			edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone)
-	#lead_id = check_lead_existed(job_id)
-	#hirer_email = 'tran.habk0605@gmail.com'
-	#if(hirer_email != ""):
-		#email_cap = hirer_email.upper()
-		#email_id = check_email_existed(email_cap)
-		#if(email_id == ""):
-			#print("\n add new email:" + hirer_email + "and" + email_cap)
-			#add_new_email(access_token,hirer_email,email_cap)
-			#email_id = check_email_existed(email_cap)
-		#else:
-			#print("\n email existing:")
-		#email_lead_id = check_email_lead(lead_id)
-		#if(email_lead_id == ""):
-			#print("\n add new email to lead:")
-			#add_email_lead(access_token, email_id, lead_id, "Leads")
-		#else:
-			#print("\n updating email to lead:" + email_lead_id)
-			#edit_email_lead(access_token,email_lead_id, email_id)
+	
+	# add contact
+	contact_id = check_contact(hirer_name)
+	contact_des = "\n Link tuyển dụng: " + job_detail_url
+	if(contact_id == ""):
+		add_contact(access_token=access_token, title= hirer_title, name = hirer_name, email = hirer_email, phone = hirer_phone, des = contact_des)
+	else:
+		current_conact_des = get_contact_description(contact_id)
+		contact_des = ''
+		contact_des = '\n Link tuyển dụng: '.join([current_conact_des, job_detail_url])
+		edit_contact(access_token=access_token,id=contact_id, title= hirer_title, name = hirer_name, email = hirer_email, phone = hirer_phone, des = contact_des)
 	driver.switch_to.window(company_window)
 	driver.close()#2 close  company_window
 	time.sleep(1)
