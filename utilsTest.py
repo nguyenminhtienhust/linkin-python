@@ -359,26 +359,41 @@ def check_contact(name):
 
 	data = requests.post(check_api,json=jsondata,headers=headers)
 	if data.status_code != 200:
-		print("check_contact" + data.status_code)
+		print(data.status_code)
 		print("\ncheck_contact" + data.reason)
 	else:
 		json_object = data.json()
 		return json_object["data"]
 
-def add_contact(access_token,title, name, email, phone, des):
+def add_contact(access_token,title, name, email, phone, des, link, account_name):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
   "data": {
-	"type": "contacts",
+	"type": "Contacts",
 	"attributes": {
 	  "last_name": name,
-	  "title": title
+	  "title": title,
+	  "description" : des,
+	  "email" : email,
+	  "phone_work" : phone,
+	  "created_by_link" : link,
+	  "account_name" : account_name
 	}
   }
 }
+	time.sleep(2)
+	data = requests.post(module_api,json=jsondata,headers=headers)
+	if data.status_code != 200:
+		print('fail')
+		print(data.status_code)
+		print(data.reason)
+	else:
+		print('done')
+		json_object = data.json()
+		print(json_object)
 
-def edit_contact(access_token, id , title, name, email, phone, des):
+def edit_contact(access_token, id , title, name, email, phone, des, link, account_name):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
@@ -387,7 +402,12 @@ def edit_contact(access_token, id , title, name, email, phone, des):
 	"id" : id,
 	"attributes": {
 	  "last_name": name,
-	  "title": title
+	  "title": title,
+	  "description" : des,
+	  "email" : email,
+	  "phone_work" : phone,
+	  "created_by_link" : link,
+	  "account_name" : account_name
 	}
   }
 }
@@ -413,8 +433,8 @@ def get_contact_description(id):
 
 	data = requests.post(check_api,json=jsondata,headers=headers)
 	if data.status_code != 200:
-		print("check_contact" + data.status_code)
-		print("\ncheck_contact" + data.reason)
+		print(data.status_code)
+		print(data.reason)
 	else:
 		json_object = data.json()
 		return json_object["data"]
@@ -673,15 +693,18 @@ def get_job_detail(driver,job_id,access_token,address):
 			edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone)
 	
 	# add contact
-	contact_id = check_contact(hirer_name)
-	contact_des = "\n Link tuyển dụng: " + job_detail_url
-	if(contact_id == ""):
-		add_contact(access_token=access_token, title= hirer_title, name = hirer_name, email = hirer_email, phone = hirer_phone, des = contact_des)
-	else:
-		current_conact_des = get_contact_description(contact_id)
-		contact_des = ''
-		contact_des = '\n Link tuyển dụng: '.join([current_conact_des, job_detail_url])
-		edit_contact(access_token=access_token,id=contact_id, title= hirer_title, name = hirer_name, email = hirer_email, phone = hirer_phone, des = contact_des)
+	if(hirer_name != ""):
+		contact_id = check_contact(hirer_name)	
+		if(contact_id == ""):
+			print("\nadd contact")
+			contact_des = "\n Link tuyển dụng: " + job_detail_url
+			add_contact(access_token=access_token, title= hirer_title, name = hirer_name, email = hirer_email, phone = hirer_phone, des = contact_des, link = contact_info_link, account_name = company_name)
+		else:
+			print("\nedit contact: " + contact_id)
+			current_conact_des = get_contact_description(contact_id)
+			print("\ncontact des:" + current_conact_des)
+			current_conact_des = '\n Link tuyển dụng: '.join([current_conact_des, job_detail_url])
+			edit_contact(access_token=access_token,id=contact_id, title= hirer_title, name = hirer_name, email = hirer_email, phone = hirer_phone, des = current_conact_des)
 	driver.switch_to.window(company_window)
 	driver.close()#2 close  company_window
 	time.sleep(1)

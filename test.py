@@ -35,7 +35,7 @@ if __name__ == "__main__":
 
     print("Starting Clone...")
     
-    job_id = "3783887454"   #3817294045 : job_id with strong style foe email
+    job_id = "3829336175"   #3817294045 : job_id with strong style foe email
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
     driver = webdriver.Chrome(options=Options())
     driver.maximize_window()
@@ -57,4 +57,4 @@ if __name__ == "__main__":
     #await driver.wait(until.elementLocated(By.className('link')), 1000);
 
     access_token = login_crm()
-    test(driver,job_id,access_token,"Malaysia")
+    get_job_detail(driver,job_id,access_token,"Malaysia")
