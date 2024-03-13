@@ -222,7 +222,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "title": title,
 	  "email1": hirer_email,
 	  "assigned_user_id" : assigned_user_id,
-	  "refered_by" : refer
+	  "refered_by" : ""
     }
   }
 }
@@ -264,7 +264,7 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "description": content,
 	  "email1" : hirer_email,
 	  "assigned_user_id": assigned_user_id,
-	  "refered_by" : refer
+	  "refered_by" : ""
     }
   }
 }
@@ -458,7 +458,6 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	except NoSuchElementException:
 		print("not found message box")       
 		pass
-	time.sleep(10)
 	
 	hirer_profile = ""
 	hirer_website = ""
@@ -481,13 +480,24 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		print(text_hirer_button)
 		if (text_hirer_button == "Connect"):
 			hirer_detail_button.click()	
-			driver.implicitly_wait(20)		
-			#driver.driver.switch_to_alert()(iframe)
+			driver.implicitly_wait(10)		
 			hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 			hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
-			hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-			hirer_connect_request_button.click()
-			request_note_str = "\nĐã gửi connect request đến " + hirer_link
+			if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+				hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+				hirer_connect_request_button.click()
+				driver.implicitly_wait(3)
+				connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+				connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+				connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+				time.sleep(2)
+				connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+				connect_button.click() 
+				time.sleep(2)
+				request_note_str = "\nĐã gửi connect request đến " + hirer_link
+			else:
+				hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+				hirer_connect_request_button.click()
 			print("connect request sent")
 		elif(text_hirer_button == "Pending"):
 			print("Pending")
@@ -574,7 +584,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	
 		company_about_url = company_url.replace("/life", "/about")
 		driver.get(company_about_url)
-		time.sleep(10)
+		driver.implicitly_wait(10)	
 	
 		full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
 
@@ -615,10 +625,10 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
 		refer_content = ""
 		if(isMessaged == "Yes"):
-			refer_content = '\n Đã gửi tin nhắn đến: '.join([refer_content, hirer_link])
+			full_content = '\n Đã gửi tin nhắn đến: '.join([refer_content, hirer_link])
 		if(hirer_link != ""):
 			full_content = '\n Trang cá nhân nhà tuyển dụng: '.join([full_content, hirer_link])
-		refer_content = refer_content + request_note_str
+		full_content = full_content + request_note_str
 	#Get List Job:
 	#https://www.linkedin.com/company/mindvalley/jobs/            
 	#3 Jobs Company Screen
