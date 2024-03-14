@@ -199,7 +199,7 @@ def edit_account(access_token,account_id,name,phone,website,address):
 		print(json_object)
 	 
 	 
-def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status, job_phone, hirer_name, refer):
+def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status, job_phone, hirer_name, refer, contact_id):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
@@ -222,7 +222,8 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "title": title,
 	  "email1": hirer_email,
 	  "assigned_user_id" : assigned_user_id,
-	  "refered_by" : ""
+	  "refered_by" : "",
+	  "contact_id" : contact_id
     }
   }
 }
@@ -239,7 +240,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 		json_object = data.json()
 		print(json_object)
 		
-def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content, lead_status, job_phone, assigned_user_id, hirer_name, refer):
+def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content, lead_status, job_phone, assigned_user_id, hirer_name, refer, contact_id):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	print(hirer_email)
@@ -264,7 +265,8 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "description": content,
 	  "email1" : hirer_email,
 	  "assigned_user_id": assigned_user_id,
-	  "refered_by" : ""
+	  "refered_by" : "",
+	  "contact_id": contact_id
     }
   }
 }
@@ -281,6 +283,22 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 		print(json_object)
 
 
+def check_contact(name):
+	headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+	check_api = "http://68.183.189.171:9999/contact/check"
+	jsondata = {"name":name}
+	# Ha cmt
+	#print(jsondata)
+
+	data = requests.post(check_api,json=jsondata,headers=headers)
+	if data.status_code != 200:
+		print(data.status_code)
+		print("\ncheck_contact" + data.reason)
+	else:
+		json_object = data.json()
+		return json_object
+
+
 def add_contact(access_token,title, name, email, phone, des, link, account_name):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
@@ -295,8 +313,8 @@ def add_contact(access_token,title, name, email, phone, des, link, account_name)
 	  "phone_work" : phone,
 	  "created_by_link" : link,
 	  "account_name" : account_name,
-	  "deleted" : True,
-	  "created_by": "1"
+	  "created_by": "1",
+	  "assigned_user_id": "62b60dd0-9ab9-735e-e291-65d2cd0ab68e"
 	}
   }
 }
@@ -494,19 +512,22 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		pass
 
 	#####Message entry-point
-	isMessaged = "No"
+	contact_info = {"data": "", "des" : ""}
 	hirer_name = ""
+	hirer_title = ""
+	hirer_link = ""
 	hirer_profile = ""
 	hirer_website = ""
 	hirer_phone = ""
 	hirer_address = ""
 	hirer_email = ""
 	hirer_other = ""	
+	contact_id = ""
 	request_note_str = ""
 	#Get Hirer Link
 	try:
 		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name ").text
-		contact_info = {"data": "", "des" : ""}
+		hirer_title = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-job-title").text
 		if(hirer_name != ""):
 			contact_info = check_contact(hirer_name)			
 			if(contact_info["data"] == ""):
@@ -529,7 +550,6 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		
 					send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
 					if(send_button.is_enabled()):
-						isMessaged = "Yes"
 						request_note_str = "Message sent"
 					send_button.submit()   
 				except NoSuchElementException:
@@ -585,8 +605,11 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				add_contact(access_token = access_token,title = "" , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_name= company_name)
+				add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_name= company_name)
+				contact_info = check_contact(hirer_name)
+				contact_id = contact_info["data"]
 			else:
+				contact_id = contact_info["data"]
 				print(contact_info["des"])
 				if("message" not in contact_info["des"].lower()):
 					entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
@@ -619,13 +642,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
 						hirer_detail_button.click()	
-						driver.implicitly_wait(10)		
+						driver.implicitly_wait(3)		
 						hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 						hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
 						if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
 							hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
 							hirer_connect_request_button.click()
-							driver.implicitly_wait(10)
+							driver.implicitly_wait(3)
 							connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 							connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
 							connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
@@ -641,10 +664,10 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				driver.get(hirer_link)
-				time.sleep(5)
+				time.sleep(3)
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
-				time.sleep(5)
+				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
@@ -661,7 +684,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = "", name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_name = company_name)
+				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_name = company_name)
 
 	except NoSuchElementException:
 		print("\nCan't found")       
@@ -766,12 +789,12 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			print("Not interested country")
 		phone_company.replace("-","")
 		full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
-		refer_content = ""
-		if(isMessaged == "Yes"):
-			full_content = '\n Đã gửi tin nhắn đến: '.join([refer_content, hirer_link])
+		if("message" in request_note_str.lower() or "message" in contact_info["des"].lower()):
+			full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
+		if("connect" in request_note_str.lower() or "connect" in contact_info["des"].lower()):
+			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
 		if(hirer_link != ""):
 			full_content = '\n Trang cá nhân nhà tuyển dụng: '.join([full_content, hirer_link])
-		full_content = full_content + request_note_str
 	#Get List Job:
 	#https://www.linkedin.com/company/mindvalley/jobs/            
 	#3 Jobs Company Screen
@@ -835,29 +858,10 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			if (lead_id == ""):
 				print("\n\nStarting add new:......\n\n")
 				time.sleep(2)
-				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= refer_content)
+				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 			else:
 				print("\n\nStarting edit:......\n\n")
-				edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= refer_content)
-
-	#lead_id = check_lead_existed(job_id)
-	#hirer_email = 'tran.habk0605@gmail.com'
-	#if(hirer_email != ""):
-		#email_cap = hirer_email.upper()
-		#email_id = check_email_existed(email_cap)
-		#if(email_id == ""):
-			#print("\n add new email:" + hirer_email + "and" + email_cap)
-			#add_new_email(access_token,hirer_email,email_cap)
-			#email_id = check_email_existed(email_cap)
-		#else:
-			#print("\n email existing:")
-		#email_lead_id = check_email_lead(lead_id)
-		#if(email_lead_id == ""):
-			#print("\n add new email to lead:")
-			#add_email_lead(access_token, email_id, lead_id, "Leads")
-		#else:
-			#print("\n updating email to lead:" + email_lead_id)
-			#edit_email_lead(access_token,email_lead_id, email_id)
+				edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 		driver.switch_to.window(company_window)
 		driver.close()#2 close  company_window
 		time.sleep(1)
