@@ -532,33 +532,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		if(hirer_name != ""):
 			contact_info = check_contact(hirer_name)			
 			if(contact_info["data"] == ""):
-				try:
-					print("Not exist")
-					entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
-					message_button = entry_point.find_element(By.TAG_NAME,"button")
-					message_button.click()
-					time.sleep(2)
-
-					message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-					message_title_input = message_box.find_element(By.TAG_NAME,"input")
-					message_title_input.clear()
-					message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
-					time.sleep(2)
-
-					message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-					message_content_input.clear()
-					message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-					time.sleep(2)  
-		
-					send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-					if(send_button.is_enabled()):
-						request_note_str = "Message sent"
-					send_button.submit()   
-				except NoSuchElementException:
-					print("\n No message box")       
-					pass
-
-			# get contact info
+			# get contact info and send request
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				driver.get(hirer_link)
@@ -587,7 +561,64 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						hirer_connect_request_button.click()
 					print("connect request sent")
 					request_note_str = request_note_str + "\nConnect request sent"		
-				print("Get contact")	
+				else:
+					hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
+					hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
+					print(hirer_more_button.find_element(By.TAG_NAME, "span").text)
+					hirer_more_button.click()
+					driver.implicitly_wait(5)
+					hirer_more_option = hirer_more_dropdown.find_element(By.CLASS_NAME,"artdeco-dropdown__content-inner")
+					hirer_more_option_ul = hirer_more_option.find_element(By.TAG_NAME,"ul")
+					hirer_more_option_li = hirer_more_option_ul.find_elements(By.TAG_NAME,"li")
+					for option_li in hirer_more_option_li:
+						option_li_div = option_li.find_element(By.CLASS_NAME,"artdeco-dropdown__item")
+						option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
+						if(option_li_text == "Connect"):
+							option_li.click()
+							driver.implicitly_wait(5)
+							hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+							hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+							if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+								hirer_connect_request_button.click()
+								driver.implicitly_wait(10)
+								connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+								connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+								connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+								time.sleep(2)
+								connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+								connect_button.click() 
+								time.sleep(2)				
+							else:
+								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+								hirer_connect_request_button.click()
+							print("connect request sent")
+							request_note_str = request_note_str + "\nConnect request sent"
+				try:
+					entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
+					message_button = entry_point.find_element(By.TAG_NAME,"button")
+					if(message_button.is_enabled()):
+						message_button.click()
+						time.sleep(2)
+
+					message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+					message_title_input = message_box.find_element(By.TAG_NAME,"input")
+					message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
+					time.sleep(2)
+
+					message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+					message_content_input.clear()
+					message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
+					time.sleep(2)  
+		
+					send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+					if(send_button.is_enabled()):
+						request_note_str = contact_info["des"] + "\nMessage sent"
+						send_button.submit() 
+				except NoSuchElementException:
+					print("\n No message box")
+					pass
+
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(5)
@@ -611,63 +642,98 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				contact_info = check_contact(hirer_name)
 				contact_id = contact_info["data"]
 			else:
-				driver.get(job_detail_url)
 				contact_id = contact_info["data"]
-				print(contact_info["des"])
-				if(contact_info["des"] is None or "message" not in contact_info["des"].lower()):					
-					entry_point = driver.find_element(By.CLASS_NAME,"entry-point")
-					message_button = entry_point.find_element(By.TAG_NAME,"button")
-					message_button.click()
-					time.sleep(2)
-
-					message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-					message_title_input = message_box.find_element(By.TAG_NAME,"input")
-					message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
-					time.sleep(2)
-
-					message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-					message_content_input.clear()
-					message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-					time.sleep(2)  
-		
-					send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-					if(send_button.is_enabled()):
-						isMessaged = "Yes"
-						request_note_str = contact_info["des"] + "\nMessage sent"
-					send_button.submit() 
-				if(contact_info["des"] is None or "connect" not in contact_info["des"].lower()):
-					hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
-					hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
-					driver.get(hirer_link)
-					time.sleep(5)
-					hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
-					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
-					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
-					if (text_hirer_button == "Connect"):
-						hirer_detail_button.click()	
-						driver.implicitly_wait(3)		
-						hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-						hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
-						if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
-							hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-							hirer_connect_request_button.click()
-							driver.implicitly_wait(3)
-							connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-							connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-							connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-							time.sleep(2)
-							connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-							connect_button.click() 
-							time.sleep(2)				
-						else:
-							hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-							hirer_connect_request_button.click()
-						print("connect request sent")
-						request_note_str = contact_info["des"] + "\nConnect request sent"
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				driver.get(hirer_link)
-				time.sleep(3)
+				time.sleep(5)
+				if(contact_info["des"] is None or "connect" not in contact_info["des"].lower()):
+					try:
+						hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+						hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
+						text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+						if (text_hirer_button == "Connect"):
+							hirer_detail_button.click()	
+							driver.implicitly_wait(3)		
+							hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+							hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+							if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+								hirer_connect_request_button.click()
+								driver.implicitly_wait(3)
+								connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+								connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+								connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+								time.sleep(2)
+								connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+								connect_button.click() 
+								time.sleep(2)				
+							else:
+								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+								hirer_connect_request_button.click()
+							print("connect request sent")
+							request_note_str = contact_info["des"] + "\nConnect request sent"
+						else:
+							hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
+							hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
+							print(hirer_more_button.find_element(By.TAG_NAME, "span").text)
+							hirer_more_button.click()
+							driver.implicitly_wait(5)
+							hirer_more_option = hirer_more_dropdown.find_element(By.CLASS_NAME,"artdeco-dropdown__content-inner")
+							hirer_more_option_ul = hirer_more_option.find_element(By.TAG_NAME,"ul")
+							hirer_more_option_li = hirer_more_option_ul.find_elements(By.TAG_NAME,"li")
+							for option_li in hirer_more_option_li:
+								option_li_div = option_li.find_element(By.CLASS_NAME,"artdeco-dropdown__item")
+								option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
+								if(option_li_text == "Connect"):
+									option_li.click()
+									driver.implicitly_wait(5)
+									hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+									hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+									if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+										hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+										hirer_connect_request_button.click()
+										driver.implicitly_wait(10)
+										connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+										connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+										connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+										time.sleep(2)
+										connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+										connect_button.click() 
+										time.sleep(2)				
+									else:
+										hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+										hirer_connect_request_button.click()
+									print("connect request sent")
+									request_note_str = request_note_str + "\nConnect request sent"
+					except NoSuchElementException:
+						pass	
+				if(contact_info["des"] is None or "message" not in contact_info["des"].lower()):	
+					try:
+						entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
+						message_button = entry_point.find_element(By.TAG_NAME,"button")
+						if(message_button.is_enabled()):
+							message_button.click()
+							time.sleep(2)
+
+						message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+						message_title_input = message_box.find_element(By.TAG_NAME,"input")
+						message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
+						time.sleep(2)
+
+						message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+						message_content_input.clear()
+						message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
+						time.sleep(2)  
+		
+						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+						if(send_button.is_enabled()):
+							request_note_str = contact_info["des"] + "\nMessage sent"
+							send_button.submit() 
+					except NoSuchElementException:
+						print("\n No message box")
+						pass
+				
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
@@ -750,76 +816,80 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		driver.switch_to.window(company_window)
 		time.sleep(2)
 
-	
-		company_about_url = company_url.replace("/life", "/about")
-		driver.get(company_about_url)
-		driver.implicitly_wait(10)	
-	
-		full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
-
-		wrap_section = driver.find_element(By.CLASS_NAME,"org-grid__content-height-enforcer")
-		dds = wrap_section.find_elements(By.TAG_NAME,"dd")
-	
-		index = 0
 		website_company = ""
 		phone_company = ""
+		if(company_url != ""):
+
+			company_about_url = company_url.replace("/life", "/about")
+			print("\company_url: " + company_url)
+			driver.get(company_about_url)
+			driver.implicitly_wait(10)	
 	
-		for dd in dds:
+			full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
+
+			wrap_section = driver.find_element(By.CLASS_NAME,"org-grid__content-height-enforcer")
+			dds = wrap_section.find_elements(By.TAG_NAME,"dd")
+	
+			index = 0
+			for dd in dds:
 	# Ha cmt
 		#print(dd.text)
-			if(("http" in dd.text) or (".com" in dd.text) or ("www" in dd.text)):
-				website_company = dd.text
-			if("Phone number is" in dd.text):
-				phone_company = dd.text.split("Phone number is")[0]
-			index = index + 1
-		if(country == "Australia"):
-			if (phone_company.startswith('0') or phone_company.startswith("(0")):			
-				phone_company = phone_company.replace('0','+61',1)
+				if(("http" in dd.text) or (".com" in dd.text) or ("www" in dd.text)):
+					website_company = dd.text
+				if("Phone number is" in dd.text):
+					phone_company = dd.text.split("Phone number is")[0]
+				index = index + 1
+			if(country == "Australia"):
+				if (phone_company.startswith('0') or phone_company.startswith("(0")):			
+					phone_company = phone_company.replace('0','+61',1)
+				else:
+					if(phone_company.startswith('2') or phone_company.startswith('3') or phone_company.startswith('7') or phone_company.startswith('8') or phone_company.startswith('4') or phone_company.startswith('5')):
+						phone_company = "+61" + phone_company
+			elif (country == "Malaysia"): 
+				if (phone_company.startswith('0') or phone_company.startswith("(0")):			
+					phone_company = phone_company.replace('0','+60',1)
+				if(phone_company.startswith(("1","2","3","4","5","6","7","8","9")) ):
+					phone_company = "+60" + phone_company
+			elif (country == "Thailand"): 
+				if (phone_company.startswith('0') or phone_company.startswith("(0")):			
+					phone_company = phone_company.replace('0','+66',1)
+				if(phone_company.startswith(("1","2","3","4","5","6","7","8","9")) ):
+					phone_company = "+66" + phone_company
 			else:
-				if(phone_company.startswith('2') or phone_company.startswith('3') or phone_company.startswith('7') or phone_company.startswith('8') or phone_company.startswith('4') or phone_company.startswith('5')):
-					phone_company = "+61" + phone_company
-		elif (country == "Malaysia"): 
-			if (phone_company.startswith('0') or phone_company.startswith("(0")):			
-				phone_company = phone_company.replace('0','+60',1)
-			if(phone_company.startswith(("1","2","3","4","5","6","7","8","9")) ):
-				phone_company = "+60" + phone_company
-		elif (country == "Thailand"): 
-			if (phone_company.startswith('0') or phone_company.startswith("(0")):			
-				phone_company = phone_company.replace('0','+66',1)
-			if(phone_company.startswith(("1","2","3","4","5","6","7","8","9")) ):
-				phone_company = "+66" + phone_company
-		else:
-			print("Not interested country")
-		phone_company.replace("-","")
+				print("Not interested country")
+			phone_company.replace("-","")
 		full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
+		print(contact_info)
 		if("message" in request_note_str.lower() or "message" in contact_info["des"].lower()):
 			full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
 		if("connect" in request_note_str.lower() or "connect" in contact_info["des"].lower()):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
 		if(hirer_email == "" and "message" not in request_note_str.lower() and "message" in contact_info["des"].lower() and "connect" in request_note_str.lower() and "connect" in contact_info["des"].lower()):
-			try:
-				company_about_url = company_url.replace("/life", "/about")
-				driver.get(company_about_url)
-				driver.implicitly_wait(10)
-				account_actions = driver.find_element(By.CLASS_NAME,"org-top-card-primary-actions__inner")
-				message_button = account_actions.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-				text_message_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
-				if(text_message_button.lower() == "message"):
-					message_button.click()
-					driver.implicitly_wait(5)
-					select_actions = driver.find_element(By.ID,"org-message-page-modal-conversation-topic")
-					select_list = Select(select_actions)
-					select_list.select_by_visible_text('Careers')
-					mess_text_area = driver.find_element(By.ID,"org-message-page-modal-message")
-					mess_text_area.clear()
-					mess_text_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-					send_button = driver.find_element(By.CLASS_NAME,"artdeco-button--primary")
-					if(send_button.is_enabled()):
-						send_button.click()  
-						time.sleep(1)
-			except NoSuchElementException:
-				print("not found message area for company")
-				pass
+			company_about_url = company_url.replace("/life", "/about")
+			if(company_about_url != ""):
+				try:
+				
+					driver.get(company_about_url)
+					driver.implicitly_wait(10)
+					account_actions = driver.find_element(By.CLASS_NAME,"org-top-card-primary-actions__inner")
+					message_button = account_actions.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+					text_message_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+					if(text_message_button.lower() == "message"):
+						message_button.click()
+						driver.implicitly_wait(5)
+						select_actions = driver.find_element(By.ID,"org-message-page-modal-conversation-topic")
+						select_list = Select(select_actions)
+						select_list.select_by_visible_text('Careers')
+						mess_text_area = driver.find_element(By.ID,"org-message-page-modal-message")
+						mess_text_area.clear()
+						mess_text_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+						send_button = driver.find_element(By.CLASS_NAME,"artdeco-button--primary")
+						if(send_button.is_enabled()):
+							send_button.click()  
+							time.sleep(1)
+				except NoSuchElementException:
+					print("not found message area for company")
+					pass
 		if(hirer_link != ""):
 			full_content = '\n Trang cá nhân nhà tuyển dụng: '.join([full_content, hirer_link])
 		time.sleep(2)
