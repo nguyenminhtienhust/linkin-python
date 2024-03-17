@@ -334,7 +334,7 @@ def edit_contact(access_token, contact_id , title, name, email, phone, des, link
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
   "data": {
-	"type": "contacts",
+	"type": "Contacts",
 	"id" : contact_id,
 	"attributes": {
 	  "last_name": name,
@@ -350,7 +350,7 @@ def edit_contact(access_token, contact_id , title, name, email, phone, des, link
 	# Ha cmt
 	#print(jsondata)
 	time.sleep(2)
-	data = requests.post(module_api,json=jsondata,headers=headers)
+	data = requests.patch(module_api,json=jsondata,headers=headers)
 	if data.status_code != 200:
 		print('fail')
 		print(data.status_code)
@@ -638,6 +638,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
+				print("\n add contact")
 				add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 				contact_info = check_contact(hirer_name)
 				contact_id = contact_info["data"]
@@ -753,6 +754,15 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
+				print("\n edit contact")
+				print("\n id" +contact_info["data"])
+				print("\n title" + hirer_title)
+				print("\n name" + hirer_name)
+				print("\n eamail" + hirer_email)
+				print("\n phone" + hirer_phone)
+				print("\n note" + request_note_str)
+				print("\n link" + contact_info_link)
+				print("\n accountId" + company_id)
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 
 	except NoSuchElementException:
@@ -811,15 +821,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		job_phone.replace("-","")
 	#2 company screen
 	try:
-		driver.execute_script("window.open('');")
-		company_window = driver.window_handles[2]
-		driver.switch_to.window(company_window)
-		time.sleep(2)
-
 		website_company = ""
 		phone_company = ""
 		if(company_url != ""):
-
+			driver.execute_script("window.open('');")
+			company_window = driver.window_handles[2]
+			driver.switch_to.window(company_window)
+			time.sleep(2)
 			company_about_url = company_url.replace("/life", "/about")
 			print("\company_url: " + company_url)
 			driver.get(company_about_url)
@@ -860,9 +868,9 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			phone_company.replace("-","")
 		full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
 		print(contact_info)
-		if("message" in request_note_str.lower() or "message" in contact_info["des"].lower()):
+		if("message" in request_note_str.lower() or (contact_info["des"] is not None and "message" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
-		if("connect" in request_note_str.lower() or "connect" in contact_info["des"].lower()):
+		if("connect" in request_note_str.lower() or (contact_info["des"] is not None and "connect" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
 		if(hirer_email == "" and "message" not in request_note_str.lower() and "message" in contact_info["des"].lower() and "connect" in request_note_str.lower() and "connect" in contact_info["des"].lower()):
 			company_about_url = company_url.replace("/life", "/about")
@@ -933,9 +941,10 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			else:
 				print("\n\nStarting edit:......\n\n")
 				edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id)
-		driver.switch_to.window(company_window)
-		driver.close()#2 close  company_window
-		time.sleep(1)
+		if(company_url != ""):
+			driver.switch_to.window(company_window)
+			driver.close()#2 close  company_window
+			time.sleep(1)
 
 		driver.switch_to.window(job_detail_window)
 		driver.close()#1 close  job_detail_window
