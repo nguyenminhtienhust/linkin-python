@@ -223,11 +223,16 @@ if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
     print("Starting Clone...")
     
+    # jobs_names = ["Android","ios","Objective C","kotlin developer","Flutter","Dart developer",
+    #               "React Native","Mobile Application",".Net","Java","C language",
+    #               "Python","C++","Php","ReactJS","NextJS",
+    #               "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Fullstack Engineer",
+    #               "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
+    #               "Database","Oracle Database"]
     jobs_names = ["Android","ios","Objective C","kotlin developer","Flutter","Dart developer",
                   "React Native","Mobile Application",".Net","Java","C language",
                   "Python","C++","Php","ReactJS","NextJS",
-                  "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Fullstack Engineer",
-                  "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
+                  "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     job_name = jobs_names[6]
     print("Job: " + job_name)
@@ -238,7 +243,11 @@ if __name__ == "__main__":
     #print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    driver = webdriver.Chrome(options=Options())
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
+    driver = webdriver.Chrome(options=chrome_options)
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
@@ -298,7 +307,7 @@ if __name__ == "__main__":
                 if job_fail == job_title:
                     continue
             job_id = job.get_attribute("data-occludable-job-id")
-            get_job_detail(driver,job_id,access_token,country)
+            get_job_detail(driver,job_id,access_token,country, country)
         #Go to next page
         page_index = 0
         for page_indicator in page_indicators:
@@ -320,4 +329,4 @@ if __name__ == "__main__":
                         if job_fail == job_title:
                             continue
                     job_id = job.get_attribute("data-job-id")
-                    get_job_detail(driver,job_id,access_token,address)
+                    get_job_detail(driver,job_id,access_token,address, country)

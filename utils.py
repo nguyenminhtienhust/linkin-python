@@ -8,7 +8,6 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium import webdriver
 from selenium.webdriver.common.keys import Keys
-from selenium.webdriver.common.by import By
 from datetime import datetime
 from datetime import date
 import random
@@ -26,6 +25,7 @@ options.add_argument('--headless')
 HEADLESS_OPTIONS = {'chrome_options': options}
 import logging
 from selenium.common.exceptions import NoSuchElementException
+from selenium.webdriver.support.select import Select
 
 logger = logging.getLogger(__name__)
 
@@ -711,6 +711,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						pass	
 				if(contact_info["des"] is None or "message" not in contact_info["des"].lower()):	
 					try:
+						hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
 						entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 						message_button = entry_point.find_element(By.TAG_NAME,"button")
 						if(message_button.is_enabled()):
@@ -754,15 +755,6 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				print("\n edit contact")
-				print("\n id" +contact_info["data"])
-				print("\n title" + hirer_title)
-				print("\n name" + hirer_name)
-				print("\n eamail" + hirer_email)
-				print("\n phone" + hirer_phone)
-				print("\n note" + request_note_str)
-				print("\n link" + contact_info_link)
-				print("\n accountId" + company_id)
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 
 	except NoSuchElementException:
@@ -829,11 +821,11 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			driver.switch_to.window(company_window)
 			time.sleep(2)
 			company_about_url = company_url.replace("/life", "/about")
-			print("\company_url: " + company_url)
+			print("\company_url: " + company_about_url)
 			driver.get(company_about_url)
 			driver.implicitly_wait(10)	
 	
-			full_content = '\n Link giới thiệu:'.join([full_content, company_about_url])
+			full_content =full_content + "\n Link giới thiệu:" + company_about_url
 
 			wrap_section = driver.find_element(By.CLASS_NAME,"org-grid__content-height-enforcer")
 			dds = wrap_section.find_elements(By.TAG_NAME,"dd")
@@ -872,7 +864,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
 		if("connect" in request_note_str.lower() or (contact_info["des"] is not None and "connect" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
-		if(hirer_email == "" and "message" not in request_note_str.lower() and "message" in contact_info["des"].lower() and "connect" in request_note_str.lower() and "connect" in contact_info["des"].lower()):
+		if(hirer_email == "" and "message" not in request_note_str.lower() and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and "connect" not in request_note_str.lower() and (contact_info["des"] is None or "connect" not in contact_info["des"].lower())):
 			company_about_url = company_url.replace("/life", "/about")
 			if(company_about_url != ""):
 				try:
@@ -881,7 +873,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 					driver.implicitly_wait(10)
 					account_actions = driver.find_element(By.CLASS_NAME,"org-top-card-primary-actions__inner")
 					message_button = account_actions.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-					text_message_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+					text_message_button = message_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if(text_message_button.lower() == "message"):
 						message_button.click()
 						driver.implicitly_wait(5)
