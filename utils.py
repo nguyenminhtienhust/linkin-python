@@ -145,7 +145,7 @@ def check_lead_existed(title, account_name):
 	else:
 		json_object = data.json()
 		print(json_object)
-		return json_object["data"]
+		return json_object
 	
 def add_new_account(access_token,name,phone,website,address):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
@@ -487,16 +487,6 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	job_phone = ""
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
-		address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
-		other_address = address_element.text
-		company_element = infos_element.find_element(By.TAG_NAME,"a")
-	
-		if not company_element:
-			print("company_url is empty")
-		else:
-			company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
-			company_name = company_element.text
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
 		job_emails = re.findall(r"[a-z0-9A-Z\.\-+_]+@[a-z0-9A-Z\.\-+_]+\.[a-zA-Z]+", job_detail)
 		if(country == "Australia"):
@@ -507,6 +497,17 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			job_phones = re.findall(r'^(\+\d{1,3})?\s?\(?\d{1,4}\)?[\s.-]?\d{3}[\s.-]?\d{4}$', job_detail)
 		else:
 			print("Not interested country")
+		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
+		address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
+		other_address = address_element.text
+		company_name = infos_element.text
+		if not infos_element.find_element(By.TAG_NAME,"a"):
+			print("company_url is empty")
+		else:
+			company_element = infos_element.find_element(By.TAG_NAME,"a")
+			company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
+			company_name = company_element.text
+		print("\n get company name" + company_name)
 	except NoSuchElementException:
 		print("not found job title")
 		pass
@@ -615,6 +616,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 					if(send_button.is_enabled()):
 						request_note_str = contact_info["des"] + "\nMessage sent"
 						send_button.submit() 
+						time.sleep(3)
 				except NoSuchElementException:
 					print("\n No message box")
 					pass
@@ -732,6 +734,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						if(send_button.is_enabled()):
 							request_note_str = contact_info["des"] + "\nMessage sent"
 							send_button.submit() 
+							time.sleep(3)
 					except NoSuchElementException:
 						print("\n No message box")
 						pass
@@ -897,8 +900,6 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		count = len(job_containers)
 		should_change_status = False
 		last_time = datetime(2023, 1 , 1)
-		jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
-		keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
 		lead_status = "New"
 		if(hirer_profile == "" and email_info == "" and hirer_website == "" and phone_company == "" and hirer_name == "" and hirer_phone == "" and job_phone == ""):
 			lead_status = "Recycled"		
@@ -915,7 +916,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		#company_id = check_company_existed(company_name)
 		
 		lower_title = current_job_title.lower()
-		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title):
+		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title):
 			print("Job not suitable")
 		else:
 			assigned_user_id = ""
@@ -925,13 +926,18 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				assigned_user_id = get_account_assigned_user(company_name)
 			if(lead_status == "Recycled"):
 				assigned_user_id = ""
-			lead_id = check_lead_existed(current_job_title, company_name)
+			lead_info = check_lead_existed(current_job_title, company_name)
+			lead_id = lead_info["data"]
 			if (lead_id == ""):
 				print("\n\nStarting add new:......\n\n")
 				time.sleep(2)
+				# print("\n title: " + current_job_title)
+				# print("\n company_name:" + company_name)
 				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 			else:
 				print("\n\nStarting edit:......\n\n")
+				if(lead_info["status"] == "Assigned" or lead_info["status"] == "Converted"):
+					lead_status = lead_info["status"]
 				edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 		if(company_url != ""):
 			driver.switch_to.window(company_window)
