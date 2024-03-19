@@ -233,7 +233,7 @@ if __name__ == "__main__":
                   "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[20]
-    job_name = ".Net"
+    job_name = "Php"
     print("Job: " + job_name)
     
     countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
@@ -267,20 +267,26 @@ if __name__ == "__main__":
     time.sleep(5)
     print("Starting the scraping...")
     print("Country: " + country)
-    titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
-    titleInputElement.clear()
-    titleInputElement.send_keys(job_name)
+    done = False
+    while( done == False):
+        try:
+            titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
+            titleInputElement.clear()
+            titleInputElement.send_keys(job_name)
     
-    locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
-    locationInputElement.clear()
-    locationInputElement.send_keys(country)
+            locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
+            locationInputElement.clear()
+            locationInputElement.send_keys(country)
     
-    searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
-    searchButton.click()
-    searchButton.accessible_name
-    time.sleep(2)
+            searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
+            searchButton.click()
+            searchButton.accessible_name
+            time.sleep(2)
 
-    page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
+            page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
+            done = True
+        except NoSuchElementException:
+            pass
     
     print("Please Zoom in then press Enter")
     input()

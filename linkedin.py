@@ -13,6 +13,7 @@ from tqdm import tqdm
 import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
+#from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import os
@@ -236,11 +237,11 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[6]
-    job_name = "Swift Developer"
+    job_name = "Flutter"
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["New Zealand","Thailand","Australia","Malaysia"]
+    countries = ["Malaysia", "Australia", "New Zealand","Thailand"]
     #country = countries[2]
     #print("Country: " + country)
     
@@ -250,6 +251,8 @@ if __name__ == "__main__":
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
     driver = webdriver.Chrome(options=chrome_options)
+    # fire_options = webdriver.FirefoxOptions()
+    # driver = webdriver.Firefox(options=fire_options)
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
@@ -265,24 +268,29 @@ if __name__ == "__main__":
     
     for country in countries:
         driver.get(home_url)
-
+        time.sleep(5)
         print("Starting the scraping...")
         print("Country: " + country)
-        titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
-        titleInputElement.clear()
-        titleInputElement.send_keys(job_name)
+        done = False
+        while( done == False):
+            try:
+                titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
+                titleInputElement.clear()
+                titleInputElement.send_keys(job_name)
     
-        locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
-        locationInputElement.clear()
-        locationInputElement.send_keys(country)
+                locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
+                locationInputElement.clear()
+                locationInputElement.send_keys(country)
     
-        searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
-        searchButton.click()
-        searchButton.accessible_name
-        time.sleep(2)
+                searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
+                searchButton.click()
+                searchButton.accessible_name
+                time.sleep(2)
 
-        page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
-    
+                page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
+                done = True
+            except NoSuchElementException:
+                pass
         #print("Please Zoom in then press Enter")
         #input()
     
@@ -301,6 +309,9 @@ if __name__ == "__main__":
             lead_id = ""
             try:
                 job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
+                lower_title = job_title.lower()
+                if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title):
+                    continue
                 company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                 address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
                 # lead_id = check_lead_existed(job_title,company_name )
@@ -326,8 +337,11 @@ if __name__ == "__main__":
                             match_job = "No"
                             break
             if(match_job == "Yes"):
-                job_id = job.get_attribute("data-occludable-job-id")
-                get_job_detail(driver,job_id,access_token,country, country)
+                try:
+                    job_id = job.get_attribute("data-occludable-job-id")
+                    get_job_detail(driver,job_id,access_token,country, country)
+                except NoSuchElementException:
+                    pass
         #Go to next page
         page_index = 0
         for page_indicator in page_indicators:
