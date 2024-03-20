@@ -502,7 +502,8 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
 		address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
 		other_address = address_element.text
-		company_name = infos_element.text
+		company_name_text = infos_element.text
+		company_name = re.split(' · ', company_name_text, maxsplit=1)[0]
 		if not infos_element.find_element(By.TAG_NAME,"a"):
 			print("company_url is empty")
 		else:
@@ -600,27 +601,28 @@ def get_job_detail(driver,job_id,access_token,address, country):
 					except:
 						pass
 				try:
-					entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
-					message_button = entry_point.find_element(By.TAG_NAME,"button")
-					if(message_button.is_enabled()):
-						message_button.click()
+					if(request_note_str == ""):
+						entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
+						message_button = entry_point.find_element(By.TAG_NAME,"button")
+						if(message_button.is_enabled()):
+							message_button.click()
+							time.sleep(2)
+
+						message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+						message_title_input = message_box.find_element(By.TAG_NAME,"input")
+						message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
 						time.sleep(2)
 
-					message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-					message_title_input = message_box.find_element(By.TAG_NAME,"input")
-					message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
-					time.sleep(2)
-
-					message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-					message_content_input.clear()
-					message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-					time.sleep(2)  
+						message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+						message_content_input.clear()
+						message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
+						time.sleep(2)  
 		
-					send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-					if(send_button.is_enabled()):
-						request_note_str = contact_info["des"] + "\nMessage sent"
-						send_button.submit() 
-						time.sleep(3)
+						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+						if(send_button.is_enabled()):
+							request_note_str = contact_info["des"] + "\nMessage sent"
+							send_button.submit() 
+							time.sleep(3)
 				except :
 					print("\n No message box")
 					pass
@@ -654,7 +656,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				driver.get(hirer_link)
 				time.sleep(5)
-				if(contact_info["des"] is None or "connect" not in contact_info["des"].lower()):
+				if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 					try:
 						hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
 						hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
@@ -718,7 +720,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 								pass
 					except :
 						pass	
-				if(contact_info["des"] is None or "message" not in contact_info["des"].lower()):	
+				if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and request_note_str == "")):	
 					try:
 						hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
 						entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")

@@ -237,7 +237,7 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[6]
-    job_name = "Flutter"
+    job_name = "NextJS"
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
@@ -285,7 +285,7 @@ if __name__ == "__main__":
                 searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
                 searchButton.click()
                 searchButton.accessible_name
-                time.sleep(2)
+                time.sleep(5)
 
                 page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
                 done = True
@@ -303,7 +303,7 @@ if __name__ == "__main__":
         count = len(jobs)
         address = ""
         for job in jobs:
-            time.sleep(2)
+            #time.sleep(2)
             job_state = ""
             match_job = "Yes"
             lead_id = ""
