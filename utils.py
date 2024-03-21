@@ -485,6 +485,14 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	job_emails = []
 	job_phones = []
 	job_phone = ""
+	# expired = "No"
+	# try:
+	# 	expired = driver.find_element(By.CLASS_NAME,"jobs-details-top-card__apply-error").text 
+	# 	print(expired)
+	# 	if("no longer" in expired.lower()):
+	# 		return
+	# except:
+	# 	pass
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
