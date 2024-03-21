@@ -126,8 +126,7 @@ def check_company_existed(name):
 		print(data.reason)
 	else:
 		json_object = data.json()
-		print(json_object)
-		return json_object["data"]
+		return json_object
 		
 def check_lead_existed(title, account_name):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json"}
@@ -147,7 +146,7 @@ def check_lead_existed(title, account_name):
 		print(json_object)
 		return json_object
 	
-def add_new_account(access_token,name,phone,website,address):
+def add_new_account(access_token,name,phone,website,address, des):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
@@ -159,7 +158,9 @@ def add_new_account(access_token,name,phone,website,address):
    	  "phone_office": phone,
       "phone_alternate": phone,
       "website": website,
-      "billing_address_country" : address
+      "billing_address_country" : address,
+	  "assigned_user_id": "62b60dd0-9ab9-735e-e291-65d2cd0ab68e",
+	  "description" : des
 	}
   }
 }
@@ -172,7 +173,7 @@ def add_new_account(access_token,name,phone,website,address):
 		json_object = data.json()
 		print(json_object)
 
-def edit_account(access_token,account_id,name,phone,website,address):
+def edit_account(access_token,account_id,name,phone,website,address, des):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
@@ -185,7 +186,9 @@ def edit_account(access_token,account_id,name,phone,website,address):
    	  "phone_office": phone,
       "phone_alternate": phone,
       "website": website,
-      "billing_address_country" : address
+      "billing_address_country" : address,
+	  "assigned_user_id": "62b60dd0-9ab9-735e-e291-65d2cd0ab68e",
+	  "description" : des
 	}
   }
 }
@@ -523,7 +526,9 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		pass
 
 	#####Message entry-point
-	company_id = check_company_existed(company_name)
+	company_info = {"data": "", "des" : ""}
+	company_info = check_company_existed(company_name)
+	company_id = company_info["data"]
 	contact_info = {"data": "", "des" : ""}
 	hirer_name = ""
 	hirer_title = ""
@@ -565,13 +570,17 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
 						time.sleep(2)
 						connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-						connect_button.click() 
-						time.sleep(2)				
+						if(connect_button.is_enabled()):
+							connect_button.click() 
+							request_note_str = request_note_str + "\nconnect request sent"
+							time.sleep(2)	
+											
 					else:
 						hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-						hirer_connect_request_button.click()
-					print("connect request sent")
-					request_note_str = request_note_str + "\nConnect request sent"		
+						if(hirer_connect_request_button.is_enabled()):
+							hirer_connect_request_button.click()	
+							request_note_str = request_note_str + "\nconnect request sent"
+							time.sleep(2)
 				else:
 					try:
 						hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
@@ -599,13 +608,17 @@ def get_job_detail(driver,job_id,access_token,address, country):
 									connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
 									time.sleep(2)
 									connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-									connect_button.click() 
-									time.sleep(2)				
+									if(connect_button.is_enabled()):
+										connect_button.click() 
+										request_note_str = request_note_str + "\nconnect request sent"
+										time.sleep(2)				
 								else:
 									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-									hirer_connect_request_button.click()
-								print("connect request sent")
-								request_note_str = request_note_str + "\nConnect request sent"
+									if(hirer_connect_request_button.is_enabled()):
+										hirer_connect_request_button.click()
+										request_note_str = request_note_str + "\nconnect request sent"
+										time.sleep(2)
+								
 					except:
 						pass
 				try:
@@ -628,7 +641,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		
 						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
 						if(send_button.is_enabled()):
-							request_note_str = contact_info["des"] + "\nMessage sent"
+							request_note_str = contact_info["des"] + "\nmessage sent"
 							send_button.submit() 
 							time.sleep(3)
 				except :
@@ -689,7 +702,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 								hirer_connect_request_button.click()
 							print("connect request sent")
-							request_note_str = contact_info["des"] + "\nConnect request sent"
+							request_note_str = contact_info["des"] + "\nconnect request sent"
 						else:
 							try:
 								hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
@@ -717,13 +730,16 @@ def get_job_detail(driver,job_id,access_token,address, country):
 											connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
 											time.sleep(2)
 											connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-											connect_button.click() 
-											time.sleep(2)				
+											if(connect_button.is_enabled()):
+												connect_button.click() 
+												request_note_str = request_note_str + "\nconnect request sent"
+												time.sleep(2)				
 										else:
 											hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-											hirer_connect_request_button.click()
-										print("connect request sent")
-										request_note_str = request_note_str + "\nConnect request sent"
+											if(hirer_connect_request_button.is_enabled()):
+												hirer_connect_request_button.click()
+												request_note_str = request_note_str + "\nconnect request sent"		
+												time.sleep(2)								
 							except: 
 								pass
 					except :
@@ -749,7 +765,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		
 						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
 						if(send_button.is_enabled()):
-							request_note_str = contact_info["des"] + "\nMessage sent"
+							request_note_str = contact_info["des"] + "\nmessage sent"
 							send_button.submit() 
 							time.sleep(3)
 					except :
@@ -897,11 +913,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 			full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
 		if("connect" in request_note_str.lower() or (contact_info["des"] is not None and "connect" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
-		if(hirer_email == "" and "message" not in request_note_str.lower() and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and "connect" not in request_note_str.lower() and (contact_info["des"] is None or "connect" not in contact_info["des"].lower())):
+		message_company_sent = ""
+		if(company_info["des"] is not None and "message" in company_info["des"].lower()):
+			message_company_sent = "message sent"
+		if(hirer_email == "" and "message" not in request_note_str.lower() and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and "connect" not in request_note_str.lower() and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "connect" not in message_company_sent):
 			company_about_url = company_url.replace("/life", "/about")
 			if(company_about_url != ""):
-				try:
-				
+				try:				
 					driver.get(company_about_url)
 					driver.implicitly_wait(10)
 					account_actions = driver.find_element(By.CLASS_NAME,"org-top-card-primary-actions__inner")
@@ -919,6 +937,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						send_button = driver.find_element(By.CLASS_NAME,"artdeco-button--primary")
 						if(send_button.is_enabled()):
 							send_button.click()  
+							message_company_sent = "message sent"
 							time.sleep(1)
 				except :
 					print("not found message area for company")
@@ -936,14 +955,15 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		website = website_company
 		if(hirer_website != ""):
 			website = hirer_website
-		# bỏ thêm mới account
-		#if(company_id == ""):
-			#print("\n\nStarting add new account:......\n\n")
-			#add_new_account(access_token = access_token, name = company_name, phone = phone_company, website = website_company, address = address)
-		#else:
-			#print("\n\nStarting editing account:......\n\n")
-			#edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company, address = address)
-		#company_id = check_company_existed(company_name)
+
+		if(company_id == ""):
+			print("\n\nStarting add new account:......\n\n")
+			add_new_account(access_token = access_token, name = company_name, phone = phone_company, website = website_company, address = address, des = message_company_sent)
+			company_info = check_company_existed(company_name)
+			company_id = company_info["data"]
+		else:
+			print("\n\nStarting editing account:......\n\n")
+			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company, address = address, des = message_company_sent)
 		
 		lower_title = current_job_title.lower()
 		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title):
@@ -968,6 +988,9 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				print("\n\nStarting edit:......\n\n")
 				if(lead_info["status"] == "Assigned" or lead_info["status"] == "Converted"):
 					lead_status = lead_info["status"]
+				else:
+					if(lead_info["status"] == "Recycled" and lead_status == "Recycled"):
+						lead_status = "Recycled"
 				edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 		if(company_url != ""):
 			driver.switch_to.window(company_window)

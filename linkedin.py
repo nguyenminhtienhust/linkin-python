@@ -237,11 +237,11 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[6]
-    job_name = "NextJS"
+    job_name = "Golang"
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["Malaysia", "Australia", "New Zealand","Thailand"]
+    countries = ["Malaysia","Australia", "New Zealand","Thailand","Singapore"]
     #country = countries[2]
     #print("Country: " + country)
     
