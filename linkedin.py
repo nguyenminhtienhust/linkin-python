@@ -237,7 +237,7 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[6]
-    job_name = "Golang"
+    job_name = "Flutter"
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
@@ -265,8 +265,10 @@ if __name__ == "__main__":
             "It looks like you need to complete a double factor authentification. Please do so and press enter when you are done."
         )
         input()
-    
+    job_count = 0
     for country in countries:
+        x = random.randint(60,200)
+        time.sleep(x)
         driver.get(home_url)
         time.sleep(5)
         print("Starting the scraping...")
@@ -303,7 +305,8 @@ if __name__ == "__main__":
         count = len(jobs)
         address = ""
         for job in jobs:
-            #time.sleep(2)
+            y = random.randint(5,22)
+            time.sleep(y)
             job_state = ""
             match_job = "Yes"
             lead_id = ""
@@ -324,9 +327,9 @@ if __name__ == "__main__":
                     continue
             except NoSuchElementException:  #spelling error making this code not work as expected
                 pass
-            if(job_state == "Viewed"):
+            #if(job_state == "Viewed"):
             #if(lead_id != ""):
-                continue
+                #continue
             for key_fail in keys_fail:
                 if key_fail in job_title:
                     match_job = "No"
@@ -337,9 +340,13 @@ if __name__ == "__main__":
                             match_job = "No"
                             break
             if(match_job == "Yes"):
+                if((job_count // 10) == 1):
+                    z = random.randint(60,100)
+                    time.sleep(z)
                 try:
                     job_id = job.get_attribute("data-occludable-job-id")
                     get_job_detail(driver,job_id,access_token,country, country)
+                    job_count = job_count + 1
                 except NoSuchElementException:
                     pass
         #Go to next page

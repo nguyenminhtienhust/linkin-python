@@ -128,11 +128,12 @@ def check_company_existed(name):
 		json_object = data.json()
 		return json_object
 		
-def check_lead_existed(title, account_name):
+def check_lead_existed(title, account_name, contact):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json"}
 	check_api = "http://68.183.189.171:9999/leads/check"
 	jsondata = {"title":title,
-				"last_name" : account_name
+				"last_name" : account_name,
+				"first_name" : contact
 	}
 	# Ha cmt
 	#print(jsondata)
@@ -481,6 +482,8 @@ def get_job_detail(driver,job_id,access_token,address, country):
 
 	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
 	print(job_detail_url)
+	y = random.randint(10,60)
+    time.sleep(y)
 	driver.get(job_detail_url)
 	time.sleep(10)
 	company_url = ""
@@ -488,14 +491,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	job_emails = []
 	job_phones = []
 	job_phone = ""
-	# expired = "No"
-	# try:
-	# 	expired = driver.find_element(By.CLASS_NAME,"jobs-details-top-card__apply-error").text 
-	# 	print(expired)
-	# 	if("no longer" in expired.lower()):
-	# 		return
-	# except:
-	# 	pass
+	expired = "No"
+	try:
+		expired = driver.find_element(By.CLASS_NAME,"jobs-details-top-card__apply-error").text 
+		if("no longer" in expired.lower()):
+			return
+	except:
+		pass
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
@@ -524,12 +526,12 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	except:
 		print("not found job title")
 		pass
-
-	#####Message entry-point
+	
 	company_info = {"data": "", "des" : ""}
 	company_info = check_company_existed(company_name)
 	company_id = company_info["data"]
 	contact_info = {"data": "", "des" : ""}
+	lead_info = {"data": "", "status" : ""}
 	hirer_name = ""
 	hirer_title = ""
 	hirer_link = ""
@@ -543,7 +545,8 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	request_note_str = ""
 	#Get Hirer Link
 	try:
-		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name ").text
+		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name").text
+		lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 		hirer_title = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-job-title").text
 		if(hirer_name != ""):
 			contact_info = check_contact(hirer_name)			
@@ -553,100 +556,100 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				driver.get(hirer_link)
 				time.sleep(5)
-				hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
-				hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
-				text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
-				if (text_hirer_button == "Connect"):
-					hirer_detail_button.click()	
-					driver.implicitly_wait(10)		
-					hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-					hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
-					if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
-						hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-						hirer_connect_request_button.click()
-						driver.implicitly_wait(10)
-						connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-						connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-						connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-						time.sleep(2)
-						connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-						if(connect_button.is_enabled()):
-							connect_button.click() 
-							request_note_str = request_note_str + "\nconnect request sent"
-							time.sleep(2)	
-											
-					else:
-						hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-						if(hirer_connect_request_button.is_enabled()):
-							hirer_connect_request_button.click()	
-							request_note_str = request_note_str + "\nconnect request sent"
-							time.sleep(2)
-				else:
-					try:
-						hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
-						hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
-					#hirer_more_button = driver.find_element(By.XPATH, '//button[text()="More"]')
-						hirer_more_button.click()
-						driver.implicitly_wait(5)
-						hirer_more_option = hirer_more_dropdown.find_element(By.CLASS_NAME,"artdeco-dropdown__content-inner")
-						hirer_more_option_ul = hirer_more_option.find_element(By.TAG_NAME,"ul")
-						hirer_more_option_li = hirer_more_option_ul.find_elements(By.TAG_NAME,"li")
-						for option_li in hirer_more_option_li:
-							option_li_div = option_li.find_element(By.CLASS_NAME,"artdeco-dropdown__item")
-							option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
-							if(option_li_text == "Connect"):
-								option_li.click()
-								driver.implicitly_wait(5)
-								hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-								hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
-								if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
-									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-									hirer_connect_request_button.click()
-									driver.implicitly_wait(10)
-									connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-									connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-									connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-									time.sleep(2)
-									connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-									if(connect_button.is_enabled()):
-										connect_button.click() 
-										request_note_str = request_note_str + "\nconnect request sent"
-										time.sleep(2)				
-								else:
-									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-									if(hirer_connect_request_button.is_enabled()):
-										hirer_connect_request_button.click()
-										request_note_str = request_note_str + "\nconnect request sent"
-										time.sleep(2)
-								
-					except:
-						pass
-				try:
-					if(request_note_str == ""):
-						entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
-						message_button = entry_point.find_element(By.TAG_NAME,"button")
-						if(message_button.is_enabled()):
-							message_button.click()
-							time.sleep(2)
-
-						message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-						message_title_input = message_box.find_element(By.TAG_NAME,"input")
-						message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
-						time.sleep(2)
-
-						message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-						message_content_input.clear()
-						message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-						time.sleep(2)  
-		
-						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-						if(send_button.is_enabled()):
-							request_note_str = contact_info["des"] + "\nmessage sent"
-							send_button.submit() 
+				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process")):
+					hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
+					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+					if (text_hirer_button == "Connect"):
+						hirer_detail_button.click()	
+						driver.implicitly_wait(10)		
+						hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+						hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+						if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+							hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+							hirer_connect_request_button.click()
+							driver.implicitly_wait(10)
+							connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+							connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+							connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
 							time.sleep(3)
-				except :
-					print("\n No message box")
-					pass
+							connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+							if(connect_button.is_enabled()):
+								connect_button.click() 
+								request_note_str = request_note_str + "\nconnect request sent"
+								time.sleep(2)	
+											
+						else:
+							hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+							if(hirer_connect_request_button.is_enabled()):
+								hirer_connect_request_button.click()	
+								request_note_str = request_note_str + "\nconnect request sent"
+								time.sleep(2)
+					else:
+						try:
+							hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
+							hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
+					#hirer_more_button = driver.find_element(By.XPATH, '//button[text()="More"]')
+							hirer_more_button.click()
+							driver.implicitly_wait(5)
+							hirer_more_option = hirer_more_dropdown.find_element(By.CLASS_NAME,"artdeco-dropdown__content-inner")
+							hirer_more_option_ul = hirer_more_option.find_element(By.TAG_NAME,"ul")
+							hirer_more_option_li = hirer_more_option_ul.find_elements(By.TAG_NAME,"li")
+							for option_li in hirer_more_option_li:
+								option_li_div = option_li.find_element(By.CLASS_NAME,"artdeco-dropdown__item")
+								option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
+								if(option_li_text == "Connect"):
+									option_li.click()
+									driver.implicitly_wait(5)
+									hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+									hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+									if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+										hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+										hirer_connect_request_button.click()
+										driver.implicitly_wait(10)
+										connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+										connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+										connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+										time.sleep(2)
+										connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+										if(connect_button.is_enabled()):
+											connect_button.click() 
+											request_note_str = request_note_str + "\nconnect request sent"
+											time.sleep(2)				
+									else:
+										hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+										if(hirer_connect_request_button.is_enabled()):
+											hirer_connect_request_button.click()
+											request_note_str = request_note_str + "\nconnect request sent"
+											time.sleep(2)
+								
+						except:
+							pass
+					try:
+						if(request_note_str == ""):
+							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
+							message_button = entry_point.find_element(By.TAG_NAME,"button")
+							if(message_button.is_enabled()):
+								message_button.click()
+								time.sleep(2)
+
+							message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+							message_title_input = message_box.find_element(By.TAG_NAME,"input")
+							message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
+							time.sleep(2)
+
+							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+							message_content_input.clear()
+							message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
+							time.sleep(2)  
+		
+							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+							if(send_button.is_enabled()):
+								request_note_str = contact_info["des"] + "\nmessage sent"
+								send_button.submit() 
+								time.sleep(3)
+					except :
+						pass
 
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
@@ -677,100 +680,104 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				driver.get(hirer_link)
 				time.sleep(5)
-				if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
-					try:
-						hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
-						hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
-						text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
-						if (text_hirer_button == "Connect"):
-							hirer_detail_button.click()	
-							driver.implicitly_wait(3)		
-							hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-							hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
-							if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
-								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-								hirer_connect_request_button.click()
-								driver.implicitly_wait(3)
-								connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-								connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-								connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-								time.sleep(2)
-								connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-								connect_button.click() 
-								time.sleep(2)				
+				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process")):
+					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
+						try:
+							hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
+							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+							if (text_hirer_button == "Connect"):
+								hirer_detail_button.click()	
+								driver.implicitly_wait(3)		
+								hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+								hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+								if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
+									hirer_connect_request_button.click()
+									driver.implicitly_wait(3)
+									connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+									connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+									connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+									time.sleep(2)
+									connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+									if(connect_button.is_enabled()):
+										connect_button.click() 
+										request_note_str = contact_info["des"] + "\nconnect request sent"
+										time.sleep(2)				
+								else:
+									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+									if(hirer_connect_request_button.is_enabled()):
+										hirer_connect_request_button.click()
+										request_note_str = contact_info["des"] + "\nconnect request sent"
+										time.sleep(2)	
+							
 							else:
-								hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-								hirer_connect_request_button.click()
-							print("connect request sent")
-							request_note_str = contact_info["des"] + "\nconnect request sent"
-						else:
-							try:
-								hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
-								hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
+								try:
+									hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
+									hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
 							#hirer_more_button = driver.find_element(By.XPATH, '//button[text()="More"]')
-								hirer_more_button.click()
-								driver.implicitly_wait(5)
-								hirer_more_option = hirer_more_dropdown.find_element(By.CLASS_NAME,"artdeco-dropdown__content-inner")
-								hirer_more_option_ul = hirer_more_option.find_element(By.TAG_NAME,"ul")
-								hirer_more_option_li = hirer_more_option_ul.find_elements(By.TAG_NAME,"li")
-								for option_li in hirer_more_option_li:
-									option_li_div = option_li.find_element(By.CLASS_NAME,"artdeco-dropdown__item")
-									option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
-									if(option_li_text == "Connect"):
-										option_li.click()
-										driver.implicitly_wait(5)
-										hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-										hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
-										if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
-											hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
-											hirer_connect_request_button.click()
-											driver.implicitly_wait(10)
-											connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
-											connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-											connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-											time.sleep(2)
-											connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
-											if(connect_button.is_enabled()):
-												connect_button.click() 
-												request_note_str = request_note_str + "\nconnect request sent"
-												time.sleep(2)				
-										else:
-											hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
-											if(hirer_connect_request_button.is_enabled()):
+									hirer_more_button.click()
+									driver.implicitly_wait(5)
+									hirer_more_option = hirer_more_dropdown.find_element(By.CLASS_NAME,"artdeco-dropdown__content-inner")
+									hirer_more_option_ul = hirer_more_option.find_element(By.TAG_NAME,"ul")
+									hirer_more_option_li = hirer_more_option_ul.find_elements(By.TAG_NAME,"li")
+									for option_li in hirer_more_option_li:
+										option_li_div = option_li.find_element(By.CLASS_NAME,"artdeco-dropdown__item")
+										option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
+										if(option_li_text == "Connect"):
+											option_li.click()
+											driver.implicitly_wait(5)
+											hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+											hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
+											if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
+												hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
 												hirer_connect_request_button.click()
-												request_note_str = request_note_str + "\nconnect request sent"		
-												time.sleep(2)								
-							except: 
-								pass
-					except :
-						pass	
-				if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and request_note_str == "")):	
-					try:
-						hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
-						entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
-						message_button = entry_point.find_element(By.TAG_NAME,"button")
-						if(message_button.is_enabled()):
-							message_button.click()
+												driver.implicitly_wait(10)
+												connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
+												connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+												connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
+												time.sleep(2)
+												connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
+												if(connect_button.is_enabled()):
+													connect_button.click() 
+													request_note_str = request_note_str + "\nconnect request sent"
+													time.sleep(2)				
+											else:
+												hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
+												if(hirer_connect_request_button.is_enabled()):
+													hirer_connect_request_button.click()
+													request_note_str = request_note_str + "\nconnect request sent"		
+													time.sleep(2)								
+								except: 
+									pass
+						except :
+							pass	
+					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and request_note_str == "")):	
+						try:
+							hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
+							message_button = entry_point.find_element(By.TAG_NAME,"button")
+							if(message_button.is_enabled()):
+								message_button.click()
+								time.sleep(2)
+
+							message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+							message_title_input = message_box.find_element(By.TAG_NAME,"input")
+							message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
 							time.sleep(2)
 
-						message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-						message_title_input = message_box.find_element(By.TAG_NAME,"input")
-						message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
-						time.sleep(2)
-
-						message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-						message_content_input.clear()
-						message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-						time.sleep(2)  
+							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+							message_content_input.clear()
+							message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
+							time.sleep(2)  
 		
-						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-						if(send_button.is_enabled()):
-							request_note_str = contact_info["des"] + "\nmessage sent"
-							send_button.submit() 
-							time.sleep(3)
-					except :
-						print("\n No message box")
-						pass
+							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+							if(send_button.is_enabled()):
+								request_note_str = contact_info["des"] + "\nmessage sent"
+								send_button.submit() 
+								time.sleep(3)
+						except :
+							pass
 				
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
@@ -916,7 +923,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		message_company_sent = ""
 		if(company_info["des"] is not None and "message" in company_info["des"].lower()):
 			message_company_sent = "message sent"
-		if(hirer_email == "" and "message" not in request_note_str.lower() and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and "connect" not in request_note_str.lower() and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "connect" not in message_company_sent):
+		if(hirer_email == "" and "message" not in request_note_str.lower() and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and "connect" not in request_note_str.lower() and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "message" not in message_company_sent):
 			company_about_url = company_url.replace("/life", "/about")
 			if(company_about_url != ""):
 				try:				
@@ -958,12 +965,12 @@ def get_job_detail(driver,job_id,access_token,address, country):
 
 		if(company_id == ""):
 			print("\n\nStarting add new account:......\n\n")
-			add_new_account(access_token = access_token, name = company_name, phone = phone_company, website = website_company, address = address, des = message_company_sent)
+			add_new_account(access_token = access_token, name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
 			company_info = check_company_existed(company_name)
 			company_id = company_info["data"]
 		else:
 			print("\n\nStarting editing account:......\n\n")
-			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company, address = address, des = message_company_sent)
+			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
 		
 		lower_title = current_job_title.lower()
 		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title):
@@ -976,7 +983,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				assigned_user_id = get_account_assigned_user(company_name)
 			if(lead_status == "Recycled"):
 				assigned_user_id = ""
-			lead_info = check_lead_existed(current_job_title, company_name)
+
 			lead_id = lead_info["data"]
 			if (lead_id == ""):
 				print("\n\nStarting add new:......\n\n")
@@ -986,7 +993,7 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 			else:
 				print("\n\nStarting edit:......\n\n")
-				if(lead_info["status"] == "Assigned" or lead_info["status"] == "Converted"):
+				if(lead_info["status"] == "Assigned" or lead_info["status"] == "Converted" or lead_info["status"] == "In Process"):
 					lead_status = lead_info["status"]
 				else:
 					if(lead_info["status"] == "Recycled" and lead_status == "Recycled"):
