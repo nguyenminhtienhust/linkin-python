@@ -475,17 +475,16 @@ def get_job_detail(driver,job_id,access_token,address, country):
 	root_window = driver.window_handles[0]
 	
 	#1 job detail window 
+	# y = random.randint(10,60)
+	# time.sleep(y)
 	driver.execute_script("window.open('');")
 	job_detail_window = driver.window_handles[1]
 	driver.switch_to.window(job_detail_window)
-	time.sleep(2)
 
 	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
 	print(job_detail_url)
-	y = random.randint(10,60)
-    time.sleep(y)
 	driver.get(job_detail_url)
-	time.sleep(10)
+	time.sleep(5)
 	company_url = ""
 	company_name = ""
 	job_emails = []
@@ -528,8 +527,10 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		pass
 	
 	company_info = {"data": "", "des" : ""}
+	print("\nget company info")
 	company_info = check_company_existed(company_name)
 	company_id = company_info["data"]
+	print("\company_id "+ company_id)
 	contact_info = {"data": "", "des" : ""}
 	lead_info = {"data": "", "status" : ""}
 	hirer_name = ""
@@ -549,7 +550,9 @@ def get_job_detail(driver,job_id,access_token,address, country):
 		lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 		hirer_title = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-job-title").text
 		if(hirer_name != ""):
-			contact_info = check_contact(hirer_name)			
+			
+			contact_info = check_contact(hirer_name)		
+			print("\get contact" + contact_info["data"] )	
 			if(contact_info["data"] == ""):
 			# get contact info and send request
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
@@ -572,9 +575,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 							connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 							connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
 							connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-							time.sleep(3)
+							z = random.randint(2,7)
+							time.sleep(z)
+							#time.sleep(2)
 							connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							if(connect_button.is_enabled()):
+								z = random.randint(2,4)
+								time.sleep(z)
 								connect_button.click() 
 								request_note_str = request_note_str + "\nconnect request sent"
 								time.sleep(2)	
@@ -582,6 +589,8 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						else:
 							hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							if(hirer_connect_request_button.is_enabled()):
+								z = random.randint(2,4)
+								time.sleep(z)
 								hirer_connect_request_button.click()	
 								request_note_str = request_note_str + "\nconnect request sent"
 								time.sleep(2)
@@ -610,15 +619,21 @@ def get_job_detail(driver,job_id,access_token,address, country):
 										connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 										connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
 										connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-										time.sleep(2)
+										z = random.randint(3,9)
+										time.sleep(z)
+										#time.sleep(2)
 										connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
 										if(connect_button.is_enabled()):
+											z = random.randint(2,4)
+											time.sleep(z)
 											connect_button.click() 
 											request_note_str = request_note_str + "\nconnect request sent"
 											time.sleep(2)				
 									else:
 										hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 										if(hirer_connect_request_button.is_enabled()):
+											z = random.randint(2,4)
+											time.sleep(z)
 											hirer_connect_request_button.click()
 											request_note_str = request_note_str + "\nconnect request sent"
 											time.sleep(2)
@@ -640,12 +655,17 @@ def get_job_detail(driver,job_id,access_token,address, country):
 
 							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
 							message_content_input.clear()
+							z = random.randint(2,6)
+							time.sleep(z)
 							message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-							time.sleep(2)  
-		
+							z = random.randint(2,5)
+							time.sleep(z)
+							#time.sleep(2)
 							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
 							if(send_button.is_enabled()):
 								request_note_str = contact_info["des"] + "\nmessage sent"
+								z = random.randint(2,4)
+								time.sleep(z)
 								send_button.submit() 
 								time.sleep(3)
 					except :
@@ -697,10 +717,15 @@ def get_job_detail(driver,job_id,access_token,address, country):
 									driver.implicitly_wait(3)
 									connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 									connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
+									connect_mess_area.clear()
+									z = random.randint(1,5)
+									time.sleep(z)
 									connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
 									time.sleep(2)
 									connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									if(connect_button.is_enabled()):
+										z = random.randint(2,4)
+										time.sleep(z)
 										connect_button.click() 
 										request_note_str = contact_info["des"] + "\nconnect request sent"
 										time.sleep(2)				
@@ -736,9 +761,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 												connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 												connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
 												connect_mess_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
-												time.sleep(2)
+												y = random.randint(1,7)
+												time.sleep(y)
+												#time.sleep(2)
 												connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
 												if(connect_button.is_enabled()):
+													y = random.randint(2,5)
+													time.sleep(y)
 													connect_button.click() 
 													request_note_str = request_note_str + "\nconnect request sent"
 													time.sleep(2)				
@@ -769,13 +798,16 @@ def get_job_detail(driver,job_id,access_token,address, country):
 							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
 							message_content_input.clear()
 							message_content_input.send_keys(" Hey ," + hirer_name + ", \n Hope your day's fantastic! Heard you're on the lookout for tech talent, and Fitech's team is all in! \n Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. \n Let's make it happen: \n Remote excellence \n Tailored solutions \n Cost-effective partnership \n Interested? Let's chat! Schedule a quick meeting or connect via email or WhatsApp \n Looking forward to the possibility of working together! \n Best, \n Fitech - Minh Tien ")
-							time.sleep(2)  
+							z = random.randint(3,7)
+							time.sleep(z) 
 		
 							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
 							if(send_button.is_enabled()):
 								request_note_str = contact_info["des"] + "\nmessage sent"
+								z = random.randint(2,4)
+								time.sleep(z)
 								send_button.submit() 
-								time.sleep(3)
+								time.sleep(2)
 						except :
 							pass
 				
@@ -798,9 +830,11 @@ def get_job_detail(driver,job_id,access_token,address, country):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
+				print("\edit contact")
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 
 	except :
+		print("hirer:" + hirer_name)
 		print("\nCan't found")       
 		pass
 
@@ -940,9 +974,13 @@ def get_job_detail(driver,job_id,access_token,address, country):
 						select_list.select_by_visible_text('Careers')
 						mess_text_area = driver.find_element(By.ID,"org-message-page-modal-message")
 						mess_text_area.clear()
+						z = random.randint(3,7)
+						time.sleep(z)
 						mess_text_area.send_keys("Heard you're on the lookout for tech talent, and Fitech's team is all in! Our crew excels in various program languages. They work remotely, delivering top-notch results managed seamlessly from our Vietnam office. Looking forward to the possibility of working together!")
 						send_button = driver.find_element(By.CLASS_NAME,"artdeco-button--primary")
 						if(send_button.is_enabled()):
+							z = random.randint(2,4)
+							time.sleep(z)
 							send_button.click()  
 							message_company_sent = "message sent"
 							time.sleep(1)

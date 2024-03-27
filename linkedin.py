@@ -14,6 +14,7 @@ import time
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 #from selenium.webdriver.firefox.options import Options
+#from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import os
@@ -237,11 +238,11 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[6]
-    job_name = "Flutter"
+    job_name = "NextJS"
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["Malaysia","Australia", "New Zealand","Thailand","Singapore"]
+    countries = ["Australia","Malaysia","New Zealand","Thailand","Singapore"]
     #country = countries[2]
     #print("Country: " + country)
     
@@ -250,7 +251,8 @@ if __name__ == "__main__":
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
-    driver = webdriver.Chrome(options=chrome_options)
+    cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\chromedriver.exe')
+    driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
     # driver = webdriver.Firefox(options=fire_options)
     driver.maximize_window()
@@ -266,6 +268,7 @@ if __name__ == "__main__":
         )
         input()
     job_count = 0
+    
     for country in countries:
         x = random.randint(60,200)
         time.sleep(x)
@@ -292,10 +295,29 @@ if __name__ == "__main__":
                 page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
                 done = True
             except NoSuchElementException:
-                pass
+                continue
         #print("Please Zoom in then press Enter")
         #input()
-    
+
+        SCROLL_PAUSE_TIME = 0.5
+
+        # Get scroll height
+        last_height = driver.execute_script("return document.body.scrollHeight")
+
+        while True:
+            # Scroll down to bottom
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+
+            # Wait to load page
+            time.sleep(SCROLL_PAUSE_TIME)
+
+            # Calculate new scroll height and compare with last scroll height
+            new_height = driver.execute_script("return document.body.scrollHeight")
+            if new_height == last_height:
+                break
+            last_height = new_height
+        driver.execute_script("window.scrollTo(0, - document.body.scrollHeight);")
+
         jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
         keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
     
@@ -305,15 +327,13 @@ if __name__ == "__main__":
         count = len(jobs)
         address = ""
         for job in jobs:
-            y = random.randint(5,22)
-            time.sleep(y)
             job_state = ""
             match_job = "Yes"
             lead_id = ""
             try:
                 job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
                 lower_title = job_title.lower()
-                if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title):
+                if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
                     continue
                 company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                 address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
@@ -327,9 +347,9 @@ if __name__ == "__main__":
                     continue
             except NoSuchElementException:  #spelling error making this code not work as expected
                 pass
-            #if(job_state == "Viewed"):
+            if(job_state == "Viewed"):
             #if(lead_id != ""):
-                #continue
+                continue
             for key_fail in keys_fail:
                 if key_fail in job_title:
                     match_job = "No"
@@ -341,9 +361,11 @@ if __name__ == "__main__":
                             break
             if(match_job == "Yes"):
                 if((job_count // 10) == 1):
-                    z = random.randint(60,100)
+                    z = random.randint(100,300)
                     time.sleep(z)
                 try:
+                    y = random.randint(30,60)
+                    time.sleep(y)
                     job_id = job.get_attribute("data-occludable-job-id")
                     get_job_detail(driver,job_id,access_token,country, country)
                     job_count = job_count + 1
