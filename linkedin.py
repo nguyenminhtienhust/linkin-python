@@ -281,11 +281,14 @@ if __name__ == "__main__":
             try:
                 titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
                 titleInputElement.clear()
+                time.sleep(2)
                 titleInputElement.send_keys(job_name)
     
                 locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
                 locationInputElement.clear()
+                time.sleep(2)
                 locationInputElement.send_keys(country)
+                
     
                 searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
                 searchButton.click()
