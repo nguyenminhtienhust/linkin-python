@@ -254,7 +254,8 @@ if __name__ == "__main__":
     cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\chromedriver.exe')
     driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
-    # driver = webdriver.Firefox(options=fire_options)
+    # cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\geckodriver.exe')
+    # driver = webdriver.Firefox(service = cService, options=fire_options)
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
@@ -269,9 +270,18 @@ if __name__ == "__main__":
         input()
     job_count = 0
     
+    linkedin_acc = ""
+    if(lk_credentials["email"] == "nguyenminhtiendeveloper@gmail.com"):
+        linkedin_acc = "Minh Tien linkedin acc get info"
+    if(lk_credentials["email"] == "huongnd@fitech.com.vn"):
+        linkedin_acc = "Thu Huong linkedin acc get info"
+
+    country_count = 1
+
     for country in countries:
-        x = random.randint(60,200)
-        time.sleep(x)
+        if(country_count > 1):
+            x = random.randint(60,200)
+            time.sleep(x)
         driver.get(home_url)
         time.sleep(5)
         print("Starting the scraping...")
@@ -302,24 +312,24 @@ if __name__ == "__main__":
         #print("Please Zoom in then press Enter")
         #input()
 
-        SCROLL_PAUSE_TIME = 0.5
+        # SCROLL_PAUSE_TIME = 0.5
 
-        # Get scroll height
-        last_height = driver.execute_script("return document.body.scrollHeight")
+        # # Get scroll height
+        # last_height = driver.execute_script("return document.body.scrollHeight")
 
-        while True:
-            # Scroll down to bottom
-            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+        # while True:
+        #     # Scroll down to bottom
+        #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
 
-            # Wait to load page
-            time.sleep(SCROLL_PAUSE_TIME)
+        #     # Wait to load page
+        #     time.sleep(SCROLL_PAUSE_TIME)
 
-            # Calculate new scroll height and compare with last scroll height
-            new_height = driver.execute_script("return document.body.scrollHeight")
-            if new_height == last_height:
-                break
-            last_height = new_height
-        driver.execute_script("window.scrollTo(0, - document.body.scrollHeight);")
+        #     # Calculate new scroll height and compare with last scroll height
+        #     new_height = driver.execute_script("return document.body.scrollHeight")
+        #     if new_height == last_height:
+        #         break
+        #     last_height = new_height
+        # driver.execute_script("window.scrollTo(0, - document.body.scrollHeight);")
 
         jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
         keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
@@ -370,10 +380,11 @@ if __name__ == "__main__":
                     y = random.randint(30,60)
                     time.sleep(y)
                     job_id = job.get_attribute("data-occludable-job-id")
-                    get_job_detail(driver,job_id,access_token,country, country)
+                    get_job_detail(driver,job_id,access_token,country, country,linkedin_acc)
                     job_count = job_count + 1
                 except NoSuchElementException:
                     pass
+        country_count = country_count + 1
         #Go to next page
         page_index = 0
         for page_indicator in page_indicators:
@@ -395,4 +406,4 @@ if __name__ == "__main__":
                         if job_fail == job_title:
                             continue
                     job_id = job.get_attribute("data-job-id")
-                    get_job_detail(driver,job_id,access_token,address, country)
+                    get_job_detail(driver,job_id,access_token,address, country, country, linkedin_acc)
