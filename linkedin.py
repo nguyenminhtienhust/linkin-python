@@ -238,11 +238,11 @@ if __name__ == "__main__":
                   "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
                   "Database","Oracle Database"]
     #job_name = jobs_names[6]
-    job_name = "NextJS"
+    job_name = "React Native"
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["Australia","Malaysia","New Zealand","Thailand","Singapore"]
+    countries = ["Australia","Malaysia","Thailand","New Zealand","Singapore"]
     #country = countries[2]
     #print("Country: " + country)
     
@@ -272,9 +272,9 @@ if __name__ == "__main__":
     
     linkedin_acc = ""
     if(lk_credentials["email"] == "nguyenminhtiendeveloper@gmail.com"):
-        linkedin_acc = "Minh Tien linkedin acc get info"
+        linkedin_acc = "Minh Tien"
     if(lk_credentials["email"] == "huongnd@fitech.com.vn"):
-        linkedin_acc = "Thu Huong linkedin acc get info"
+        linkedin_acc = "Thu Huong"
 
     country_count = 1
 
@@ -331,6 +331,8 @@ if __name__ == "__main__":
         #     last_height = new_height
         # driver.execute_script("window.scrollTo(0, - document.body.scrollHeight);")
 
+        driver.execute_script('window.scrollBy(0, 1000)') 
+
         jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator"]
         keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research"]
     
@@ -373,9 +375,9 @@ if __name__ == "__main__":
                             match_job = "No"
                             break
             if(match_job == "Yes"):
-                if((job_count // 10) == 1):
-                    z = random.randint(100,300)
-                    time.sleep(z)
+                # if((job_count // 10) == 1):
+                #     z = random.randint(90,180)
+                #     time.sleep(z)
                 try:
                     y = random.randint(30,60)
                     time.sleep(y)
