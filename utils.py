@@ -493,6 +493,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	expired = "No"
 	contact_new_tab = 0
 	company_about_url = ""
+	current_job_title = ""
 	try:
 		expired = driver.find_element(By.CLASS_NAME,"jobs-details-top-card__apply-error").text 
 		if("no longer" in expired.lower()):
@@ -804,7 +805,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 									pass
 						except :
 							pass	
-					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and request_note_str == "")):	
+					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
 							hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
@@ -927,7 +928,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		phone_company = ""
 		if(company_url != ""):
 			driver.execute_script("window.open('');")
-			print(contact_new_tab)
 			if(contact_new_tab == 0):
 				company_window = driver.window_handles[2]
 			else:
@@ -977,14 +977,14 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				print("Not interested country")
 			phone_company.replace("-","")
 		full_content = '\n Link tuyển dụng: '.join([full_content, job_detail_url])
-		if((request_note_str is not None and "connect" in request_note_str.lower()) and (contact_info["des"] is not None and "message" in contact_info["des"].lower())):
+		if((request_note_str is not None and "message" in request_note_str.lower()) or (contact_info["des"] is not None and "message" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi tin nhắn đến: '.join([full_content, hirer_link])
 		if((request_note_str is not None and "connect" in request_note_str.lower()) or (contact_info["des"] is not None and "connect" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
 		message_company_sent = ""
 		if(company_info["des"] is not None and "message" in company_info["des"].lower()):
 			message_company_sent = "message sent"
-		if(hirer_email == "" and (request_note_str is None or "message" not in request_note_str.lower()) and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and "connect" not in request_note_str.lower() and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "message" not in message_company_sent):
+		if(hirer_email == "" and (request_note_str is None or "message" not in request_note_str.lower()) and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and (request_note_str is None or "connect" not in request_note_str.lower()) and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "message" not in message_company_sent):
 			company_about_url = company_url.replace("/life", "/about")
 			if(company_about_url != ""):
 				try:				
@@ -1066,7 +1066,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.close()#2 close  company_window
 			time.sleep(1)
 		if(contact_new_tab == 1):
-			print("\n close contact tab")
 			driver.switch_to.window(contact_window)
 			driver.close()#2 close  company_window
 			time.sleep(1)
