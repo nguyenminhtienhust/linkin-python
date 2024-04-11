@@ -475,8 +475,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	root_window = driver.window_handles[0]
 	
 	#1 job detail window 
-	# y = random.randint(10,60)
-	# time.sleep(y)
 	driver.execute_script("window.open('');")
 	job_detail_window = driver.window_handles[1]
 	driver.switch_to.window(job_detail_window)
@@ -484,7 +482,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
 	print(job_detail_url)
 	driver.get(job_detail_url)
-	time.sleep(5)
+	y = random.randint(30,60)
+	time.sleep(y)
 	company_url = ""
 	company_name = ""
 	job_emails = []
@@ -494,6 +493,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	contact_new_tab = 0
 	company_about_url = ""
 	current_job_title = ""
+	other_address = ""
 	try:
 		expired = driver.find_element(By.CLASS_NAME,"jobs-details-top-card__apply-error").text 
 		if("no longer" in expired.lower()):
@@ -574,7 +574,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(contact_window)
 					driver.get(hirer_link)
 					time.sleep(3)			
-				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process")):
+				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
 					hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -589,7 +589,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							driver.implicitly_wait(10)
 							connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 							connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-							connect_mess_area.send_keys("We are Fitech founded since 2007. We have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate to develop such a solution we believe that our good teams would help.")
+							connect_mess_area.send_keys("Dear " + hirer_name +", we are Fitech founded since 2007. If you are looking for partners who can collaborate to develop your solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce we believe that our good teams would help.")
 							z = random.randint(2,7)
 							time.sleep(z)
 							#time.sleep(2)
@@ -633,7 +633,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										driver.implicitly_wait(10)
 										connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 										connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-										connect_mess_area.send_keys("We are Fitech founded since 2007. We have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate to develop such a solution we believe that our good teams would help.")
+										connect_mess_area.send_keys("Dear " + hirer_name +", we are Fitech founded since 2007. If you are looking for partners who can collaborate to develop your solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce we believe that our good teams would help.")
 										z = random.randint(3,9)
 										time.sleep(z)
 										#time.sleep(2)
@@ -672,7 +672,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							message_content_input.clear()
 							z = random.randint(2,6)
 							time.sleep(z)
-							message_content_input.send_keys("Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n \n" + linkedin_acc)
+							message_content_input.send_keys("Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n\n" + linkedin_acc)
 							z = random.randint(2,5)
 							time.sleep(z)
 							#time.sleep(2)
@@ -724,7 +724,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(contact_window)
 					driver.get(hirer_link)
 					time.sleep(3)			
-				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process")):
+				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
 							hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
@@ -744,7 +744,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 									connect_mess_area.clear()
 									z = random.randint(1,5)
 									time.sleep(z)
-									connect_mess_area.send_keys("We are Fitech founded since 2007. We have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate to develop such a solution we believe that our good teams would help.")
+									connect_mess_area.send_keys("Dear " + hirer_name +", we are Fitech founded since 2007. If you are looking for partners who can collaborate to develop your solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce we believe that our good teams would help.")
 									time.sleep(2)
 									connect_button = connect_mess_modal.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									if(connect_button.is_enabled()):
@@ -784,7 +784,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 												driver.implicitly_wait(10)
 												connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 												connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
-												connect_mess_area.send_keys("We are Fitech founded since 2007. We have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate to develop such a solution we believe that our good teams would help.")
+												connect_mess_area.send_keys("Dear " + hirer_name +", we are Fitech founded since 2007. If you are looking for partners who can collaborate to develop your solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce we believe that our good teams would help.")
 												y = random.randint(1,7)
 												time.sleep(y)
 												#time.sleep(2)
@@ -816,6 +816,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 
 							message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
 							message_title_input = message_box.find_element(By.TAG_NAME,"input")
+							message_title_input.clear()
 							message_title_input.send_keys("Elevate Your Team with Fitech's Offshore Talent")
 							time.sleep(2)
 
@@ -858,7 +859,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 
 	except :
-		print("hirer:" + hirer_name)
 		print("\nCan't found")       
 		pass
 
@@ -1003,7 +1003,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						mess_text_area.clear()
 						z = random.randint(3,7)
 						time.sleep(z)
-						mess_text_area.send_keys("Dear " + company_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n \n" + linkedin_acc)
+						mess_text_area.send_keys("Dear Sir/Madam, we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n \n" + linkedin_acc)
 						send_button = driver.find_element(By.CLASS_NAME,"artdeco-button--primary")
 						if(send_button.is_enabled()):
 							z = random.randint(2,4)
@@ -1043,7 +1043,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				assigned_user_id = get_contact_assigned_user(hirer_name)
 			else:
 				assigned_user_id = get_account_assigned_user(company_name)
-			if(lead_status == "Recycled"):
+			if(lead_status == "Recycled" or assigned_user_id == "d6ea87ac-8c7e-a4ed-ba81-65f500a98e58"):
 				assigned_user_id = ""
 
 			lead_id = lead_info["data"]
@@ -1055,7 +1055,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 			else:
 				print("\n\nStarting edit:......\n\n")
-				if(lead_info["status"] == "Assigned" or lead_info["status"] == "Converted" or lead_info["status"] == "In Process"):
+				if(lead_info["status"] == "Assigned" or lead_info["status"] == "Converted" or lead_info["status"] == "In Process" or lead_info["status"] == "Dead"):
 					lead_status = lead_info["status"]
 				else:
 					if(lead_info["status"] == "Recycled" and lead_status == "Recycled"):

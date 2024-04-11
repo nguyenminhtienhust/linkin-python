@@ -232,14 +232,11 @@ if __name__ == "__main__":
     #               "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Fullstack Engineer",
     #               "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
     #               "Database","Oracle Database"]
-    jobs_names = ["Android","ios","Objective C","kotlin developer","Flutter","Dart developer",
-                  "React Native","Mobile Application",".Net","Java developer","C language",
-                  "Python","C++","Php","ReactJS","NextJS",
-                  "AngularJS","VueJS  developer","Django","Golang", "Swift Developer", "Azure developer","NodeJS",
-                  "Database","Oracle Database"]
+    jobs_names = ["Php","ReactJS","NextJS",
+                  "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","C++", "Azure developer","NodeJS"]
     #job_name = jobs_names[6]
-    job_name = "React Native"
-    print("Job: " + job_name)
+    #job_name = "React Native"
+    #print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
     countries = ["Australia","Malaysia","Thailand","New Zealand", "Singapore"]
@@ -277,166 +274,153 @@ if __name__ == "__main__":
         linkedin_acc = "Huong Nguyen"
     if(lk_credentials["email"] == "thuydtabc123@gmail.com"):
         linkedin_acc = "Thu Thuy"
-    country_count = 1
-
-    for country in countries:
-        if(country_count > 1):
-            x = random.randint(60,200)
+    
+    
+    count_job = 1
+    for job_name in jobs_names:
+        if(count_job > 1):
+            x = random.randint(600,1200)
             time.sleep(x)
-        if(country_count == 1):
+        country_count = 1
+        if(count_job == 1):
             driver.get(home_url)
             time.sleep(5)
-        print("Starting the scraping...")
-        print("Country: " + country)
-        done = False
-        while( done == False):
-            try:
-                titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
-                titleInputElement.clear()
-                time.sleep(2)
-                titleInputElement.send_keys(job_name)
+        for country in countries:
+            if(country_count > 1):
+                x = random.randint(60,200)
+                time.sleep(x)
+            print("Starting the scraping...")
+            print("Country: " + country)
+            done = False
+            while( done == False):
+                try:
+                    titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
+                    titleInputElement.clear()
+                    time.sleep(2)
+                    titleInputElement.send_keys(job_name)
     
-                locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
-                locationInputElement.clear()
-                time.sleep(2)
-                locationInputElement.send_keys(country)
+                    locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
+                    locationInputElement.clear()
+                    time.sleep(2)
+                    locationInputElement.send_keys(country)
                 
     
-                searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
-                searchButton.click()
-                searchButton.accessible_name
-                time.sleep(5)
+                    searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
+                    searchButton.click()
+                    searchButton.accessible_name
+                    time.sleep(5)
 
-                page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
-                done = True
-            except NoSuchElementException:
-                continue
+                    page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
+                    done = True
+                except NoSuchElementException:
+                    continue
         #print("Please Zoom in then press Enter")
         #input()
+            driver.execute_script('window.scrollBy(0, 1000)') 
 
-        # SCROLL_PAUSE_TIME = 0.5
-
-        # # Get scroll height
-        # last_height = driver.execute_script("return document.body.scrollHeight")
-
-        # while True:
-        #     # Scroll down to bottom
-        #     driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-
-        #     # Wait to load page
-        #     time.sleep(SCROLL_PAUSE_TIME)
-
-        #     # Calculate new scroll height and compare with last scroll height
-        #     new_height = driver.execute_script("return document.body.scrollHeight")
-        #     if new_height == last_height:
-        #         break
-        #     last_height = new_height
-        # driver.execute_script("window.scrollTo(0, - document.body.scrollHeight);")
-
-        driver.execute_script('window.scrollBy(0, 1000)') 
-
-        jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer"]
-        keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
+            jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer"]
+            keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
     
-        access_token = login_crm()
+            access_token = login_crm()
     
-        jobs = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
-        count = len(jobs)
-        address = ""
-        for job in jobs:
-            job_state = ""
-            match_job = "Yes"
-            lead_id = ""
-            try:
-                job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
-                lower_title = job_title.lower()
-                if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
-                    continue
-                company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
-                address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
-                # lead_id = check_lead_existed(job_title,company_name )
-                # if(lead_id != ""):
-                #     continue
-                job_footer = job.find_element(By.CLASS_NAME,"job-card-list__footer-wrapper")
-                if job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state"):
-                    job_state = job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state").text           
-                if(job_state == "Viewed"):
-                    continue
-            except NoSuchElementException:  #spelling error making this code not work as expected
-                pass
-            if(job_state == "Viewed"):
-            #if(lead_id != ""):
-                continue
-            for key_fail in keys_fail:
-                if key_fail in job_title:
-                    match_job = "No"
-                    break
-                else:
-                    for job_fail in jobs_fail:
-                        if job_fail == job_title:
-                            match_job = "No"
-                            break
-            if(match_job == "Yes"):
-                # if((job_count // 10) == 1):
-                #     z = random.randint(90,180)
-                #     time.sleep(z)
+            jobs = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
+            count = len(jobs)
+            address = ""
+            for job in jobs:
+                job_state = ""
+                match_job = "Yes"
+                lead_id = ""
                 try:
-                    # y = random.randint(30,60)
-                    # time.sleep(y)
-                    job_id = job.get_attribute("data-occludable-job-id")
-                    get_job_detail(driver,job_id,access_token,country, country,linkedin_acc)
-                    job_count = job_count + 1
-                except NoSuchElementException:
-                    pass
-        country_count = country_count + 1
-        #Go to next page
-        page_index = 0
-        for page_indicator in page_indicators:
-            if page_index == 0:
-                continue
-            else:
-                button = page_indicator.find_element(By.TAG_NAME,"button")
-                button.click()
-                time.sleep(5)
-                jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
-                count = len(jobs)
-                for job in jobs:
-                    job_state = ""
-                    match_job = "Yes"
-                    lead_id = ""
-                    try:
-                        job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
-                        lower_title = job_title.lower()
-                        if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
-                            continue
-                        company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
-                        address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
-                        # lead_id = check_lead_existed(job_title,company_name )
-                        # if(lead_id != ""):
-                        #     continue
-                        job_footer = job.find_element(By.CLASS_NAME,"job-card-list__footer-wrapper")
-                        if job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state"):
-                            job_state = job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state").text           
-                        if(job_state == "Viewed"):
-                            continue
-                    except NoSuchElementException:  #spelling error making this code not work as expected
-                        pass
-                    if(job_state == "Viewed"):
-                    #if(lead_id != ""):
+                    job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
+                    lower_title = job_title.lower()
+                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
                         continue
-                    for key_fail in keys_fail:
-                        if key_fail in job_title:
-                            match_job = "No"
-                            break
-                        else:
-                            for job_fail in jobs_fail:
-                                if job_fail == job_title:
-                                    match_job = "No"
-                                    break
-                    if(match_job == "Yes"):
+                    company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
+                    address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
+                    # lead_id = check_lead_existed(job_title,company_name )
+                    # if(lead_id != ""):
+                    #     continue
+                    job_footer = job.find_element(By.CLASS_NAME,"job-card-list__footer-wrapper")
+                    if job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state"):
+                        job_state = job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state").text           
+                    if(job_state == "Viewed"):
+                        continue
+                except NoSuchElementException:  #spelling error making this code not work as expected
+                    pass
+                if(job_state == "Viewed"):
+                #if(lead_id != ""):
+                    continue
+                for key_fail in keys_fail:
+                    if key_fail in job_title:
+                        match_job = "No"
+                        break
+                    else:
+                        for job_fail in jobs_fail:
+                            if job_fail == job_title:
+                                match_job = "No"
+                                break
+                if(match_job == "Yes"):
+                    # if((job_count // 10) == 1):
+                    #     z = random.randint(90,180)
+                    #     time.sleep(z)
+                    try:
+                        # y = random.randint(30,60)
+                        # time.sleep(y)
+                        job_id = job.get_attribute("data-occludable-job-id")
+                        get_job_detail(driver,job_id,access_token,country, country,linkedin_acc)
+                        job_count = job_count + 1
+                    except NoSuchElementException:
+                        pass
+            country_count = country_count + 1
+            count_job = count_job + 1
+            #Go to next page
+            page_index = 0
+            for page_indicator in page_indicators:
+                if page_index == 0:
+                    continue
+                else:
+                    button = page_indicator.find_element(By.TAG_NAME,"button")
+                    button.click()
+                    time.sleep(5)
+                    jobs = driver.find_elements(By.CLASS_NAME,"job-card-container")
+                    count = len(jobs)
+                    for job in jobs:
+                        job_state = ""
+                        match_job = "Yes"
+                        lead_id = ""
                         try:
-                            job_id = job.get_attribute("data-occludable-job-id")
-                            get_job_detail(driver,job_id,access_token,country, country,linkedin_acc)
-                            job_count = job_count + 1
-                        except NoSuchElementException:
+                            job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
+                            lower_title = job_title.lower()
+                            if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
+                                continue
+                            company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
+                            address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
+                            # lead_id = check_lead_existed(job_title,company_name )
+                            # if(lead_id != ""):
+                            #     continue
+                            job_footer = job.find_element(By.CLASS_NAME,"job-card-list__footer-wrapper")
+                            if job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state"):
+                                job_state = job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state").text           
+                            if(job_state == "Viewed"):
+                                continue
+                        except NoSuchElementException:  #spelling error making this code not work as expected
                             pass
+                        if(job_state == "Viewed"):
+                        #if(lead_id != ""):
+                            continue
+                        for key_fail in keys_fail:
+                            if key_fail in job_title:
+                                match_job = "No"
+                                break
+                            else:
+                                for job_fail in jobs_fail:
+                                    if job_fail == job_title:
+                                        match_job = "No"
+                                        break
+                        if(match_job == "Yes"):
+                            try:
+                                job_id = job.get_attribute("data-occludable-job-id")
+                                get_job_detail(driver,job_id,access_token,country, country,linkedin_acc)
+                                job_count = job_count + 1
+                            except NoSuchElementException:
+                                pass
