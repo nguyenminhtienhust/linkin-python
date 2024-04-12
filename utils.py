@@ -1019,8 +1019,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		time.sleep(2)	
 		last_time = datetime(2023, 1 , 1)
 		lead_status = "New"
-		if(hirer_profile == "" and email_info == "" and hirer_website == "" and phone_company == "" and hirer_name == "" and hirer_phone == "" and job_phone == ""):
-			lead_status = "Recycled"		
+		if(request_note_str != ""):
+			lead_status = "Recycled"
+		# if(hirer_profile == "" and email_info == "" and hirer_website == "" and phone_company == "" and hirer_name == "" and hirer_phone == "" and job_phone == "" and request_note_str != ""):
+		# 	lead_status = "Recycled"		
 		website = website_company
 		if(hirer_website != ""):
 			website = hirer_website
@@ -1052,6 +1054,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				time.sleep(2)
 				# print("\n title: " + current_job_title)
 				# print("\n company_name:" + company_name)
+				if(request_note_str != ""):
+					assigned_user_id = "1"
 				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
 			else:
 				print("\n\nStarting edit:......\n\n")

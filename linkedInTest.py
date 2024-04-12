@@ -232,8 +232,7 @@ if __name__ == "__main__":
     #               "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Fullstack Engineer",
     #               "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
     #               "Database","Oracle Database"]
-    jobs_names = ["Php","ReactJS","NextJS",
-                  "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","C++", "Azure developer","NodeJS"]
+    jobs_names = ["VueJS  developer","Django","Golang", "Swift Developer","C++", "Azure developer","NodeJS"]
     #job_name = jobs_names[6]
     #job_name = "React Native"
     #print("Job: " + job_name)
@@ -277,9 +276,11 @@ if __name__ == "__main__":
     
     
     count_job = 1
+    current_job = ""
+    current_coutry = ""
     for job_name in jobs_names:
         if(count_job > 1):
-            x = random.randint(600,1200)
+            x = random.randint(480,1000)
             time.sleep(x)
         country_count = 1
         if(count_job == 1):
@@ -294,15 +295,19 @@ if __name__ == "__main__":
             done = False
             while( done == False):
                 try:
-                    titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
-                    titleInputElement.clear()
-                    time.sleep(2)
-                    titleInputElement.send_keys(job_name)
-    
-                    locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
-                    locationInputElement.clear()
-                    time.sleep(2)
-                    locationInputElement.send_keys(country)
+                    if(current_job != job_name):
+                        current_job = job_name
+                        titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
+                        titleInputElement.clear()
+                        time.sleep(2)
+                        titleInputElement.send_keys(job_name)
+
+                    if(current_coutry != country):
+                        current_coutry = country
+                        locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
+                        locationInputElement.clear()
+                        time.sleep(2)
+                        locationInputElement.send_keys(country)
                 
     
                     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
@@ -424,3 +429,5 @@ if __name__ == "__main__":
                                 job_count = job_count + 1
                             except NoSuchElementException:
                                 pass
+        #     current_coutry = country
+        # current_job = job_name
