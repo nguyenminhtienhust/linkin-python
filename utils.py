@@ -561,6 +561,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if(hirer_name != ""):			
 			contact_info = check_contact(hirer_name)		
 			if(contact_info["data"] == ""):
+				print("\n empty")
 			# get contact info and send request
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
@@ -575,7 +576,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"EgmjMAYOpkRTjFVNTuvJGHPbliMlUCtfJdtPoNUg")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
@@ -652,8 +653,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 											hirer_connect_request_button.click()
 											request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
 											time.sleep(2)
-								
-						except:
+
+						except Exception as error:
+							print("An exception occurred:", error)		
 							pass
 					try:
 						if(request_note_str == ""):
@@ -727,7 +729,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"EgmjMAYOpkRTjFVNTuvJGHPbliMlUCtfJdtPoNUg")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							if (text_hirer_button == "Connect"):
@@ -807,7 +809,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"pv-top-card-v2-ctas")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"EgmjMAYOpkRTjFVNTuvJGHPbliMlUCtfJdtPoNUg")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -858,8 +860,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				print("\n edit contact")
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 
-	except :
-		print("\nCan't found")       
+	except Exception as error:
+		print("\nCan't found ", error)       
 		pass
 
 	if(country == "Australia"):
