@@ -1060,13 +1060,16 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] == "Recycled" and lead_status == "Recycled"):
 					lead_status = "Recycled"	
 				isEdit = 1
+				isMailInclude = 0
 				lead_email_list = check_email_lead(lead_id)
 				for lead_email in lead_email_list["email_list"]:
 					if(email_info == lead_email):
-						isEdit = 0
+						isMailInclude = 1
 						break
-				if(lead_info["phone_work"] == phone_company and lead_info["phone_mobile"] == hirer_phone and lead_info["phone_other"] == job_phone and isEdit == 0):
-					isEdit = 0	
+				if(email_info == ""):
+					isMailInclude = 1
+				if(lead_info["phone_work"] == phone_company and lead_info["phone_mobile"] == hirer_phone and lead_info["phone_other"] == job_phone and isMailInclude == 1):
+					isEdit = 0
 				if(lead_info["status"] != "Assigned" and lead_info["status"] != "Converted" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead" and isEdit == 1):
 					print("\n\nStarting edit:......\n\n")	
 					if(lead_info["assigned_user"] is not None and lead_info["assigned_user"] != ""):
