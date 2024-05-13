@@ -26,6 +26,7 @@ HEADLESS_OPTIONS = {'chrome_options': options}
 import logging
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.select import Select
+from langdetect import detect
 
 logger = logging.getLogger(__name__)
 
@@ -156,9 +157,9 @@ def add_new_account(access_token,name,phone,website,address, des):
 	  "name": name,
 	  "account_type": "Customer",
    	  "phone_office": phone,
-      "phone_alternate": phone,
-      "website": website,
-      "billing_address_country" : address,
+	  "phone_alternate": phone,
+	  "website": website,
+	  "billing_address_country" : address,
 	  "assigned_user_id": "62b60dd0-9ab9-735e-e291-65d2cd0ab68e",
 	  "description" : des
 	}
@@ -184,9 +185,9 @@ def edit_account(access_token,account_id,name,phone,website,address, des):
 	  "name": name,
 	  "account_type": "Customer",
    	  "phone_office": phone,
-      "phone_alternate": phone,
-      "website": website,
-      "billing_address_country" : address,
+	  "phone_alternate": phone,
+	  "website": website,
+	  "billing_address_country" : address,
 	  "assigned_user_id": "62b60dd0-9ab9-735e-e291-65d2cd0ab68e",
 	  "description" : des
 	}
@@ -207,9 +208,9 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
   "data": {
-    "type": "Leads",
-    "attributes": {
-      "first_name": hirer_name,
+	"type": "Leads",
+	"attributes": {
+	  "first_name": hirer_name,
 	  "last_name": company_name,
 	  "phone_work": phone_company,
 	  "phone_mobile": hirer_phone,
@@ -227,7 +228,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "assigned_user_id" : assigned_user_id,
 	  "refered_by" : "",
 	  "contact_id" : contact_id
-    }
+	}
   }
 }
 	# Ha cmt
@@ -248,10 +249,10 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	jsondata =  {
   "data": {
-    "type": "Leads",
+	"type": "Leads",
 	"id" : lead_id,
-    "attributes": {
-      "first_name": hirer_name,
+	"attributes": {
+	  "first_name": hirer_name,
 	  "last_name": company_name,
 	  "phone_work": phone_company,
 	  "phone_mobile": hirer_phone,
@@ -269,7 +270,7 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "assigned_user_id": assigned_user_id,
 	  "refered_by" : "",
 	  "contact_id": contact_id
-    }
+	}
   }
 }
 	# Ha cmt
@@ -489,9 +490,18 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	company_about_url = ""
 	current_job_title = ""
 	other_address = ""
-	try:
+	try:		
+		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
+		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
+		if(detect(job_detail) != "en" or detect(current_job_title) != "en"):
+			driver.switch_to.window(job_detail_window)
+			driver.close()#1 close  job_detail_window
+			time.sleep(1)
+
+			driver.switch_to.window(root_window)
+			return 
 		expired = driver.find_element(By.CLASS_NAME,"jobs-details-top-card__apply-error").text 
-		if("no longer" in expired.lower()):
+		if("no longer" in expired.lower() ):
 			driver.switch_to.window(job_detail_window)
 			driver.close()#1 close  job_detail_window
 			time.sleep(1)
@@ -570,7 +580,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"KohFoNcweLRhnhpBnlxgCrQsSGuqPLOksygY")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"ZNIoOFSxKakIWolwAztSNBbWrSUWNYJWOFVOgVg")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
@@ -672,14 +682,13 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							message_content_input.send_keys("Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n\n" + linkedin_acc)
 							z = random.randint(2,5)
 							time.sleep(z)
-							#time.sleep(2)
-							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-							if(send_button.is_enabled()):
-								request_note_str = contact_info["des"] + "\nmessage sent by " + linkedin_acc
-								z = random.randint(2,4)
-								time.sleep(z)
-								send_button.submit() 
-								time.sleep(3)
+							# send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+							# if(send_button.is_enabled()):
+							# 	request_note_str = contact_info["des"] + "\nmessage sent by " + linkedin_acc
+							# 	z = random.randint(2,4)
+							# 	time.sleep(z)
+							# 	send_button.submit() 
+							# 	time.sleep(3)
 					except :
 						pass
 
@@ -689,7 +698,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"hzOsfPaANjjpglqdhMZnuQQcfceZR")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ovngCZBCpbcZHkqPLLpcmFKUNztPwvRpLQ")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -724,7 +733,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"KohFoNcweLRhnhpBnlxgCrQsSGuqPLOksygY")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"ZNIoOFSxKakIWolwAztSNBbWrSUWNYJWOFVOgVg")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							if (text_hirer_button == "Connect"):
@@ -809,7 +818,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"KohFoNcweLRhnhpBnlxgCrQsSGuqPLOksygY")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"ZNIoOFSxKakIWolwAztSNBbWrSUWNYJWOFVOgVg")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -828,13 +837,13 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							z = random.randint(3,7)
 							time.sleep(z) 
 		
-							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
-							if(send_button.is_enabled()):
-								request_note_str = contact_info["des"] + "\nmessage sent by " + linkedin_acc
-								z = random.randint(2,4)
-								time.sleep(z)
-								send_button.submit() 
-								time.sleep(2)
+							# send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
+							# if(send_button.is_enabled()):
+							# 	request_note_str = contact_info["des"] + "\nmessage sent by " + linkedin_acc
+							# 	z = random.randint(2,4)
+							# 	time.sleep(z)
+							# 	send_button.submit() 
+							# 	time.sleep(2)
 						except :
 							pass
 				
@@ -844,7 +853,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"hzOsfPaANjjpglqdhMZnuQQcfceZR")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ovngCZBCpbcZHkqPLLpcmFKUNztPwvRpLQ")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -1039,7 +1048,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
 		
 		lower_title = current_job_title.lower()
-		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title):
+		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title):
 			print("Job not suitable")
 		else:
 			assigned_user_id = ""
@@ -1052,8 +1061,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if (lead_id == ""):
 				print("\n\nStarting add new:......\n\n")
 				time.sleep(2)
-				# print("\n title: " + current_job_title)
-				# print("\n company_name:" + company_name)
 				if(request_note_str != ""):
 					assigned_user_id = "1"
 				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
@@ -1445,3 +1452,12 @@ def get_recommendation_details(rec):
 					pass
 
 	return rec_dict
+
+# -*- coding: utf-8 -*-
+def isEnglish(s):
+	try:
+		s.encode(encoding='utf-8').encode('ascii')
+	except UnicodeEncodeError:
+		return False
+	else:
+		return True

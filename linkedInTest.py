@@ -26,6 +26,7 @@ import psycopg2
 import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException
+from langdetect import detect
 
 from utils import (
     get_lk_credentials,
@@ -224,23 +225,22 @@ def scrap_lksn_pages(
             
 if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
-    print("Starting Clone...")
-    
-    # jobs_names = ["Android","ios","Objective C","kotlin developer","Flutter","Dart developer",
-    #               "React Native","Mobile Application",".Net","Java","C language",
-    #               "Python","C++","Php","ReactJS","NextJS",
-    #               "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Fullstack Engineer",
-    #               "Remote developer","Software Architect","AWS developer","Azure developer","DevOps","NodeJS",
-    #               "Database","Oracle Database"]
-    jobs_names = ["VueJS  developer","Django","Golang", "Swift Developer","C++", "Azure developer","NodeJS"]
-    #job_name = jobs_names[6]
-    #job_name = "React Native"
-    #print("Job: " + job_name)
-    
+
+    # jobs_names = [".Net","Java","iOS developer","Android","kotlin developer","Flutter","Dart developer","NodeJS",
+    #                "React Native","ReactJS","NextJS",
+    #                "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Python",
+    #               "Php", "C++","Azure developer"]
+    #job_name = [.Net,Java,iOS developer,Android,kotlin developer,Flutter,Dart developer,NodeJS,React Native,ReactJS,NextJS,AngularJS,VueJS  developer,Django,Golang,Swift Developer,Php,C++,Azure developer]
+    jobs_names = ["Java","iOS developer","Android"]
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["Australia","Malaysia","Thailand","New Zealand", "Singapore"]
-    #country = countries[2]
-    #print("Country: " + country)
+    countries = ["United States","Germany","European Union","Malaysia","Australia","New Zealand", "Thailand","Singapore"]
+
+    # jobfile = open("job.txt", "r")
+    # jobs_names = jobfile.read().split(",")
+    # jobfile.close()
+    # countryfile = open("country.txt", "r")
+    # countries = countryfile.read().split(",")
+    # countryfile.close()
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
     chrome_options = webdriver.ChromeOptions()
@@ -274,13 +274,14 @@ if __name__ == "__main__":
     if(lk_credentials["email"] == "thuydtabc123@gmail.com"):
         linkedin_acc = "Thu Thuy"
     
-    
+    print("Starting the scraping...")
     count_job = 1
     current_job = ""
     current_coutry = ""
-    for job_name in jobs_names:
+    for job_name in jobs_names:   
+        print("Job: " + job_name)
         if(count_job > 1):
-            x = random.randint(480,1000)
+            x = random.randint(300,1000)
             time.sleep(x)
         country_count = 1
         if(count_job == 1):
@@ -289,8 +290,7 @@ if __name__ == "__main__":
         for country in countries:
             if(country_count > 1):
                 x = random.randint(60,200)
-                time.sleep(x)
-            print("Starting the scraping...")
+                time.sleep(x)           
             print("Country: " + country)
             done = False
             while( done == False):
@@ -323,7 +323,7 @@ if __name__ == "__main__":
         #input()
             driver.execute_script('window.scrollBy(0, 1000)') 
 
-            jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing Assistant","Administrative Assistant","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer"]
+            jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing","Administrative","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer","Assistant"]
             keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
     
             access_token = login_crm()
@@ -338,7 +338,8 @@ if __name__ == "__main__":
                 try:
                     job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
                     lower_title = job_title.lower()
-                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
+                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or detect(lower_title) != "en"):
+                        print("\n not English")
                         continue
                     company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                     address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
@@ -396,7 +397,7 @@ if __name__ == "__main__":
                         try:
                             job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
                             lower_title = job_title.lower()
-                            if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
+                            if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or detect(lower_title) != "en"):
                                 continue
                             company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                             address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
