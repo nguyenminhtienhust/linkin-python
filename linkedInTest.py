@@ -26,7 +26,7 @@ import psycopg2
 import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException
-from langdetect import detect
+from eld import LanguageDetector
 
 from utils import (
     get_lk_credentials,
@@ -231,9 +231,9 @@ if __name__ == "__main__":
     #                "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php", "C++","Azure developer"]
     #job_name = [.Net,Java,iOS developer,Android,kotlin developer,Flutter,Dart developer,NodeJS,React Native,ReactJS,NextJS,AngularJS,VueJS  developer,Django,Golang,Swift Developer,Php,C++,Azure developer]
-    jobs_names = ["Java","iOS developer","Android"]
-    #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["United States","Germany","European Union","Malaysia","Australia","New Zealand", "Thailand","Singapore"]
+    jobs_names = ["AngularJS"]
+    #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States"]
+    countries = ["Germany","European Union", "Thailand","Singapore","United States"]
 
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")
@@ -297,6 +297,7 @@ if __name__ == "__main__":
                 try:
                     if(current_job != job_name):
                         current_job = job_name
+                        #titleInputElement = driver.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input")                     
                         titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
                         titleInputElement.clear()
                         time.sleep(2)
@@ -304,6 +305,7 @@ if __name__ == "__main__":
 
                     if(current_coutry != country):
                         current_coutry = country
+                        #locationInputElement = driver.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input") 
                         locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
                         locationInputElement.clear()
                         time.sleep(2)
@@ -317,7 +319,8 @@ if __name__ == "__main__":
 
                     page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
                     done = True
-                except NoSuchElementException:
+                except NoSuchElementException as error:
+                    print(error)  
                     continue
         #print("Please Zoom in then press Enter")
         #input()
@@ -337,9 +340,12 @@ if __name__ == "__main__":
                 lead_id = ""
                 try:
                     job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
+                    print("\n job_title " + job_title)
                     lower_title = job_title.lower()
-                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or detect(lower_title) != "en"):
-                        print("\n not English")
+                    detector = LanguageDetector()
+                    #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
+                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or detector.detect(lower_title).language != "en"):
+                        print("\n title english: " , lower_title)
                         continue
                     company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                     address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text

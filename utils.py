@@ -26,7 +26,7 @@ HEADLESS_OPTIONS = {'chrome_options': options}
 import logging
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.select import Select
-from langdetect import detect
+from eld import LanguageDetector
 
 logger = logging.getLogger(__name__)
 
@@ -476,7 +476,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	driver.switch_to.window(job_detail_window)
 
 	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
-	print(job_detail_url)
 	driver.get(job_detail_url)
 	y = random.randint(15,40)
 	time.sleep(y)
@@ -493,7 +492,12 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	try:		
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
-		if(detect(job_detail) != "en" or detect(current_job_title) != "en"):
+		detector = LanguageDetector()
+		title_lan = detector.detect(current_job_title).language
+		detail_lan = detector.detect(job_detail).language
+		if(title_lan != "en" or detail_lan != "en"):
+			print("\n english" + title_lan)
+			print("\n english" + detail_lan)
 			driver.switch_to.window(job_detail_window)
 			driver.close()#1 close  job_detail_window
 			time.sleep(1)
@@ -508,7 +512,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 
 			driver.switch_to.window(root_window)
 			return 
-	except:
+	except Exception as error:
+		print("First ex: ",error)
 		pass
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
@@ -524,17 +529,18 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			job_phones = re.findall(r'^(0|(\+64(\s|-)?)){1}(21|22|27){1}(\s|-)?\d{3}(\s|-)?\d{4}$', job_detail)
 		else:
 			print("Not interested country")
-		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-without-tagline")
+		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__tertiary-description")
 		address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
-		other_address = address_element.text
+		other_address = address_element.text	
 		company_name_text = infos_element.text
 		company_name = re.split(' · ', company_name_text, maxsplit=1)[0]
-		if not infos_element.find_element(By.TAG_NAME,"a"):
+		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
+		if not company_element.find_element(By.TAG_NAME,"a"):
 			print("company_url is empty")
 		else:
-			company_element = infos_element.find_element(By.TAG_NAME,"a")
-			company_url = infos_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
-			company_name = company_element.text
+			company_element_url = company_element.find_element(By.TAG_NAME,"a")
+			company_url = company_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
+			company_name = company_element_url.text
 	except:
 		print("not found job title")
 		pass
@@ -558,7 +564,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	#Get Hirer Link
 	try:
 		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name").text
-	except NoSuchElementException:
+	except NoSuchElementException as error:
+		print("Second ex: " , error)
 		pass
 	try:
 		lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
@@ -569,6 +576,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			# get contact info and send request
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
+				print(hirer_link)
 				contact_new_tab = random.randint(0,1)
 				if(contact_new_tab == 0):
 					driver.get(hirer_link)
@@ -580,7 +588,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"ZNIoOFSxKakIWolwAztSNBbWrSUWNYJWOFVOgVg")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"lnbWEgqCyLPcWXWkyixHTLTnQDgwRVWqvmRWk")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
@@ -662,7 +670,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										print("\n Connect sent to new contact: ", error)
 										continue
 						except Exception as error:
-							print("An exception occurred:", error)		
+							print("thrid ex:", error)		
 							pass
 					try:
 						if(request_note_str == "" and text_hirer_button != "Pending"):
@@ -689,7 +697,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							# 	time.sleep(z)
 							# 	send_button.submit() 
 							# 	time.sleep(3)
-					except :
+					except Exception as error:
+						print("forth ex: ", error)
 						pass
 
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
@@ -698,7 +707,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ovngCZBCpbcZHkqPLLpcmFKUNztPwvRpLQ")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"BpBiAMbdbZIabDyjTdKmfxQOGNPoTNABicM")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -720,6 +729,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				request_note_str = contact_info["des"]
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
+				print(hirer_link)
 				contact_new_tab = random.randint(0,1)
 				if(contact_new_tab == 0):
 					driver.get(hirer_link)
@@ -733,7 +743,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"ZNIoOFSxKakIWolwAztSNBbWrSUWNYJWOFVOgVg")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"lnbWEgqCyLPcWXWkyixHTLTnQDgwRVWqvmRWk")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							if (text_hirer_button == "Connect"):
@@ -814,11 +824,12 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								except Exception as errorConnect:
 									print("\nConnect error :", errorConnect)   
 									pass
-						except :
+						except Exception as error: 
+							print("Fifth ex: ", error)
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"ZNIoOFSxKakIWolwAztSNBbWrSUWNYJWOFVOgVg")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"lnbWEgqCyLPcWXWkyixHTLTnQDgwRVWqvmRWk")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -844,7 +855,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							# 	time.sleep(z)
 							# 	send_button.submit() 
 							# 	time.sleep(2)
-						except :
+						except Exception as error:
+							print("Sixth ex: ", error)
 							pass
 				
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
@@ -853,7 +865,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ovngCZBCpbcZHkqPLLpcmFKUNztPwvRpLQ")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"BpBiAMbdbZIabDyjTdKmfxQOGNPoTNABicM")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -910,7 +922,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	if (job_phones and len(job_phones) > 0):
 		job_phone = job_phones[0]
 		if(country == "Australia"):
-			if (job_phone.startswith('0') or job_phone.startswith("(0")):			
+			if (job_phone.startswith('0') or job_phone.startswith("0")):			
 				job_phone = job_phone.replace('0','+61',1)
 			else:
 				if(job_phone.startswith('2') or job_phone.startswith('3') or job_phone.startswith('7') or job_phone.startswith('8') or job_phone.startswith('4') or job_phone.startswith('5')):
@@ -1048,7 +1060,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
 		
 		lower_title = current_job_title.lower()
-		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title):
+		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
 			print("Job not suitable")
 		else:
 			assigned_user_id = ""
