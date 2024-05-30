@@ -515,16 +515,26 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		pass
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text
-		job_emails = re.findall(r"[a-z0-9A-Z\.\-+_]+@[a-z0-9A-Z\.\-+_]+\.[a-zA-Z]+", job_detail)
+		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text	
+		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
+		job_detail_text = job_detail.text
+		job_detail_spans = job_detail.find_elements(By.TAG_NAME,"span")
+		job_detail_ps = job_detail.find_elements(By.TAG_NAME,"p")
+		for job_detail_span in job_detail_spans:
+			job_detail_text += job_detail_span.text
+		for job_detail_p in job_detail_ps:
+			job_detail_text += job_detail_p.text
+			#print(job_detail_span.text)
+		print(job_detail_text)
+		job_emails = re.findall(r"[a-z0-9A-Z\.\-+_]+@[a-z0-9A-Z\.\-+_]+\.[a-zA-Z]+", job_detail_text)
 		if(country == "Australia"):
 			job_phones =re.findall(r'^(?=.*)((?:\+61) ?(?:\((?=.*\)))?([2-47-8])\)?|(?:\((?=.*\)))?([0-1][2-47-8])\)?) ?-?(?=.*)((\d{1} ?-?\d{3}$)|(00 ?-?\d{4} ?-?\d{4}$)|( ?-?\d{4} ?-?\d{4}$)|(\d{2} ?-?\d{3} ?-?\d{3}$))', job_detail) 
 		elif (country == "Malaysia"):
-			job_phones =re.findall(r'^(?:(?:\+60|0060)(?:[1]|[0]?[1])[ -]?|[0])[0-9]{2}[ -]?[0-9]{3,4}[ -]?[0-9]{3,4}$', job_detail) 
+			job_phones =re.findall(r'^(?:(?:\+60|0060)(?:[1]|[0]?[1])[ -]?|[0])[0-9]{2}[ -]?[0-9]{3,4}[ -]?[0-9]{3,4}$', job_detail_text) 
 		elif (country == "Thailand"):
-			job_phones = re.findall(r'^(\+\d{1,3})?\s?\(?\d{1,4}\)?[\s.-]?\d{3}[\s.-]?\d{4}$', job_detail)
+			job_phones = re.findall(r'^(\+\d{1,3})?\s?\(?\d{1,4}\)?[\s.-]?\d{3}[\s.-]?\d{4}$', job_detail_text)
 		elif (country == "New Zealand"):
-			job_phones = re.findall(r'^(0|(\+64(\s|-)?)){1}(21|22|27){1}(\s|-)?\d{3}(\s|-)?\d{4}$', job_detail)
+			job_phones = re.findall(r'^(0|(\+64(\s|-)?)){1}(21|22|27){1}(\s|-)?\d{3}(\s|-)?\d{4}$', job_detail_text)
 		else:
 			print("Not interested country")
 		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-container")
@@ -563,7 +573,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	#Get Hirer Link
 	try:
 		hirer_name_element = driver.find_element(By.CLASS_NAME,"jobs-poster__name")
-		hirer_name = hirer_name_element.find_element(By.TAG_NAME,"span").text
+		hirer_name = hirer_name_element.find_element(By.TAG_NAME,"strong").text
+		#hirer_name = hirer_name_element.text
 	except NoSuchElementException as error:
 		print("Second ex: " , error)
 		pass
@@ -949,7 +960,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	try:
 		website_company = ""
 		phone_company = ""
-		print("\n company_url", company_url )
 		if(company_url != ""):
 			driver.execute_script("window.open('');")
 			if(contact_new_tab == 0):
