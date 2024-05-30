@@ -527,7 +527,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			job_phones = re.findall(r'^(0|(\+64(\s|-)?)){1}(21|22|27){1}(\s|-)?\d{3}(\s|-)?\d{4}$', job_detail)
 		else:
 			print("Not interested country")
-		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__tertiary-description")
+		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__primary-description-container")
 		address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
 		other_address = address_element.text	
 		# address_from_web = other_address.split(',')
@@ -540,8 +540,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			company_element_url = company_element.find_element(By.TAG_NAME,"a")
 			company_url = company_element.find_element(By.CSS_SELECTOR,"a").get_attribute("href")
 			company_name = company_element_url.text
-	except:
-		print("not found job title")
+	except Exception as error:
+		print("not found job title", error)
 		pass
 	
 	company_info = {"data": "", "des" : ""}
@@ -949,6 +949,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	try:
 		website_company = ""
 		phone_company = ""
+		print("\n company_url", company_url )
 		if(company_url != ""):
 			driver.execute_script("window.open('');")
 			if(contact_new_tab == 0):
