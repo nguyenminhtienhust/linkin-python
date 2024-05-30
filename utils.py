@@ -519,11 +519,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
 		job_detail_text = job_detail.text
 		job_detail_spans = job_detail.find_elements(By.TAG_NAME,"span")
-		job_detail_ps = job_detail.find_elements(By.TAG_NAME,"p")
 		for job_detail_span in job_detail_spans:
-			job_detail_text += job_detail_span.text
-		for job_detail_p in job_detail_ps:
-			job_detail_text += job_detail_p.text
+			job_detail_text = job_detail_text + job_detail_span.text
+			job_detail_ps = job_detail_span.find_elements(By.TAG_NAME,"p")
+			for job_detail_p in job_detail_ps:
+				job_detail_text = job_detail_text + job_detail_p.text
 			#print(job_detail_span.text)
 		print(job_detail_text)
 		job_emails = re.findall(r"[a-z0-9A-Z\.\-+_]+@[a-z0-9A-Z\.\-+_]+\.[a-zA-Z]+", job_detail_text)
@@ -929,6 +929,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if (job_emails and len(job_emails) > 0):
 			email_info = job_emails[0]
 			full_content = '\n Email được lấy từ job description.'
+	print("\n email_ìno", email_info)
 	maylaysia_phone_valid = "123456789"
 	if (job_phones and len(job_phones) > 0):
 		job_phone = job_phones[0]
