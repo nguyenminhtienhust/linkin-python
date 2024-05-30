@@ -496,8 +496,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		title_lan = detector.detect(current_job_title).language
 		detail_lan = detector.detect(job_detail).language
 		if(title_lan != "en" or detail_lan != "en"):
-			print("\n english" + title_lan)
-			print("\n english" + detail_lan)
 			driver.switch_to.window(job_detail_window)
 			driver.close()#1 close  job_detail_window
 			time.sleep(1)
@@ -532,9 +530,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		infos_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__tertiary-description")
 		address_element = infos_element.find_elements(By.TAG_NAME,"span")[0]
 		other_address = address_element.text	
-		company_name_text = infos_element.text
-		company_name = re.split(' · ', company_name_text, maxsplit=1)[0]
+		# address_from_web = other_address.split(',')
+		# address = address_from_web[address_from_web.len() -1]
 		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
+		company_name = company_element.text
 		if not company_element.find_element(By.TAG_NAME,"a"):
 			print("company_url is empty")
 		else:
@@ -563,18 +562,19 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	request_note_str = ""
 	#Get Hirer Link
 	try:
-		hirer_name = driver.find_element(By.CLASS_NAME,"jobs-poster__name").text
+		hirer_name_element = driver.find_element(By.CLASS_NAME,"jobs-poster__name")
+		hirer_name = hirer_name_element.find_element(By.TAG_NAME,"span").text
 	except NoSuchElementException as error:
 		print("Second ex: " , error)
 		pass
 	try:
 		lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
-		hirer_title = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-job-title").text
 		if(hirer_name != ""):			
 			contact_info = check_contact(hirer_name)		
 			if(contact_info["data"] == ""):
 			# get contact info and send request
 				hirer = driver.find_element(By.CLASS_NAME,"hirer-card__hirer-information")
+				hirer_title = hirer.find_element(By.CLASS_NAME,"linked-area").text
 				hirer_link = hirer.find_element(By.TAG_NAME,"a").get_attribute("href")
 				print(hirer_link)
 				contact_new_tab = random.randint(0,1)
@@ -588,7 +588,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"lnbWEgqCyLPcWXWkyixHTLTnQDgwRVWqvmRWk")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"riIuKZLVDxiTqXHBLlOAPBdaDZvnOqVtVaEI")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
@@ -707,7 +707,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"BpBiAMbdbZIabDyjTdKmfxQOGNPoTNABicM")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"waqQfNzAwOPocYjqlHMZIgYZJtyxNgdPYMZ")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -743,7 +743,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"lnbWEgqCyLPcWXWkyixHTLTnQDgwRVWqvmRWk")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"riIuKZLVDxiTqXHBLlOAPBdaDZvnOqVtVaEI")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							if (text_hirer_button == "Connect"):
@@ -829,7 +829,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"lnbWEgqCyLPcWXWkyixHTLTnQDgwRVWqvmRWk")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"riIuKZLVDxiTqXHBLlOAPBdaDZvnOqVtVaEI")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -865,7 +865,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"BpBiAMbdbZIabDyjTdKmfxQOGNPoTNABicM")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"waqQfNzAwOPocYjqlHMZIgYZJtyxNgdPYMZ")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
