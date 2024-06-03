@@ -206,6 +206,7 @@ def edit_account(access_token,account_id,name,phone,website,address, des):
 def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status, job_phone, hirer_name, refer, contact_id):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
+	print("\n assigned_user_id: ",assigned_user_id)
 	jsondata =  {
   "data": {
 	"type": "Leads",
@@ -214,7 +215,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "last_name": company_name,
 	  "phone_work": phone_company,
 	  "phone_mobile": hirer_phone,
-	  "phone_other": job_phone,
+      "phone_other": job_phone,
 	  "phone_home": hirer_phone,
 	  "website": website,
 	  "account_name": company_name,
@@ -225,7 +226,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "description": content,
 	  "title": title,
 	  "email1": hirer_email,
-	  "assigned_user_id" : assigned_user_id,
+	   "assigned_user_id" : assigned_user_id[0],
 	  "refered_by" : "",
 	  "contact_id" : contact_id
 	}
@@ -267,7 +268,7 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "title": title,
 	  "description": content,
 	  "email1" : hirer_email,
-	  "assigned_user_id": assigned_user_id,
+	  "assigned_user_id": assigned_user_id[0],
 	  "refered_by" : "",
 	  "contact_id": contact_id
 	}
@@ -469,7 +470,7 @@ def get_account_assigned_user(name):
 
 def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):	 
 	root_window = driver.window_handles[0]
-	
+	print("\n job_id",job_id)
 	#1 job detail window 
 	driver.execute_script("window.open('');")
 	job_detail_window = driver.window_handles[1]
@@ -515,20 +516,18 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		pass
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text	
-		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
-		job_detail_text = job_detail.text
-		job_detail_spans = job_detail.find_elements(By.TAG_NAME,"span")
-		for job_detail_span in job_detail_spans:
-			job_detail_text = job_detail_text + job_detail_span.text
-			job_detail_ps = job_detail_span.find_elements(By.TAG_NAME,"p")
-			for job_detail_p in job_detail_ps:
-				job_detail_text = job_detail_text + job_detail_p.text
-			#print(job_detail_span.text)
-		print(job_detail_text)
+		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-description-content__text").text	
+		#job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
+		#job_detail_text = job_detail.text
+		# job_detail_spans = job_detail.find_elements(By.TAG_NAME,"span")
+		# for job_detail_span in job_detail_spans:
+		# 	job_detail_text = job_detail_text + job_detail_span.text
+		# 	job_detail_ps = job_detail_span.find_elements(By.TAG_NAME,"p")
+		# 	for job_detail_p in job_detail_ps:
+		# 		job_detail_text = job_detail_text + job_detail_p.text
 		job_emails = re.findall(r"[a-z0-9A-Z\.\-+_]+@[a-z0-9A-Z\.\-+_]+\.[a-zA-Z]+", job_detail_text)
 		if(country == "Australia"):
-			job_phones =re.findall(r'^(?=.*)((?:\+61) ?(?:\((?=.*\)))?([2-47-8])\)?|(?:\((?=.*\)))?([0-1][2-47-8])\)?) ?-?(?=.*)((\d{1} ?-?\d{3}$)|(00 ?-?\d{4} ?-?\d{4}$)|( ?-?\d{4} ?-?\d{4}$)|(\d{2} ?-?\d{3} ?-?\d{3}$))', job_detail) 
+			job_phones =re.findall(r'^(?=.*)((?:\+61) ?(?:\((?=.*\)))?([2-47-8])\)?|(?:\((?=.*\)))?([0-1][2-47-8])\)?) ?-?(?=.*)((\d{1} ?-?\d{3}$)|(00 ?-?\d{4} ?-?\d{4}$)|( ?-?\d{4} ?-?\d{4}$)|(\d{2} ?-?\d{3} ?-?\d{3}$))', job_detail_text) 
 		elif (country == "Malaysia"):
 			job_phones =re.findall(r'^(?:(?:\+60|0060)(?:[1]|[0]?[1])[ -]?|[0])[0-9]{2}[ -]?[0-9]{3,4}[ -]?[0-9]{3,4}$', job_detail_text) 
 		elif (country == "Thailand"):
@@ -599,7 +598,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"riIuKZLVDxiTqXHBLlOAPBdaDZvnOqVtVaEI")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"pFGFetxhQgunClUziDULpREaulUrdzhag")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
@@ -718,7 +717,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"waqQfNzAwOPocYjqlHMZIgYZJtyxNgdPYMZ")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"uwTADZbypYYeDVzTsNNnCibDBeFOOEeWk")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -754,7 +753,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"riIuKZLVDxiTqXHBLlOAPBdaDZvnOqVtVaEI")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"pFGFetxhQgunClUziDULpREaulUrdzhag")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							if (text_hirer_button == "Connect"):
@@ -840,7 +839,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"riIuKZLVDxiTqXHBLlOAPBdaDZvnOqVtVaEI")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"pFGFetxhQgunClUziDULpREaulUrdzhag")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -876,7 +875,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"waqQfNzAwOPocYjqlHMZIgYZJtyxNgdPYMZ")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"uwTADZbypYYeDVzTsNNnCibDBeFOOEeWk")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -929,7 +928,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if (job_emails and len(job_emails) > 0):
 			email_info = job_emails[0]
 			full_content = '\n Email được lấy từ job description.'
-	print("\n email_ìno", email_info)
 	maylaysia_phone_valid = "123456789"
 	if (job_phones and len(job_phones) > 0):
 		job_phone = job_phones[0]
