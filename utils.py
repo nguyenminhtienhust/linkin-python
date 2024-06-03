@@ -206,7 +206,9 @@ def edit_account(access_token,account_id,name,phone,website,address, des):
 def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status, job_phone, hirer_name, refer, contact_id):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
-	print("\n assigned_user_id: ",assigned_user_id)
+	assigned_user = ""
+	if(len(assigned_user_id)):
+		assigned_user = assigned_user_id[0]
 	jsondata =  {
   "data": {
 	"type": "Leads",
@@ -226,7 +228,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "description": content,
 	  "title": title,
 	  "email1": hirer_email,
-	   "assigned_user_id" : assigned_user_id[0],
+	   "assigned_user_id" : assigned_user,
 	  "refered_by" : "",
 	  "contact_id" : contact_id
 	}
@@ -248,6 +250,9 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content, lead_status, job_phone, assigned_user_id, hirer_name, refer, contact_id):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
+	assigned_user = ""
+	if(len(assigned_user_id)):
+		assigned_user = assigned_user_id[0]
 	jsondata =  {
   "data": {
 	"type": "Leads",
@@ -268,7 +273,7 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "title": title,
 	  "description": content,
 	  "email1" : hirer_email,
-	  "assigned_user_id": assigned_user_id[0],
+	  "assigned_user_id": assigned_user,
 	  "refered_by" : "",
 	  "contact_id": contact_id
 	}
@@ -1079,7 +1084,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			else:
 				assigned_user_id = get_account_assigned_user(company_name)
 			lead_id = lead_info["data"]
-
 			if (lead_id == ""):
 				print("\n\nStarting add new:......\n\n")
 				time.sleep(2)
