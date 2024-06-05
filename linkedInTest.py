@@ -231,9 +231,9 @@ if __name__ == "__main__":
     #                "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php", "C++","Azure developer"]
     #job_name = [.Net,Java,iOS developer,Android,kotlin developer,Flutter,Dart developer,NodeJS,React Native,ReactJS,NextJS,AngularJS,VueJS  developer,Django,Golang,Swift Developer,Php,C++,Azure developer]
-    jobs_names = ["AngularJS"]
+    jobs_names = ["Swift Developer",".Net","Java","iOS developer","Android"]
     #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States"]
-    countries = ["Germany","European Union", "Thailand","Singapore","United States"]
+    countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States"]
 
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")
@@ -324,7 +324,7 @@ if __name__ == "__main__":
                     continue
         #print("Please Zoom in then press Enter")
         #input()
-            driver.execute_script('window.scrollBy(0, 1000)') 
+            #driver.execute_script('window.scrollBy(0, 1000)') 
 
             jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing","Administrative","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer","Assistant"]
             keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
@@ -340,12 +340,11 @@ if __name__ == "__main__":
                 lead_id = ""
                 try:
                     job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
-                    print("\n job_title " + job_title)
                     lower_title = job_title.lower()
                     detector = LanguageDetector()
                     #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
-                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or detector.detect(lower_title).language != "en"):
-                        print("\n title english: " , lower_title)
+                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or detector.detect(lower_title).language != "en"):
+                        print("\n title english: ")
                         continue
                     company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                     address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
