@@ -644,7 +644,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								time.sleep(z)
 								connect_button.click() 
 								request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
-								mess_sent = "message sent"
+								mess_sent = "message sent by adminaccount"
 								time.sleep(2)	
 											
 						else:
@@ -654,7 +654,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								time.sleep(z)
 								hirer_connect_request_button.click()	
 								request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
-								mess_sent = "message sent"
+								mess_sent = "message sent by adminaccount"
 								time.sleep(2)
 					else:
 						try:
@@ -694,7 +694,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 													time.sleep(z)
 													connect_button.click() 
 													request_note_str = request_note_str + "\nconnect request sent by" + linkedin_acc
-													mess_sent = "message sent"
+													mess_sent = "message sent by adminaccount"
 													time.sleep(2)				
 											else:
 												hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
@@ -703,7 +703,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 													time.sleep(z)
 													hirer_connect_request_button.click()
 													request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
-													mess_sent = "message sent"
+													mess_sent = "message sent by adminaccount"
 													time.sleep(2)
 									except Exception as error:
 										print("\n Connect sent to new contact: ", error)
@@ -735,7 +735,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							# 	z = random.randint(2,4)
 							# 	time.sleep(z)
 							# 	send_button.submit() 
-							# 	mess_sent = "message sent"
+							# 	mess_sent = "message sent by adminaccount"
 							# 	time.sleep(3)
 					except Exception as error:
 						print("forth ex: ", error)
@@ -807,14 +807,14 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(z)
 										connect_button.click() 
 										request_note_str = contact_info["des"] + "\nconnect request sent by " + linkedin_acc
-										mess_sent = "message sent"
+										mess_sent = "message sent by adminaccount"
 										time.sleep(2)				
 								else:
 									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									if(hirer_connect_request_button.is_enabled()):
 										hirer_connect_request_button.click()
 										request_note_str = contact_info["des"] + "\nconnect request sent by " + linkedin_acc
-										mess_sent = "message sent"
+										mess_sent = "message sent by adminaccount"
 										time.sleep(2)	
 							
 							else:
@@ -855,14 +855,14 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 														time.sleep(y)
 														connect_button.click() 
 														request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
-														mess_sent = "message sent"
+														mess_sent = "message sent by adminaccount"
 														time.sleep(2)				
 												else:
 													hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 													if(hirer_connect_request_button.is_enabled()):
 														hirer_connect_request_button.click()
 														request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
-														mess_sent = "message sent"
+														mess_sent = "message sent by adminaccount"
 														time.sleep(2)	
 										except Exception as error:
 											print("\nConnect error loop to existing contact :", error)	
@@ -901,7 +901,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							# 	z = random.randint(2,4)
 							# 	time.sleep(z)
 							# 	send_button.submit() 
-							# 	mess_sent = "message sent"
+							# 	mess_sent = "message sent by adminaccount"
 							# 	time.sleep(2)
 						except Exception as error:
 							print("Sixth ex: ", error)
@@ -1081,7 +1081,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							time.sleep(z)
 							send_button.click()  
 							message_company_sent = "message sent by " + linkedin_acc
-							mess_sent = "message sent"
+							mess_sent = "message sent by adminaccount"
 							time.sleep(1)
 				except :
 					print("not found message area for company")
@@ -1093,7 +1093,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		lead_status = "New"
 		if(request_note_str is not None and request_note_str != ""):
 			lead_status = "Recycled"
-			mess_sent = "message sent"
+			mess_sent = "message sent by adminaccount"
 		# if(hirer_profile == "" and email_info == "" and hirer_website == "" and phone_company == "" and hirer_name == "" and hirer_phone == "" and job_phone == "" and request_note_str != ""):
 		# 	lead_status = "Recycled"		
 		website = website_company
