@@ -203,7 +203,7 @@ def edit_account(access_token,account_id,name,phone,website,address, des):
 		print(json_object)
 	 
 	 
-def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status, job_phone, hirer_name, refer, contact_id):
+def add_new_lead(access_token,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content,assigned_user_id, lead_status, job_phone, hirer_name, refer, contact_id, status_des):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	assigned_user = ""
@@ -230,7 +230,8 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 	  "email1": hirer_email,
 	   "assigned_user_id" : assigned_user,
 	  "refered_by" : "",
-	  "contact_id" : contact_id
+	  "contact_id" : contact_id,
+	  "status_description": status_des
 	}
   }
 }
@@ -247,7 +248,7 @@ def add_new_lead(access_token,job_id,company_name,company_id,title,address,other
 		json_object = data.json()
 		print(json_object)
 		
-def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content, lead_status, job_phone, assigned_user_id, hirer_name, refer, contact_id):
+def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,address,other_address,phone_company,hirer_phone,hirer_email,website,content, lead_status, job_phone, assigned_user_id, hirer_name, refer, contact_id, status_des):
 	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
 	module_api = "https://crm.fitech.com.vn/Api/V8/module"
 	assigned_user = ""
@@ -275,7 +276,8 @@ def edit_new_lead(access_token,lead_id,job_id,company_name,company_id,title,addr
 	  "email1" : hirer_email,
 	  "assigned_user_id": assigned_user,
 	  "refered_by" : "",
-	  "contact_id": contact_id
+	  "contact_id": contact_id,
+	  "status_description": status_des
 	}
   }
 }
@@ -473,6 +475,18 @@ def get_account_assigned_user(name):
 		json_object = data.json()
 		return json_object["data"]
 
+def get_num_mess_sent_lead(access_token):
+	headers = {'Content-Type': "application/json", 'Accept': "application/json", "Authorization": "Bearer " + access_token}
+	module_api = "https://crm.fitech.com.vn/Api/V8/module/Leads?filter[mess_sent_c][eq]=1"
+	time.sleep(2)
+	data = requests.get(module_api,headers=headers)
+	if data.status_code != 200:
+		print(data.status_code)
+		print(data.reason)
+	else:
+		json_object = data.json()
+		return json_object["data"]
+
 def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):	 
 	root_window = driver.window_handles[0]
 	print("\n job_id",job_id)
@@ -574,6 +588,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	hirer_other = ""	
 	contact_id = ""
 	request_note_str = ""
+	mess_sent = ""
 	#Get Hirer Link
 	try:
 		hirer_name_element = driver.find_element(By.CLASS_NAME,"jobs-poster__name")
@@ -603,7 +618,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"eYbRnoAqGaSVQETLzPprowCPlRdPzbNA")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"JjchILziYwOtnKdXjndcaueuUxtxzMcEwE")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					if (text_hirer_button == "Connect"):
@@ -629,6 +644,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								time.sleep(z)
 								connect_button.click() 
 								request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
+								mess_sent = "message sent"
 								time.sleep(2)	
 											
 						else:
@@ -638,6 +654,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								time.sleep(z)
 								hirer_connect_request_button.click()	
 								request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
+								mess_sent = "message sent"
 								time.sleep(2)
 					else:
 						try:
@@ -677,6 +694,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 													time.sleep(z)
 													connect_button.click() 
 													request_note_str = request_note_str + "\nconnect request sent by" + linkedin_acc
+													mess_sent = "message sent"
 													time.sleep(2)				
 											else:
 												hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
@@ -685,6 +703,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 													time.sleep(z)
 													hirer_connect_request_button.click()
 													request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
+													mess_sent = "message sent"
 													time.sleep(2)
 									except Exception as error:
 										print("\n Connect sent to new contact: ", error)
@@ -716,6 +735,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							# 	z = random.randint(2,4)
 							# 	time.sleep(z)
 							# 	send_button.submit() 
+							# 	mess_sent = "message sent"
 							# 	time.sleep(3)
 					except Exception as error:
 						print("forth ex: ", error)
@@ -727,7 +747,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ORqSXpoFKxcTXjxAxyPnYcVpDQjZieAIEJhWM")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"khdOYEeXyFSQsCCZncumCtmXVJZzTiSSkqA")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -763,7 +783,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"eYbRnoAqGaSVQETLzPprowCPlRdPzbNA")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"JjchILziYwOtnKdXjndcaueuUxtxzMcEwE")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							if (text_hirer_button == "Connect"):
@@ -787,12 +807,14 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(z)
 										connect_button.click() 
 										request_note_str = contact_info["des"] + "\nconnect request sent by " + linkedin_acc
+										mess_sent = "message sent"
 										time.sleep(2)				
 								else:
 									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									if(hirer_connect_request_button.is_enabled()):
 										hirer_connect_request_button.click()
 										request_note_str = contact_info["des"] + "\nconnect request sent by " + linkedin_acc
+										mess_sent = "message sent"
 										time.sleep(2)	
 							
 							else:
@@ -833,12 +855,14 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 														time.sleep(y)
 														connect_button.click() 
 														request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
+														mess_sent = "message sent"
 														time.sleep(2)				
 												else:
 													hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--primary")
 													if(hirer_connect_request_button.is_enabled()):
 														hirer_connect_request_button.click()
 														request_note_str = request_note_str + "\nconnect request sent by " + linkedin_acc
+														mess_sent = "message sent"
 														time.sleep(2)	
 										except Exception as error:
 											print("\nConnect error loop to existing contact :", error)	
@@ -852,7 +876,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"eYbRnoAqGaSVQETLzPprowCPlRdPzbNA")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"JjchILziYwOtnKdXjndcaueuUxtxzMcEwE")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -877,6 +901,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							# 	z = random.randint(2,4)
 							# 	time.sleep(z)
 							# 	send_button.submit() 
+							# 	mess_sent = "message sent"
 							# 	time.sleep(2)
 						except Exception as error:
 							print("Sixth ex: ", error)
@@ -888,7 +913,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ORqSXpoFKxcTXjxAxyPnYcVpDQjZieAIEJhWM")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"khdOYEeXyFSQsCCZncumCtmXVJZzTiSSkqA")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -1056,6 +1081,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							time.sleep(z)
 							send_button.click()  
 							message_company_sent = "message sent by " + linkedin_acc
+							mess_sent = "message sent"
 							time.sleep(1)
 				except :
 					print("not found message area for company")
@@ -1067,6 +1093,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		lead_status = "New"
 		if(request_note_str is not None and request_note_str != ""):
 			lead_status = "Recycled"
+			mess_sent = "message sent"
 		# if(hirer_profile == "" and email_info == "" and hirer_website == "" and phone_company == "" and hirer_name == "" and hirer_phone == "" and job_phone == "" and request_note_str != ""):
 		# 	lead_status = "Recycled"		
 		website = website_company
@@ -1101,7 +1128,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					assigned_user_id = "1"
 				if(lead_status == "New" and assigned_user_id == "1"):
 					assigned_user_id = ""
-				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id)
+				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = hirer_name, refer= "", contact_id = contact_id, status_des = mess_sent)
 			else:					
 				if(lead_info["status"] == "Recycled" and lead_status == "Recycled"):
 					lead_status = "Recycled"	
@@ -1124,7 +1151,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						assigned_user_id = ""
 					if(lead_status == "New" and assigned_user_id == "1"):
 						assigned_user_id = ""
-					edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id)
+					edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id, status_des= mess_sent)
 		if(company_url != ""):
 			driver.switch_to.window(company_window)
 			driver.close()#2 close  company_window
