@@ -1143,7 +1143,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					isMailInclude = 1
 				if(lead_info["phone_work"] == phone_company and lead_info["phone_mobile"] == hirer_phone and lead_info["phone_other"] == job_phone and isMailInclude == 1):
 					isEdit = 0
-				print('isEdit: ', isEdit)
 				if(lead_info["status"] != "Assigned" and lead_info["status"] != "Converted" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead" and lead_info["status"] != "Response" and isEdit == 1):
 					print("\n\nStarting edit:......\n\n")	
 					if(lead_status == "New" and assigned_user_id == "1"):
