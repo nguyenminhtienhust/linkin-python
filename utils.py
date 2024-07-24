@@ -618,9 +618,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"cBJoiugiSUiPaLXHkbtSAetGjKoFETADcqAg")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"QLyMBBbKDxvtzrLxumNyjWMGLSorZYniBWjk")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+					driver.implicitly_wait(3)
 					if (text_hirer_button == "Connect"):
 						hirer_detail_button.click()	
 						driver.implicitly_wait(10)		
@@ -661,6 +662,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							if(text_hirer_button != "Pending"):
 								hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
 								hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
+								driver.implicitly_wait(5)
 					#hirer_more_button = driver.find_element(By.XPATH, '//button[text()="More"]')
 								hirer_more_button.click()
 								driver.implicitly_wait(5)
@@ -747,7 +749,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"fBDirYGTiMblqxtbcqXvaYDtpieYgGANI")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"YKHhbQuBotFwFuUKQXcCeDLNKjmXFDfvvBTk")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -783,9 +785,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"cBJoiugiSUiPaLXHkbtSAetGjKoFETADcqAg")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"QLyMBBbKDxvtzrLxumNyjWMGLSorZYniBWjk")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
+							driver.implicitly_wait(3)
 							if (text_hirer_button == "Connect"):
 								hirer_detail_button.click()	
 								driver.implicitly_wait(3)		
@@ -821,6 +824,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								try:
 									hirer_more_dropdown = hirer_detail.find_element(By.CLASS_NAME,"artdeco-dropdown")
 									hirer_more_button = hirer_more_dropdown.find_element(By.CLASS_NAME, "pvs-profile-actions__action")
+									driver.implicitly_wait(3)
 							#hirer_more_button = driver.find_element(By.XPATH, '//button[text()="More"]')
 									hirer_more_button.click()
 									driver.implicitly_wait(5)
@@ -876,7 +880,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"cBJoiugiSUiPaLXHkbtSAetGjKoFETADcqAg")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"QLyMBBbKDxvtzrLxumNyjWMGLSorZYniBWjk")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -913,7 +917,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"fBDirYGTiMblqxtbcqXvaYDtpieYgGANI")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"YKHhbQuBotFwFuUKQXcCeDLNKjmXFDfvvBTk")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
