@@ -249,7 +249,7 @@ if __name__ == "__main__":
     countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States"]
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    chrome_options = webdriver.Options()
+    chrome_options = Options()
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
