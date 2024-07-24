@@ -26,9 +26,8 @@ import psycopg2
 import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException, WebDriverException
-from eld import LanguageDetector
 
-from utils import (
+from utilsServerRun import (
     get_lk_credentials,
     enter_ids_on_lk_signin,
     get_job_detail,
@@ -348,9 +347,8 @@ if __name__ == "__main__":
                 try:
                     job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
                     lower_title = job_title.lower()
-                    detector = LanguageDetector()
                     #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
-                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "purchasing" in lower_title or detector.detect(lower_title).language != "en"):
+                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "purchasing" in lower_title):
                         print("\n title english: ")
                         continue
                     company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
