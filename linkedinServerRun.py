@@ -257,7 +257,7 @@ if __name__ == "__main__":
     chrome_options.add_argument('--disable-gpu')
     chrome_options.add_argument('--no-sandbox')
     cService = webdriver.ChromeService(executable_path='chromedriver.exe')
-    driver = webdriver.Chrome(service = cService, options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
