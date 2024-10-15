@@ -629,7 +629,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"PNusfWBlPWdfcqJJktuJUmHtsRBrpRGCQE")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"gcGTCzCIvipxmcCliFpucHQrjcAuIXmk")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					driver.implicitly_wait(3)
@@ -760,7 +760,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"OtKlFEnmQjpwrMYIIHOHxEKtkYEvlZvvI")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"GbOUqgsXcLRctkckezmvfytZoHiNtpjNMicbM")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -796,7 +796,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"PNusfWBlPWdfcqJJktuJUmHtsRBrpRGCQE")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"gcGTCzCIvipxmcCliFpucHQrjcAuIXmk")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							driver.implicitly_wait(3)
@@ -891,7 +891,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"PNusfWBlPWdfcqJJktuJUmHtsRBrpRGCQE")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"gcGTCzCIvipxmcCliFpucHQrjcAuIXmk")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -928,7 +928,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"OtKlFEnmQjpwrMYIIHOHxEKtkYEvlZvvI")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"GbOUqgsXcLRctkckezmvfytZoHiNtpjNMicbM")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -1096,7 +1096,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							z = random.randint(2,4)
 							time.sleep(z)
 							send_button.click()  
-							message_company_sent = "message sent by " + linkedin_acc
+							message_company_sent = "message sent" 
 							mess_sent = "message sent by AdminAccount"
 							time.sleep(1)
 				except :
@@ -1126,10 +1126,12 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
 		
 		lower_title = current_job_title.lower()
-		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
+		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title):
 			print("Job not suitable")
 		else:
 			assigned_user_id = ""
+			if(message_company_sent != ""):
+				assigned_user_id = "62b60dd0-9ab9-735e-e291-65d2cd0ab68e"
 			if(hirer_name != ""):
 				assigned_user_id = get_contact_assigned_user(hirer_name)
 			else:
