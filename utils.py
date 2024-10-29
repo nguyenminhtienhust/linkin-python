@@ -629,7 +629,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"owgsRayhYTINEEghmmlYubpqqhPqQQdHcS")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"tNMprSnmuUtJqopptEQibPKdDFeYYofeFwDg")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					driver.implicitly_wait(3)
@@ -760,7 +760,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"SVZTuWUkRLsvnUNJryJVbNRGalhgYTwE")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ZSbjjQOVOvJBTzUWMHxgfzzAfFAiIZuzWuskrUwdg")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -796,7 +796,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"owgsRayhYTINEEghmmlYubpqqhPqQQdHcS")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"tNMprSnmuUtJqopptEQibPKdDFeYYofeFwDg")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							driver.implicitly_wait(3)
@@ -891,7 +891,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"owgsRayhYTINEEghmmlYubpqqhPqQQdHcS")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"tNMprSnmuUtJqopptEQibPKdDFeYYofeFwDg")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -928,7 +928,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"SVZTuWUkRLsvnUNJryJVbNRGalhgYTwE")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"ZSbjjQOVOvJBTzUWMHxgfzzAfFAiIZuzWuskrUwdg")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -1013,6 +1013,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	try:
 		website_company = ""
 		phone_company = ""
+		print("company_url",company_url)
 		if(company_url != "" and "unavailable" not in company_url):
 			driver.execute_script("window.open('');")
 			if(contact_new_tab == 0):
@@ -1021,7 +1022,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				company_window = driver.window_handles[3]
 			driver.switch_to.window(company_window)
 			time.sleep(2)
-			company_about_url = company_url.replace("/life", "/about")
+			company_about_url = "/about".join(company_url.rsplit("/life", 1))
+			print("company_about_url",company_about_url)
 			driver.get(company_about_url)
 			driver.implicitly_wait(10)
 	
@@ -1072,7 +1074,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if(company_info["des"] is not None and "message" in company_info["des"].lower()):
 			message_company_sent = "message sent"
 		if(hirer_email == "" and (request_note_str is None or "message" not in request_note_str.lower()) and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and (request_note_str is None or "connect" not in request_note_str.lower()) and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "message" not in message_company_sent):
-			company_about_url = company_url.replace("/life", "/about")
+			company_about_url = "/about".join(company_url.rsplit("/life", 1))
+			print("company_about_url",company_about_url)
 			if(company_about_url != "" and "unavailable" not in company_about_url):
 				try:				
 					driver.get(company_about_url)
