@@ -1013,7 +1013,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	try:
 		website_company = ""
 		phone_company = ""
-		print("company_url",company_url)
 		if(company_url != "" and "unavailable" not in company_url):
 			driver.execute_script("window.open('');")
 			if(contact_new_tab == 0):
@@ -1023,7 +1022,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(company_window)
 			time.sleep(2)
 			company_about_url = "/about".join(company_url.rsplit("/life", 1))
-			print("company_about_url",company_about_url)
 			driver.get(company_about_url)
 			driver.implicitly_wait(10)
 	
@@ -1075,7 +1073,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			message_company_sent = "message sent"
 		if(hirer_email == "" and (request_note_str is None or "message" not in request_note_str.lower()) and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and (request_note_str is None or "connect" not in request_note_str.lower()) and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "message" not in message_company_sent):
 			company_about_url = "/about".join(company_url.rsplit("/life", 1))
-			print("company_about_url",company_about_url)
 			if(company_about_url != "" and "unavailable" not in company_about_url):
 				try:				
 					driver.get(company_about_url)
