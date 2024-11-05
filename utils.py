@@ -600,7 +600,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	company_info = {"data": "", "des" : ""}
 	company_info = check_company_existed(company_name)
 	company_id = company_info["data"]
-	company_desc = company_info["desc"]
+	company_desc = company_info["des"]
 	contact_info = {"data": "", "des" : ""}
 	lead_info = {"data": "", "status" : ""}
 	hirer_name = ""
