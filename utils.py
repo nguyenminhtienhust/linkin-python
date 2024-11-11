@@ -644,13 +644,15 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					time.sleep(3)			
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"wZUeWnrvnSvWHarSOVqoOmuPPuk")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"UzUhrVoJhMPrYcDojTOEiHjXRYwzzjrc")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 					driver.implicitly_wait(3)
 					if (text_hirer_button == "Connect"):
 						hirer_detail_button.click()	
-						driver.implicitly_wait(10)		
+						z = random.randint(4,7)
+						time.sleep(z)	
+						#driver.implicitly_wait(10)		
 						hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 						hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
 						if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
@@ -702,7 +704,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
 										if(option_li_text == "Connect"):
 											option_li.click()
-											driver.implicitly_wait(5)
+											z = random.randint(3,5)
+											time.sleep(z)	
+											#driver.implicitly_wait(5)
 											hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 											hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
 											if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
@@ -754,7 +758,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 
 							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
 							message_content_input.clear()
-							message_content_input.send_keys("Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n\n" + linkedin_acc)
+							input_mess = "Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n \n" + linkedin_acc
+							print(input_mess)
+							message_content_input.send_keys(input_mess)
 							z = random.randint(2,5)
 							time.sleep(z)
 							# send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-button")
@@ -775,7 +781,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"sgHBedUcYdJyoeEZQSGfeDThoFFLbJpMLqaRAUU")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"JwjtHkhAJOozLlAIHnaeeVsUmIwmyEdWskqU")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -811,19 +817,21 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"wZUeWnrvnSvWHarSOVqoOmuPPuk")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"UzUhrVoJhMPrYcDojTOEiHjXRYwzzjrc")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 							driver.implicitly_wait(3)
 							if (text_hirer_button == "Connect"):
+								print("the code runs to here")
 								hirer_detail_button.click()	
-								driver.implicitly_wait(3)		
+								#driver.implicitly_wait(20)	
+								time.sleep(5)	
 								hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 								hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
 								if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
 									hirer_connect_request_button = hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")
 									hirer_connect_request_button.click()
-									driver.implicitly_wait(3)
+									driver.implicitly_wait(10)
 									connect_mess_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 									connect_mess_area = connect_mess_modal.find_element(By.CLASS_NAME,"connect-button-send-invite__custom-message")
 									connect_mess_area.clear()
@@ -864,7 +872,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 											option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
 											if(option_li_text == "Connect"):
 												option_li.click()
-												driver.implicitly_wait(5)
+												z = random.randint(4,6)
+												time.sleep(z)	
+												#driver.implicitly_wait(5)
 												hirer_connect_modal = driver.find_element(By.CLASS_NAME,"send-invite")
 												hirer_connect_request_buttons = hirer_connect_modal.find_element(By.CLASS_NAME,"artdeco-modal__actionbar")
 												if(hirer_connect_request_buttons.find_element(By.CLASS_NAME,"artdeco-button--secondary")):
@@ -906,7 +916,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"wZUeWnrvnSvWHarSOVqoOmuPPuk")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"UzUhrVoJhMPrYcDojTOEiHjXRYwzzjrc")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -921,7 +931,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 
 							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
 							message_content_input.clear()
-							message_content_input.send_keys("Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n \n" + linkedin_acc)
+							input_mess = "Dear " + hirer_name + ", we are from Fitech founded since 2007, where we have some software solutions in various domains and knowledges about fintech, stock market, banking, payment gateway and e-commerce. If you are looking for partners who can collaborate with your company to develop such a solution we believe that our good teams would help. If you are interested we can setup a meeting call to introduce more about capabilities and opportunities working together. Thank you! \n \n" + linkedin_acc
+							print(input_mess)
+							message_content_input.send_keys(input_mess)
 							z = random.randint(3,7)
 							time.sleep(z) 
 		
@@ -943,7 +955,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
 				for contact_info_detail in contact_info_list:
 					contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"sgHBedUcYdJyoeEZQSGfeDThoFFLbJpMLqaRAUU")
+					contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"JwjtHkhAJOozLlAIHnaeeVsUmIwmyEdWskqU")
 					if "email" in contact_info_header.text.lower():
 						hirer_email = contact_info_content.text
 					elif "profile" in contact_info_header.text.lower():
@@ -1085,8 +1097,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if((request_note_str is not None and "connect" in request_note_str.lower()) or (contact_info["des"] is not None and "connect" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
 		message_company_sent = ""
+		message_sent_to_company = 0
 		if(company_info["des"] is not None and "message" in company_info["des"].lower()):
 			message_company_sent = "message sent"
+			message_sent_to_company = 1
 		if(hirer_email == "" and (request_note_str is None or "message" not in request_note_str.lower()) and (contact_info["des"] is None or "message" not in contact_info["des"].lower()) and (request_note_str is None or "connect" not in request_note_str.lower()) and (contact_info["des"] is None or "connect" not in contact_info["des"].lower()) and "message" not in message_company_sent):
 			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 			if(company_about_url != "" and "unavailable" not in company_about_url):
@@ -1140,8 +1154,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		else:
 			print("\n\nStarting editing account:......\n\n")
 			edit_account(access_token = access_token, account_id = company_id ,name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
-		if(message_company_sent != ""):
-			lead_status = "Recycled"
+		# if(message_company_sent != "" and message_sent_to_company == 1 ):
+		# 	lead_status = "Recycled"
 		lower_title = current_job_title.lower()
 		if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title):
 			print("Job not suitable")
@@ -1151,6 +1165,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				assigned_user_id = get_contact_assigned_user(hirer_name)
 			else:
 				assigned_user_id = get_account_assigned_user(company_name)
+			print(assigned_user_id)
 			if(message_company_sent != "" and assigned_user_id == ""):
 				assigned_user_id = "62b60dd0-9ab9-735e-e291-65d2cd0ab68e"
 			lead_id = lead_info["data"]
