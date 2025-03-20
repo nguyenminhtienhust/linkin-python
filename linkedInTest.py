@@ -226,15 +226,14 @@ def scrap_lksn_pages(
 if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
 
-    # jobs_names = [".Net","Java","iOS developer","Android","kotlin developer","Flutter","Dart developer","NodeJS",
-    #                "React Native","ReactJS","NextJS",
-    #                "AngularJS","VueJS  developer","Django","Golang", "Swift Developer","Python",
-    #               "Php", "C++","Azure developer"]
-    #job_name = [.Net,Java,iOS developer,Android,kotlin developer,Flutter,Dart developer,NodeJS,React Native,ReactJS,NextJS,AngularJS,VueJS  developer,Django,Golang,Swift Developer,Php,C++,Azure developer]
-    jobs_names = ["Swift Developer",".Net","Java","iOS developer","Android"]
-    #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States"]
-    countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States"]
-
+    # jobs_names = [".Net","Java developer","iOS developer","Android","kotlin developer","Flutter","Dart developer","NodeJS",
+    #                "React Native","ReactJS developer","NextJS developer",
+    #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
+    #               "Php developer", "C++","Azure developer"]
+    jobs_names = ["Swift Developer"]
+    #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
+    countries = ["Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
+    #
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")
     # jobfile.close()
@@ -247,7 +246,8 @@ if __name__ == "__main__":
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
-    cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\chromedriver.exe')
+    cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\ChromeDriver\chromedriver.exe')
+    
     driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
     # cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\geckodriver.exe')
@@ -273,13 +273,14 @@ if __name__ == "__main__":
         linkedin_acc = "Huong Nguyen"
     if(lk_credentials["email"] == "thuydtabc123@gmail.com"):
         linkedin_acc = "Thu Thuy"
+    if(lk_credentials["email"] == "tran.habk0605@gmail.com"):
+        linkedin_acc = "Ngoc Ha"
     
     print("Starting the scraping...")
     count_job = 1
     current_job = ""
     current_coutry = ""
     for job_name in jobs_names:   
-        print("Job: " + job_name)
         if(count_job > 1):
             x = random.randint(300,1000)
             time.sleep(x)
@@ -289,9 +290,10 @@ if __name__ == "__main__":
             time.sleep(5)
         for country in countries:
             if(country_count > 1):
-                x = random.randint(60,200)
+                x = random.randint(100,400)
                 time.sleep(x)           
             print("Country: " + country)
+            print("Job: " + job_name)
             done = False
             while( done == False):
                 try:
@@ -315,23 +317,44 @@ if __name__ == "__main__":
                     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
                     searchButton.click()
                     searchButton.accessible_name
-                    time.sleep(5)
+                    time.sleep(3)
+                    timeFilterButton = driver.find_element(By.ID,"searchFilter_timePostedRange")
+                    timeFilterButton.click()
+                    time.sleep(2)
+                    driver.implicitly_wait(3)
+                    posted_date = driver.find_element(By.ID,"hoverable-outlet-date-posted-filter-value")
+                    posted_date_shell = posted_date.find_element(By.CLASS_NAME,"artdeco-hoverable-content__content")
+                    option_ul = posted_date_shell.find_element(By.TAG_NAME,"ul")
+                    option_li = option_ul.find_elements(By.TAG_NAME,"li")
+                    for any_option in option_li:
+                        option_li_div = any_option.find_element(By.CLASS_NAME,"search-reusables__value-label")
+                        option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
+                        #print(option_li_text)
+                        if(option_li_text == "Past week"):
+                            #print("enter here")
+                            #li_input = any_option.find_element(By.CLASS_NAME,"search-reusables__select-input")
+                            option_li_div.click()
+                            time.sleep(2)
+                    filter_result_btn = posted_date_shell.find_element(By.CLASS_NAME,"artdeco-button--primary")
+                    filter_result_btn.click()
+                    z = random.randint(4,6)
+                    time.sleep(z)
+                    # time.sleep(5)
 
                     page_indicators = driver.find_elements(By.CLASS_NAME,"artdeco-pagination__indicator--number")
                     done = True
                 except NoSuchElementException as error:
-                    print(error)  
+                    print("search data fill in: ",error)  
                     continue
         #print("Please Zoom in then press Enter")
         #input()
             #driver.execute_script('window.scrollBy(0, 1000)') 
 
             jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing","Administrative","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer","Assistant"]
-            keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Junior","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
+            keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
     
             access_token = login_crm()
-    
-            jobs = driver.find_elements(By.CLASS_NAME,"jobs-search-results__list-item")
+            jobs = driver.find_elements(By.CLASS_NAME,"scaffold-layout__list-item")
             count = len(jobs)
             address = ""
             for job in jobs:
@@ -339,24 +362,25 @@ if __name__ == "__main__":
                 match_job = "Yes"
                 lead_id = ""
                 try:
-                    job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
+                    job_title = job.find_element(By.CLASS_NAME,"job-card-list__title--link").text
                     lower_title = job_title.lower()
                     detector = LanguageDetector()
                     #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
-                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or detector.detect(lower_title).language != "en"):
+                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investor" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title or "application" in lower_title or "infrastructure" in lower_title or "architect" in lower_title or detector.detect(lower_title).language != "en"):
                         print("\n title english: ")
                         continue
-                    company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
-                    address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
+                    #company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
+                    #address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
                     # lead_id = check_lead_existed(job_title,company_name )
                     # if(lead_id != ""):
                     #     continue
-                    job_footer = job.find_element(By.CLASS_NAME,"job-card-list__footer-wrapper")
+                    job_footer = job.find_element(By.CLASS_NAME,"job-card-container__footer-wrapper")
                     if job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state"):
-                        job_state = job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state").text           
+                        job_state = job_footer.find_element(By.CLASS_NAME,"job-card-container__footer-job-state").text        
                     if(job_state == "Viewed"):
                         continue
-                except NoSuchElementException:  #spelling error making this code not work as expected
+                except Exception as errorConnect: #spelling error making this code not work as expected
+                    print("\nConnect error :", errorConnect)  
                     pass
                 if(job_state == "Viewed"):
                 #if(lead_id != ""):
@@ -380,6 +404,8 @@ if __name__ == "__main__":
                         job_id = job.get_attribute("data-occludable-job-id")
                         get_job_detail(driver,job_id,access_token,country, country,linkedin_acc)
                         job_count = job_count + 1
+                        z = random.randint(10,15)
+                        time.sleep(z)
                     except NoSuchElementException:
                         pass
             country_count = country_count + 1
@@ -404,8 +430,8 @@ if __name__ == "__main__":
                             lower_title = job_title.lower()
                             if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or detect(lower_title) != "en"):
                                 continue
-                            company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
-                            address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
+                            #company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
+                            #address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
                             # lead_id = check_lead_existed(job_title,company_name )
                             # if(lead_id != ""):
                             #     continue
