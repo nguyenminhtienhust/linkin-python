@@ -1399,6 +1399,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 													print("\n Connect sent to people 4: ", error)
 													continue
 										breaker = True
+										edit_contact(access_token = access_token, contact_id = people_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 										break
 					except Exception as error:
 						print("Seventh ex: ", error)
