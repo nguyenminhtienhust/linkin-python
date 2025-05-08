@@ -694,7 +694,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		ii = 0
 		while(hirer_name_split[ii].isalpha() == False):
 			ii = ii + 1
-		hirer_name_first_name = hirer_name.split()[ii]
+		if(ii < len(hirer_name_split)):
+			hirer_name_first_name = hirer_name.split()[ii]
 		#hirer_name = hirer_name_element.text
 	except NoSuchElementException as error:
 		print("Second ex: " , error)
@@ -852,7 +853,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								jj = 0
 								while(people_name_split[jj].isalpha() == False):
 									jj = jj + 1
-								people_name_first_name = hirer_name.split()[jj]
+								if(jj < len(people_name_split)):
+									people_name_first_name = hirer_name.split()[jj]
 								people_info = check_contact(people_name)
 								if(people_info["data"] == ""):
 									driver.get(people_link)
@@ -1032,6 +1034,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		phone_company = ""
 		message_company_sent = ""
 		message_sent_to_company = 0
+		if(company_url != ""):
+			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 		if(hirer_name == ""):
 			driver.switch_to.window(company_people_window)
 			z = random.randint(5,7)
@@ -1057,7 +1061,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					company_window = driver.window_handles[3]
 			driver.switch_to.window(company_window)
 			time.sleep(2)
-			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 			driver.get(company_about_url)
 			driver.implicitly_wait(10)
 	
@@ -1246,15 +1249,18 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(company_people_window)
 			driver.close()
 			time.sleep(1)
-		else:			
-			driver.switch_to.window(company_window)
-			driver.close()#2 close  company_window
-			time.sleep(1)
+		else:		
+			if (company_url != "") :
+				driver.switch_to.window(company_window)
+				driver.close()#2 close  company_window
+				time.sleep(1)
 			if(contact_new_tab == 1):
 				driver.switch_to.window(contact_window)
 				driver.close()#2 close  company_window
 				time.sleep(1)
-
+		driver.switch_to.window(job_detail_window)
+		driver.close()#1 close  job_detail_window
+		time.sleep(1)
 		driver.switch_to.window(root_window)
 		z = random.randint(2,4)
 		time.sleep(z)
