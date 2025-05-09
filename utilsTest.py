@@ -1066,20 +1066,20 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				driver.get(company_about_url)
 				driver.implicitly_wait(10)
 	
-		full_content =full_content + "\n Link giới thiệu:" + company_about_url
+				full_content =full_content + "\n Link giới thiệu:" + company_about_url
 
-		wrap_section = driver.find_element(By.CLASS_NAME,"org-grid__content-height-enforcer")
-		dds = wrap_section.find_elements(By.TAG_NAME,"dd")
+				wrap_section = driver.find_element(By.CLASS_NAME,"org-grid__content-height-enforcer")
+				dds = wrap_section.find_elements(By.TAG_NAME,"dd")
 	
-		index = 0
-		for dd in dds:
+				index = 0
+				for dd in dds:
 	# Ha cmt
 		#print(dd.text)
-			if(("http" in dd.text) or (".com" in dd.text) or ("www" in dd.text)):
-				website_company = dd.text
-			if("Phone number is" in dd.text):
-				phone_company = dd.text.split("Phone number is")[0]
-			index = index + 1
+					if(("http" in dd.text) or (".com" in dd.text) or ("www" in dd.text)):
+						website_company = dd.text
+					if("Phone number is" in dd.text):
+						phone_company = dd.text.split("Phone number is")[0]
+					index = index + 1
 		if(country == "Australia"):
 			if (phone_company.startswith('0') or phone_company.startswith("(0")):			
 				phone_company = phone_company.replace('0','+61',1)
