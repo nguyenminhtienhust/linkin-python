@@ -1511,16 +1511,16 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(5,7)
 			time.sleep(z)
-			if(company_url != "" and "unavailable" not in company_url):
+			if(company_url != ""):
 				driver.execute_script("window.open('');")
 				if(contact_new_tab == 0): 
 					company_window = driver.window_handles[2]
 				else:
 					company_window = driver.window_handles[3]
-			driver.switch_to.window(company_window)
-			time.sleep(2)
-			driver.get(company_about_url)
-			driver.implicitly_wait(10)
+				driver.switch_to.window(company_window)
+				time.sleep(2)
+				driver.get(company_about_url)
+				driver.implicitly_wait(10)
 		
 		full_content =full_content + "\n Link giới thiệu:" + company_about_url
 
