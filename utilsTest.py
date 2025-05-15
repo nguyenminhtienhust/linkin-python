@@ -644,7 +644,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
 		company_name = company_element.text
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute","formula 1"]
+		skiped_company_list = ["grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute","formula 1"]
 		if not company_element.find_element(By.TAG_NAME,"a"):
 			print("company_url is empty")
 		else:
@@ -843,7 +843,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						people_title = option_title_div.text
 						title_list =["cto","chief technology officer","ceo","founder","head of technical","project manager","consultant","talent acquisition"]
 						for each_title in title_list:
-							if each_title in people_title.lower():
+							if each_title in people_title.lower() or people_title.lower() in each_title:
 								profile_click_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__image")
 								people_link = profile_click_div.find_element(By.TAG_NAME,"a").get_attribute("href")
 								people_name_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__title")
@@ -1054,7 +1054,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(5,7)
 			time.sleep(z)
-			print("company_url: ",company_url)
 			if(company_url != ""):
 				print("here1")
 				driver.execute_script("window.open('');")
@@ -1254,7 +1253,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			time.sleep(1)
 		else:		
 			if (company_url != "") :
-				print("here2")
 				driver.switch_to.window(company_window)
 				driver.close()#2 close  company_window
 				time.sleep(1)

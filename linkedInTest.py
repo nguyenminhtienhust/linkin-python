@@ -27,6 +27,7 @@ import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException
 from eld import LanguageDetector
+# from fake_useragent import UserAgent
 
 from utils import (
     get_lk_credentials,
@@ -226,13 +227,13 @@ def scrap_lksn_pages(
 if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
 
-    # jobs_names = [".Net","Java developer","iOS developer","Android","kotlin developer","Flutter","Dart developer","NodeJS",
+    # jobs_names = [".Net","Java developer","iOS developer","Android developer","kotlin developer","Flutter","Dart developer","NodeJS",
     #                "React Native","ReactJS developer","NextJS developer",
     #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php developer", "C++","Azure developer"]
-    jobs_names = ["Swift Developer"]
+    jobs_names = ["NextJS developer","AngularJS developer"]
     #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
-    countries = ["Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
+    countries = ["Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
     #
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")
@@ -241,17 +242,25 @@ if __name__ == "__main__":
     # countries = countryfile.read().split(",")
     # countryfile.close()
     
+    
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
+    # ua = UserAgent(browsers='Chrome',os='Windows',platforms='desktop')
+    # #ua = UserAgent()
+    # user_agent = ua.random
+    #user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    # chrome_options.add_argument(f'--user-agent={user_agent}')
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
+    #chrome_options.add_argument("window-size=1680,8000")
     cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\ChromeDriver\chromedriver.exe')
     
     driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
     # cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\geckodriver.exe')
     # driver = webdriver.Firefox(service = cService, options=fire_options)
+    
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
@@ -294,6 +303,11 @@ if __name__ == "__main__":
                 time.sleep(x)           
             print("Country: " + country)
             print("Job: " + job_name)
+            if (country == "Malaysia"):
+                if(job_name == "Android developer"):
+                    job_name = "Android"
+                if(job_name == "kotlin developer"):
+                    job_name = "kotlin"
             done = False
             while( done == False):
                 try:
@@ -326,6 +340,7 @@ if __name__ == "__main__":
                     posted_date_shell = posted_date.find_element(By.CLASS_NAME,"artdeco-hoverable-content__content")
                     option_ul = posted_date_shell.find_element(By.TAG_NAME,"ul")
                     option_li = option_ul.find_elements(By.TAG_NAME,"li")
+                    time.sleep(3)
                     for any_option in option_li:
                         option_li_div = any_option.find_element(By.CLASS_NAME,"search-reusables__value-label")
                         option_li_text = option_li_div.find_element(By.TAG_NAME,"span").text
@@ -334,7 +349,7 @@ if __name__ == "__main__":
                             #print("enter here")
                             #li_input = any_option.find_element(By.CLASS_NAME,"search-reusables__select-input")
                             option_li_div.click()
-                            time.sleep(2)
+                            time.sleep(4)
                     filter_result_btn = posted_date_shell.find_element(By.CLASS_NAME,"artdeco-button--primary")
                     filter_result_btn.click()
                     z = random.randint(4,6)
@@ -352,10 +367,13 @@ if __name__ == "__main__":
 
             jobs_fail = ["IT System Engineer","Market Research Intern","IT Network Engineer","Graduate Trainee","Administrative Assistant","Customer Support Engineer","Customer Support Consultant","Research Internship","Search Quality Rater","Digital Marketing Analyst","Project Administrator","Ford Internship","Management Trainee","Information Security Analyst","Assistant Engineering Executive","R&D Specialist","Veterinary Information Systems Officer","Junior Engineer","Research Assistant","Marketing","Administrative","Database Administration Officer","Administrator","Assistant project manager","Internship","Research Associate","Test Administrator","Document Control Administrator","Administrative Assistant","Practical Trainee","System Administrator","Design & Estimation Engineer","Senior Research Scientist","Project Coordinator","Sales Engineer","Assistant"]
             keys_fail = ["Project Administrator","Project Manager","Research","Intern","Network","Graduate","Administrative","Assistant","Support","Marketing","Internship","Security","R&D","Administrative","Officer","Research","Consultant","Consulting","Sale", "Analyst","Assistant","Trainee","Voluteer"]
-    
+            try:
+                if(driver.find_element(By.CLASS_NAME,"jobs-search-no-results-banner")):
+                    continue
+            except:
+                pass
             access_token = login_crm()
             jobs = driver.find_elements(By.CLASS_NAME,"scaffold-layout__list-item")
-            count = len(jobs)
             address = ""
             for job in jobs:
                 job_state = ""
@@ -366,7 +384,7 @@ if __name__ == "__main__":
                     lower_title = job_title.lower()
                     detector = LanguageDetector()
                     #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
-                    if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investor" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title or "application" in lower_title or "infrastructure" in lower_title or "architect" in lower_title or detector.detect(lower_title).language != "en"):
+                    if("director" in lower_title or "consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investor" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title or "infrastructure" in lower_title or "architect" in lower_title or "civil" in lower_title or "site reliability" in lower_title or  detector.detect(lower_title).language != "en"):
                         print("\n title english: ")
                         continue
                     #company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
