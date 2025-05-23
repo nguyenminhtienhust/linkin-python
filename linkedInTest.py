@@ -26,6 +26,8 @@ import psycopg2
 import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service
 # from eld import LanguageDetector
 # from fake_useragent import UserAgent
 
@@ -255,8 +257,8 @@ if __name__ == "__main__":
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
     #chrome_options.add_argument("window-size=1680,8000")
     cService = webdriver.ChromeService(executable_path='~/linkin-python/linkin-python/chromedriver.exe')
-    
-    driver = webdriver.Chrome(service = cService, options=chrome_options)
+    driver = webdriver.Chrome(service=Service(ChromeDriverManager().install()), options=chrome_options)
+    #driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
     # cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\geckodriver.exe')
     # driver = webdriver.Firefox(service = cService, options=fire_options)
