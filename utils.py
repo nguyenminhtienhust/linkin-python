@@ -26,7 +26,7 @@ HEADLESS_OPTIONS = {'chrome_options': options}
 import logging
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.support.select import Select
-from eld import LanguageDetector
+# from eld import LanguageDetector
 
 logger = logging.getLogger(__name__)
 
@@ -588,9 +588,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	try:		
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
 		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text--stretch").text
-		detector = LanguageDetector()
-		title_lan = detector.detect(current_job_title).language
-		detail_lan = detector.detect(job_detail).language
+		# detector = LanguageDetector()
+		# title_lan = detector.detect(current_job_title).language
+		# detail_lan = detector.detect(job_detail).language
+		title_lan = "en"
+		detail_lan = "en"
 		if(title_lan != "en" or detail_lan != "en"):
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(3,7)
