@@ -26,7 +26,7 @@ import psycopg2
 import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException
-from eld import LanguageDetector
+# from eld import LanguageDetector
 # from fake_useragent import UserAgent
 
 from utils import (
@@ -382,7 +382,7 @@ if __name__ == "__main__":
                 try:
                     job_title = job.find_element(By.CLASS_NAME,"job-card-list__title--link").text
                     lower_title = job_title.lower()
-                    detector = LanguageDetector()
+                    # detector = LanguageDetector()
                     #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
                     if("director" in lower_title or "consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investor" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title or "infrastructure" in lower_title or "architect" in lower_title or "civil" in lower_title or "site reliability" in lower_title or  detector.detect(lower_title).language != "en"):
                         print("\n title english: ")
@@ -446,7 +446,8 @@ if __name__ == "__main__":
                         try:
                             job_title = job.find_element(By.CLASS_NAME,"job-card-list__title").text
                             lower_title = job_title.lower()
-                            if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or detect(lower_title) != "en"):
+                            # if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or detect(lower_title) != "en"):
+                            if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title):
                                 continue
                             #company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
                             #address = job.find_element(By.CLASS_NAME,"job-card-container__metadata-item").text
