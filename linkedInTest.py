@@ -231,9 +231,9 @@ if __name__ == "__main__":
     #                "React Native","ReactJS developer","NextJS developer",
     #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php developer", "C++","Azure developer"]
-    jobs_names = ["NextJS developer","AngularJS developer"]
+    jobs_names = ["iOS developer"]
     #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
-    countries = ["Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
+    countries = ["European Union"]
     #
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")

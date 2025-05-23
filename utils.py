@@ -767,7 +767,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"ocUbSorpYdNVlaXBOINSgondYZoqUVaQfcOwFHo")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"CPfmsPVoIJFtAWVqgTbYUlTBwhnbTSFiOY")
 					#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")					
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -989,7 +989,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"ocUbSorpYdNVlaXBOINSgondYZoqUVaQfcOwFHo")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"CPfmsPVoIJFtAWVqgTbYUlTBwhnbTSFiOY")
 							#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							
@@ -1125,7 +1125,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"ocUbSorpYdNVlaXBOINSgondYZoqUVaQfcOwFHo")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"CPfmsPVoIJFtAWVqgTbYUlTBwhnbTSFiOY")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -1198,7 +1198,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 									driver.get(people_link)
 									time.sleep(4)
 									if(lead_info["data"] == ""):
-										hirer_detail = driver.find_element(By.CLASS_NAME,"ocUbSorpYdNVlaXBOINSgondYZoqUVaQfcOwFHo")
+										hirer_detail = driver.find_element(By.CLASS_NAME,"CPfmsPVoIJFtAWVqgTbYUlTBwhnbTSFiOY")
 										hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 										text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 										driver.implicitly_wait(3)
@@ -1306,7 +1306,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										if(lead_info["data"] == ""):
-											hirer_detail = driver.find_element(By.CLASS_NAME,"ocUbSorpYdNVlaXBOINSgondYZoqUVaQfcOwFHo")
+											hirer_detail = driver.find_element(By.CLASS_NAME,"CPfmsPVoIJFtAWVqgTbYUlTBwhnbTSFiOY")
 											hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 											text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 											driver.implicitly_wait(3)
