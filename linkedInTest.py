@@ -254,7 +254,7 @@ if __name__ == "__main__":
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
     #chrome_options.add_argument("window-size=1680,8000")
-    cService = webdriver.ChromeService(executable_path='chromedriver.exe')
+    cService = webdriver.ChromeService(executable_path='~/linkin-python/linkin-python/chromedriver.exe')
     
     driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
