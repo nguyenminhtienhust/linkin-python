@@ -12,7 +12,7 @@ from bs4 import BeautifulSoup
 from tqdm import tqdm
 import time
 from selenium import webdriver
-from selenium.webdriver.firefox.options import Options
+from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 import os
@@ -238,7 +238,7 @@ if __name__ == "__main__":
     print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    driver = webdriver.Firefox(options=Options())
+    driver = webdriver.Chrome(options=Options())
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
