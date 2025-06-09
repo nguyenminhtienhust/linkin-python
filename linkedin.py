@@ -242,7 +242,7 @@ if __name__ == "__main__":
     print("Job: " + job_name)
     
     #countries = ["Singapore","New Zealand","Thailand","Australia","Malaysia"]
-    countries = ["Australia","Malaysia","Thailand","New Zealand", "Singapore"]
+    countries = ["Australia","New Zealand","Germany","European Union","United Kingdom","United States","Malaysia","Thailand", "Singapore"]
     #country = countries[2]
     #print("Country: " + country)
     

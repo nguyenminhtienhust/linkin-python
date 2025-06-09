@@ -644,7 +644,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
 		company_name = company_element.text
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute","formula 1"]
+		skiped_company_list = ["binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute","formula 1"]
 		if not company_element.find_element(By.TAG_NAME,"a"):
 			print("company_url is empty")
 		else:
@@ -821,93 +821,45 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				print("\n edit contact")
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 		else:
-			company_people_url = "/people".join(company_url.rsplit("/life", 1))
-			driver.execute_script("window.open('');")
-			if(contact_new_tab == 0):
-				company_people_window = driver.window_handles[2]
-			else:
-				company_people_window = driver.window_handles[3]
-			driver.switch_to.window(company_people_window)
-			driver.get(company_people_url)
-			time.sleep(8)
-			people_div = driver.find_element(By.CLASS_NAME,"org-people-profile-card__card-spacing")
-			people_div_content = people_div.find_element(By.CLASS_NAME,"scaffold-finite-scroll__content")
-			people_div_content_ul = people_div_content.find_element(By.TAG_NAME,"ul")
-			people_div_content_li = people_div_content_ul.find_elements(By.TAG_NAME,"li")
-			breaker = False
-			for option_li in people_div_content_li:
-				if (breaker == False):
-					try:
-						option_li_title_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__subtitle")
-						option_title_div = option_li_title_div.find_element(By.CLASS_NAME,"lt-line-clamp--multi-line")
-						people_title = option_title_div.text
-						title_list =["cto","chief technology officer","ceo","founder","head of technical","project manager","consultant","talent acquisition"]
-						for each_title in title_list:
-							if each_title in people_title.lower() or people_title.lower() in each_title:
-								profile_click_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__image")
-								people_link = profile_click_div.find_element(By.TAG_NAME,"a").get_attribute("href")
-								people_name_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__title")
-								people_name_line = people_name_div.find_element(By.CLASS_NAME,"lt-line-clamp--single-line")
-								people_name = people_name_line.text
-								people_name_split = people_name.split()
-								jj = 0
-								while(people_name_split[jj].isalpha() == False):
-									jj = jj + 1
-								if(jj < len(people_name_split)):
-									people_name_first_name = hirer_name.split()[jj]
-								people_info = check_contact(people_name)
-								if(people_info["data"] == ""):
-									driver.get(people_link)
-									time.sleep(4)
-									if(lead_info["data"] == ""):
-										contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
-										driver.get(contact_info_link)
-										time.sleep(3)
-										contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
-										for contact_info_detail in contact_info_list:
-											contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
-											contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"t-14")
-											if "email" in contact_info_header.text.lower():
-												hirer_email = contact_info_content.text
-											elif "profile" in contact_info_header.text.lower():
-												hirer_profile = contact_info_content.text
-											elif "website" in contact_info_header.text.lower():
-				   								hirer_website = contact_info_content.text
-											elif "address" in contact_info_header.text.lower():
-				   								hirer_address = contact_info_content.text
-											elif "phone" in contact_info_header.text.lower():
-				   								hirer_phone = contact_info_content.text
-											else:
-												hirer_other = contact_info_content.text
-										dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
-										dismiss_button.click() 	
-										time.sleep(2)
-										if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
-											driver.switch_to.window(contact_window)
-											driver.close()#2 close  company_window
-											time.sleep(2)	
-											driver.switch_to.window(job_detail_window)
-											time.sleep(6)
-											driver.close()#1 close  job_detail_window
-											time.sleep(2)
-											driver.switch_to.window(root_window)
-											return
-										if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-											request_note_str = request_note_str + "\nconnect by Huong Nguyen" 
-											mess_sent = "message sent by AdminAccount"
-										print("\n add member as contact")
-										add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
-										contact_info = check_contact(hirer_name)
-										contact_id = contact_info["data"]
-										z = random.randint(2,7)
-										time.sleep(z)
-								else:
-									if people_info["des"] is not None and ("message" in people_info["des"].lower() or "connect" in people_info["des"].lower()):
-										continue
-									else:
+			if(company_url != ""):
+				company_people_url = "/people".join(company_url.rsplit("/life", 1))
+				driver.execute_script("window.open('');")
+				if(contact_new_tab == 0):
+					company_people_window = driver.window_handles[2]
+				else:
+					company_people_window = driver.window_handles[3]
+				driver.switch_to.window(company_people_window)
+				driver.get(company_people_url)
+				time.sleep(8)
+				people_div = driver.find_element(By.CLASS_NAME,"org-people-profile-card__card-spacing")
+				people_div_content = people_div.find_element(By.CLASS_NAME,"scaffold-finite-scroll__content")
+				people_div_content_ul = people_div_content.find_element(By.TAG_NAME,"ul")
+				people_div_content_li = people_div_content_ul.find_elements(By.TAG_NAME,"li")
+				breaker = False
+				for option_li in people_div_content_li:
+					if (breaker == False):
+						try:
+							option_li_title_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__subtitle")
+							option_title_div = option_li_title_div.find_element(By.CLASS_NAME,"lt-line-clamp--multi-line")
+							people_title = option_title_div.text
+							title_list =["cto","chief technology officer","ceo","founder","head of technical","project manager","consultant","talent acquisition"]
+							for each_title in title_list:
+								if each_title in people_title.lower() or people_title.lower() in each_title:
+									profile_click_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__image")
+									people_link = profile_click_div.find_element(By.TAG_NAME,"a").get_attribute("href")
+									people_name_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__title")
+									people_name_line = people_name_div.find_element(By.CLASS_NAME,"lt-line-clamp--single-line")
+									people_name = people_name_line.text
+									people_name_split = people_name.split()
+									jj = 0
+									while(people_name_split[jj].isalpha() == False):
+										jj = jj + 1
+									if(jj < len(people_name_split)):
+										people_name_first_name = hirer_name.split()[jj]
+									people_info = check_contact(people_name)
+									if(people_info["data"] == ""):
 										driver.get(people_link)
-										time.sleep(6)
-										contact_id = people_info["data"]
+										time.sleep(4)
 										if(lead_info["data"] == ""):
 											contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 											driver.get(contact_info_link)
@@ -929,7 +881,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 												else:
 													hirer_other = contact_info_content.text
 											dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
-											dismiss_button.click() 				
+											dismiss_button.click() 	
 											time.sleep(2)
 											if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
 												driver.switch_to.window(contact_window)
@@ -941,17 +893,66 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 												time.sleep(2)
 												driver.switch_to.window(root_window)
 												return
-											if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
-												if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
-													request_note_str = request_note_str + "\nconnect by Huong Nguyen" 
-													mess_sent = "message sent by AdminAccount"
-										print("\n edit contact")
-										edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
-					except Exception as error:
-						print("Seventh ex: ", error)
-						continue
-				else:
-					break
+											if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
+												request_note_str = request_note_str + "\nconnect by Huong Nguyen" 
+												mess_sent = "message sent by AdminAccount"
+											print("\n add member as contact")
+											add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
+											contact_info = check_contact(hirer_name)
+											contact_id = contact_info["data"]
+											z = random.randint(2,7)
+											time.sleep(z)
+									else:
+										if people_info["des"] is not None and ("message" in people_info["des"].lower() or "connect" in people_info["des"].lower()):
+											continue
+										else:
+											driver.get(people_link)
+											time.sleep(6)
+											contact_id = people_info["data"]
+											if(lead_info["data"] == ""):
+												contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+												driver.get(contact_info_link)
+												time.sleep(3)
+												contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
+												for contact_info_detail in contact_info_list:
+													contact_info_header = contact_info_detail.find_element(By.CLASS_NAME,"pv-contact-info__header")
+													contact_info_content = contact_info_detail.find_element(By.CLASS_NAME,"t-14")
+													if "email" in contact_info_header.text.lower():
+														hirer_email = contact_info_content.text
+													elif "profile" in contact_info_header.text.lower():
+														hirer_profile = contact_info_content.text
+													elif "website" in contact_info_header.text.lower():
+				   										hirer_website = contact_info_content.text
+													elif "address" in contact_info_header.text.lower():
+				   										hirer_address = contact_info_content.text
+													elif "phone" in contact_info_header.text.lower():
+				   										hirer_phone = contact_info_content.text
+													else:
+														hirer_other = contact_info_content.text
+												dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
+												dismiss_button.click() 				
+												time.sleep(2)
+												if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
+													driver.switch_to.window(contact_window)
+													driver.close()#2 close  company_window
+													time.sleep(2)	
+													driver.switch_to.window(job_detail_window)
+													time.sleep(6)
+													driver.close()#1 close  job_detail_window
+													time.sleep(2)
+													driver.switch_to.window(root_window)
+													return
+												if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
+													if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
+														request_note_str = request_note_str + "\nconnect by Huong Nguyen" 
+														mess_sent = "message sent by AdminAccount"
+											print("\n edit contact")
+											edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
+						except Exception as error:
+							print("Seventh ex: ", error)
+							continue
+					else:
+						break
 	except Exception as error:
 		print("\nCan't found ", error)       
 		pass
@@ -1038,18 +1039,19 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 			full_content =full_content + "\n Link giới thiệu:" + company_about_url
 		if(hirer_name == ""):
-			driver.switch_to.window(company_people_window)
-			z = random.randint(5,7)
-			time.sleep(z) 
-			if(driver.find_element(By.CLASS_NAME,"org-page-navigation__items")):
-				page_navigation_items = driver.find_element(By.CLASS_NAME,"org-page-navigation__items")
-				page_navigation_option_li = page_navigation_items.find_elements(By.CLASS_NAME,"org-page-navigation__item")
-				for option_li in page_navigation_option_li:
-					button_content = option_li.find_element(By.TAG_NAME,"a")
-					if(button_content.text == "About"):
-						option_li.click() 
-						time.sleep(6)
-						break
+			if(company_url != ""):
+				driver.switch_to.window(company_people_window)
+				z = random.randint(5,7)
+				time.sleep(z) 
+				if(driver.find_element(By.CLASS_NAME,"org-page-navigation__items")):
+					page_navigation_items = driver.find_element(By.CLASS_NAME,"org-page-navigation__items")
+					page_navigation_option_li = page_navigation_items.find_elements(By.CLASS_NAME,"org-page-navigation__item")
+					for option_li in page_navigation_option_li:
+						button_content = option_li.find_element(By.TAG_NAME,"a")
+						if(button_content.text == "About"):
+							option_li.click() 
+							time.sleep(6)
+							break
 		else:
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(5,7)
@@ -1248,9 +1250,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						assigned_user_id = ""
 					edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = hirer_name, refer= "", contact_id = contact_id, status_des= mess_sent)
 		if(hirer_name == ""):
-			driver.switch_to.window(company_people_window)
-			driver.close()
-			time.sleep(1)
+			if(company_url != ""):
+				driver.switch_to.window(company_people_window)
+				driver.close()
+				time.sleep(1)
 		else:		
 			if (company_url != "") :
 				driver.switch_to.window(company_window)
