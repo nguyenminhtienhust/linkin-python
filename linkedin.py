@@ -247,6 +247,7 @@ if __name__ == "__main__":
     #print("Country: " + country)
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
+    driver = webdriver.Chrome(options=Options())
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     chrome_options.add_experimental_option("useAutomationExtension", False)
