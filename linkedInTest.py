@@ -26,8 +26,8 @@ import psycopg2
 import pandas as pd
 import random
 from selenium.common.exceptions import NoSuchElementException
-# from eld import LanguageDetector
-# from fake_useragent import UserAgent
+from eld import LanguageDetector
+from fake_useragent import UserAgent
 
 from utils import (
     get_lk_credentials,
@@ -227,13 +227,13 @@ def scrap_lksn_pages(
 if __name__ == "__main__":
     home_url = "https://www.linkedin.com/jobs/search"
 
-    # jobs_names = [".Net","Java developer","iOS developer","Android developer","kotlin developer","Flutter","Dart developer","NodeJS",
+    # jobs_names = [".Net developer","Java developer","iOS developer","Android developer","kotlin developer","Flutter","Dart developer","NodeJS",
     #                "React Native","ReactJS developer","NextJS developer",
     #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php developer", "C++","Azure developer"]
-    jobs_names = ["Php developer"]
+    jobs_names = ["ReactJS developer","NextJS developer"]
     #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
-    countries = ["European Union","Thailand"]
+    countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
     #
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")
@@ -244,17 +244,17 @@ if __name__ == "__main__":
     
     
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    # ua = UserAgent(browsers='Chrome',os='Windows',platforms='desktop')
-    # #ua = UserAgent()
-    # user_agent = ua.random
+    ua = UserAgent(browsers='Chrome',os='Windows',platforms='desktop')
+    #ua = UserAgent()
+    user_agent = ua.random
     #user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     chrome_options = webdriver.ChromeOptions()
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
-    # chrome_options.add_argument(f'--user-agent={user_agent}')
+    chrome_options.add_argument(f'--user-agent={user_agent}')
     chrome_options.add_experimental_option("useAutomationExtension", False)
     chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
     #chrome_options.add_argument("window-size=1680,8000")
-    cService = webdriver.ChromeService(executable_path=':~/linkin-python/linkin-python/chromedriver.exe')
+    cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\ChromeDriver\chromedriver.exe')
     
     driver = webdriver.Chrome(service = cService, options=chrome_options)
     # fire_options = webdriver.FirefoxOptions()
@@ -303,31 +303,40 @@ if __name__ == "__main__":
                 time.sleep(x)           
             print("Country: " + country)
             print("Job: " + job_name)
+            temp_job_name = ""
             if (country == "Malaysia"):
                 if(job_name == "Android developer"):
-                    job_name = "Android"
+                    temp_job_name = "Android"
+                else:
+                    temp_job_name = job_name
                 if(job_name == "kotlin developer"):
-                    job_name = "kotlin"
+                    temp_job_name = "kotlin"
+                else:
+                    temp_job_name = job_name
             done = False
             while( done == False):
                 try:
                     if(current_job != job_name):
                         current_job = job_name
                         #titleInputElement = driver.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input")                     
-                        titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
+                        #titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
+                        titleInput = driver.find_element(By.CLASS_NAME,"jobs-search-box__input--keyword")
+                        titleInputElement = titleInput.find_element(By.CLASS_NAME,"jobs-search-box__text-input")  
                         titleInputElement.clear()
                         time.sleep(2)
-                        titleInputElement.send_keys(job_name)
+                        titleInputElement.send_keys(temp_job_name)
 
                     if(current_coutry != country):
                         current_coutry = country
                         #locationInputElement = driver.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input") 
-                        locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
+                        #locationInputElement = driver.find_element(By.CSS_SELECTOR, '[id*="jobs-search-box-location-id"]')
+                        localtionInput = driver.find_element(By.CLASS_NAME,"jobs-search-box__input--location")
+                        locationInputElement = localtionInput.find_element(By.CLASS_NAME,"jobs-search-box__text-input") 
                         locationInputElement.clear()
                         time.sleep(2)
                         locationInputElement.send_keys(country)
                 
-    
+                    time.sleep(2)
                     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
                     searchButton.click()
                     searchButton.accessible_name
@@ -382,9 +391,9 @@ if __name__ == "__main__":
                 try:
                     job_title = job.find_element(By.CLASS_NAME,"job-card-list__title--link").text
                     lower_title = job_title.lower()
-                    # detector = LanguageDetector()
+                    detector = LanguageDetector()
                     #if("consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "data analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investors" in lower_title):
-                    if("director" in lower_title or "consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investor" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title or "infrastructure" in lower_title or "architect" in lower_title or "civil" in lower_title or "site reliability" in lower_title):
+                    if("director" in lower_title or "consultant" in lower_title or  "support" in lower_title or "admin" in lower_title or "manager" in lower_title or "analyst" in lower_title or "intern" in lower_title or "lecturer" in lower_title or "tutor" in lower_title or "assistant" in lower_title or "graphic" in lower_title or "design" in lower_title or "supervisor" in lower_title or "investor" in lower_title or "test" in lower_title or "design" in lower_title or "analyst" in lower_title or "specialist" in lower_title or "sales" in lower_title or "student" in lower_title or "purchasing" in lower_title or "infrastructure" in lower_title or "architect" in lower_title or "civil" in lower_title or "site reliability" in lower_title or  detector.detect(lower_title).language != "en"):
                         print("\n title english: ")
                         continue
                     #company_name = job.find_element(By.CLASS_NAME,"job-card-container__primary-description").text
