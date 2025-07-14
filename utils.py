@@ -585,12 +585,13 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	company_about_url = ""
 	current_job_title = ""
 	other_address = ""
+	job_detail_text = ""
 	try:		
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text--stretch").text
+		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
-		detail_lan = detector.detect(job_detail).language
+		detail_lan = detector.detect(job_detail_text).language
 		if(title_lan != "en" or detail_lan != "en"):
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(3,7)
@@ -615,7 +616,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		pass
 	try :
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-description-content__text--stretch").text	
 		#job_detail = driver.find_element(By.CLASS_NAME,"jobs-description-content__text")
 		#job_detail_text = job_detail.text
 		# job_detail_spans = job_detail.find_elements(By.TAG_NAME,"span")
@@ -643,7 +643,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
 		company_name = company_element.text
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+		skiped_company_list = ["state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 		# for skiped_company in skiped_company_list:
 		# 	if(skiped_company in company_name_lower):
 		# 		driver.switch_to.window(job_detail_window)
@@ -767,7 +767,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"UMTCeLYvIAjDivRXiCueAXlAxLAcPEHVuFak")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"KLRZYcCWVcGmmylletyxHYJiNCUcATOGapmtvzs")
 					#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")					
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -989,7 +989,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"UMTCeLYvIAjDivRXiCueAXlAxLAcPEHVuFak")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"KLRZYcCWVcGmmylletyxHYJiNCUcATOGapmtvzs")
 							#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							
@@ -1125,7 +1125,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"UMTCeLYvIAjDivRXiCueAXlAxLAcPEHVuFak")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"KLRZYcCWVcGmmylletyxHYJiNCUcATOGapmtvzs")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -1200,7 +1200,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										driver.get(people_link)
 										time.sleep(4)
 										if(lead_info["data"] == ""):
-											hirer_detail = driver.find_element(By.CLASS_NAME,"UMTCeLYvIAjDivRXiCueAXlAxLAcPEHVuFak")
+											hirer_detail = driver.find_element(By.CLASS_NAME,"KLRZYcCWVcGmmylletyxHYJiNCUcATOGapmtvzs")
 											hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 											text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 											driver.implicitly_wait(3)
@@ -1308,7 +1308,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 											time.sleep(6)
 											contact_id = people_info["data"]
 											if(lead_info["data"] == ""):
-												hirer_detail = driver.find_element(By.CLASS_NAME,"UMTCeLYvIAjDivRXiCueAXlAxLAcPEHVuFak")
+												hirer_detail = driver.find_element(By.CLASS_NAME,"KLRZYcCWVcGmmylletyxHYJiNCUcATOGapmtvzs")
 												hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 												text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 												driver.implicitly_wait(3)
