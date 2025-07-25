@@ -231,7 +231,7 @@ if __name__ == "__main__":
     #                "React Native","ReactJS developer","NextJS developer",
     #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php developer", "C++","Azure developer"]
-    jobs_names = ["ReactJS developer","NextJS developer"]
+    jobs_names = ["React Native"]
     #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
     countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
     #
@@ -321,7 +321,7 @@ if __name__ == "__main__":
                         #titleInputElement = driver.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input")                     
                         #titleInputElement = driver.find_element(By.CSS_SELECTOR,'[id*="jobs-search-box-keyword-id"]')
                         titleInput = driver.find_element(By.CLASS_NAME,"jobs-search-box__input--keyword")
-                        titleInputElement = titleInput.find_element(By.CLASS_NAME,"jobs-search-box__text-input")  
+                        titleInputElement = titleInput.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input")  
                         titleInputElement.clear()
                         time.sleep(2)
                         titleInputElement.send_keys(temp_job_name)

@@ -19,25 +19,44 @@ import pandas as pd
 import random
 from datetime import datetime
 from datetime import date
+# from fake_useragent import UserAgent
 
 
-from utilsTest import (
+from utils import (
     get_lk_credentials,
     enter_ids_on_lk_signin,
     get_job_detail,
     login_crm,
-    test
+    getAccountSentMessageToday,
+    get_min_sale
 )
 
 LK_CREDENTIALS_PATH = "./credentials.json"
 
 if __name__ == "__main__":
+    # mess_count = getAccountSentMessageToday()
+    # print("mess_count:",mess_count)
 
-    print("Starting Clone...")
+    # print("Starting Clone...")
     
-    job_id = "3829336175"   #3817294045 : job_id with strong style foe email
+    job_id = "4255536926"   #unavailable company page
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
-    driver = webdriver.Chrome(options=Options())
+    # ua = UserAgent(browsers='Chrome',os='Windows',platforms='desktop')
+    #ua = UserAgent()
+    # user_agent = ua.random
+    #user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
+    chrome_options = webdriver.ChromeOptions()
+    chrome_options.add_argument('--disable-blink-features=AutomationControlled')
+    # chrome_options.add_argument(f'--user-agent={user_agent}')
+    chrome_options.add_experimental_option("useAutomationExtension", False)
+    chrome_options.add_experimental_option("excludeSwitches",["enable-automation"])
+    # chrome_options.add_argument("window-size=1380,800")
+    cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\ChromeDriver\chromedriver.exe')
+    
+    driver = webdriver.Chrome(service = cService, options=chrome_options)
+    # fire_options = webdriver.FirefoxOptions()
+    # cService = webdriver.ChromeService(executable_path='C:\Workspace\CRMFitech\WebDriver\geckodriver.exe')
+    # driver = webdriver.Firefox(service = cService, options=fire_options)
     driver.maximize_window()
     driver.get("https://www.linkedin.com/login/")
     
@@ -52,9 +71,7 @@ if __name__ == "__main__":
         input()
 
 
-    print("Starting the scraping...")
-
-    #await driver.wait(until.elementLocated(By.className('link')), 1000);
-
     access_token = login_crm()
-    get_job_detail(driver,job_id,access_token,"Malaysia")
+    # lead_list = get_num_mess_sent_lead(access_token)
+    # print(len(lead_list))
+    get_job_detail(driver,job_id,access_token, "Prague, Czechia", "European Union", "Huong Nguyen")
