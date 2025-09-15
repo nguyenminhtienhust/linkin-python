@@ -767,7 +767,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"nloLcpVsjbXVKDZEXHPrqrqfQVnRjJcVorAabQ")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"sNUEvNTWtqOCnEQcpdjwGYXXVqLlxljOXGCow")
 					#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")					
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -989,7 +989,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"nloLcpVsjbXVKDZEXHPrqrqfQVnRjJcVorAabQ")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"sNUEvNTWtqOCnEQcpdjwGYXXVqLlxljOXGCow")
 							#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							
@@ -1125,7 +1125,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"nloLcpVsjbXVKDZEXHPrqrqfQVnRjJcVorAabQ")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"sNUEvNTWtqOCnEQcpdjwGYXXVqLlxljOXGCow")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -1181,9 +1181,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							option_li_title_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__subtitle")
 							option_title_div = option_li_title_div.find_element(By.CLASS_NAME,"lt-line-clamp--multi-line")
 							people_title = option_title_div.text
+							print(people_title)
 							title_list =["cto","chief technology officer","ceo","founder","head of technical","project manager","consultant","talent acquisition","project manager","project owner"]
 							for each_title in title_list:
 								if each_title in people_title.lower() or people_title.lower() in each_title:
+									print("here")
 									profile_click_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__image")
 									people_link = profile_click_div.find_element(By.TAG_NAME,"a").get_attribute("href")
 									people_name_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__title")
@@ -1191,16 +1193,22 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 									people_name = people_name_line.text
 									people_name_split = people_name.split()
 									jj = 0
+									print("here1",people_name_split)
+									print(people_link)
 									while(jj < len(people_name_split) and people_name_split[jj].isalpha() == False):
 										jj = jj + 1
+									print(jj)
 									if(jj < len(people_name_split)):
-										people_name_first_name = hirer_name.split()[jj]
+										people_name_first_name = people_name_split[jj]
+									print(people_name_first_name)
 									people_info = check_contact(people_name)
+									print(people_info)
 									if(people_info["data"] == ""):
 										driver.get(people_link)
 										time.sleep(4)
-										if(lead_info["data"] == ""):
-											hirer_detail = driver.find_element(By.CLASS_NAME,"nloLcpVsjbXVKDZEXHPrqrqfQVnRjJcVorAabQ")
+										if(people_info["data"] == ""):
+											print("here2")
+											hirer_detail = driver.find_element(By.CLASS_NAME,"sNUEvNTWtqOCnEQcpdjwGYXXVqLlxljOXGCow")
 											hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 											text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 											driver.implicitly_wait(3)
@@ -1295,7 +1303,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 												except Exception as error:
 													print("Connect sent to people 2:", error)
 													continue
-										add_contact(access_token = access_token,title = hirer_title , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
+										add_contact(access_token = access_token,title = people_title , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 										people_info = check_contact(people_name)
 										contact_id = people_info["data"]
 										breaker = True
@@ -1307,8 +1315,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 											driver.get(people_link)
 											time.sleep(6)
 											contact_id = people_info["data"]
-											if(lead_info["data"] == ""):
-												hirer_detail = driver.find_element(By.CLASS_NAME,"nloLcpVsjbXVKDZEXHPrqrqfQVnRjJcVorAabQ")
+											if(people_info["data"] != ""):
+												hirer_detail = driver.find_element(By.CLASS_NAME,"sNUEvNTWtqOCnEQcpdjwGYXXVqLlxljOXGCow")
 												hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 												text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 												driver.implicitly_wait(3)
@@ -1404,7 +1412,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 														print("\n Connect sent to people 4: ", error)
 														continue
 											breaker = True
-											edit_contact(access_token = access_token, contact_id = people_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
+											edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
 											break
 						except Exception as error:
 							print("Seventh ex: ", error)
