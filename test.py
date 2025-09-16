@@ -39,7 +39,7 @@ if __name__ == "__main__":
 
     # print("Starting Clone...")
     
-    job_id = "4255536926"   #unavailable company page
+    job_id = "4299274146"   #unavailable company page  4298900261
     logging.getLogger("selenium").setLevel(logging.CRITICAL)
     # ua = UserAgent(browsers='Chrome',os='Windows',platforms='desktop')
     #ua = UserAgent()

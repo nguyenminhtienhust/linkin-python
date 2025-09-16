@@ -694,6 +694,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	mess_sent = ""
 	company_people = ""
 	contact_people = 0
+	people_link = ""
+	people_name = ""
 	#Get Hirer Link
 	try:
 		hirer_name_element = driver.find_element(By.CLASS_NAME,"jobs-poster__name")
@@ -709,11 +711,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	except NoSuchElementException as error:
 		print("Second ex: " , error)
 		pass
-	try:
-		lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
-		z = random.randint(5,10)
-		time.sleep(z)
-		if(hirer_name != ""):			
+	try:		
+		if(hirer_name != ""):	
+			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
+			z = random.randint(5,10)
+			time.sleep(z)
 			contact_info = check_contact(hirer_name)		
 			if(contact_info["data"] == ""):
 			# get contact info and send request
@@ -1159,6 +1161,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				print("\n edit contact")
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 		else:
+			lead_info = check_lead_existed(current_job_title, company_name, "")
 			if(company_url != ""):
 				company_people_url = "/people".join(company_url.rsplit("/life", 1))
 				driver.execute_script("window.open('');")
@@ -1180,16 +1183,20 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						try:
 							option_li_title_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__subtitle")
 							option_title_div = option_li_title_div.find_element(By.CLASS_NAME,"lt-line-clamp--multi-line")
-							people_title = option_title_div.text
+							people_title = option_title_div.text		
 							title_list =["cto","chief technology officer","ceo","founder","head of technical","project manager","consultant","talent acquisition","project owner"]
 							for each_title in title_list:
 								if each_title in people_title.lower() or people_title.lower() in each_title:
+									print(each_title)
+									print(people_title)
+									print("get here")
 									profile_click_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__image")
 									people_link = profile_click_div.find_element(By.TAG_NAME,"a").get_attribute("href")
 									hirer_link = people_link
 									people_name_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__title")
 									people_name_line = people_name_div.find_element(By.CLASS_NAME,"lt-line-clamp--single-line")
 									people_name = people_name_line.text
+									lead_info = check_lead_existed(current_job_title, company_name, people_name)
 									# hirer_name = people_name
 									people_name_split = people_name.split()
 									jj = 0
@@ -1199,9 +1206,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										people_name_first_name = people_name_split[jj]
 									people_info = check_contact(people_name)
 									if(people_info["data"] == ""):
+										driver.execute_script("window.open('');")
 										if(contact_new_tab == 0):
 											people_window = driver.window_handles[3]
-										else:				
+										else:	
 											people_window = driver.window_handles[4]
 										driver.switch_to.window(people_window)
 										driver.get(people_link)
@@ -1305,12 +1313,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										add_contact(access_token = access_token,title = people_title , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 										people_info = check_contact(people_name)
 										contact_id = people_info["data"]
-										breaker = True
-										break
 									else:
 										if people_info["des"] is not None and ("message" in people_info["des"].lower() or "connect" in people_info["des"].lower()):
 											continue
 										else:
+											driver.execute_script("window.open('');")
 											if(contact_new_tab == 0):
 												people_window = driver.window_handles[3]
 											else:				
@@ -1415,9 +1422,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 													except Exception as error:
 														print("\n Connect sent to people 4: ", error)
 														continue
-											breaker = True
 											edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
-											break
+									breaker = True
+									break
 						except Exception as error:
 							print("Seventh ex: ", error)
 							continue
@@ -1614,14 +1621,16 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if((request_note_str is not None and "connect" in request_note_str.lower()) or (contact_info["des"] is not None and "connect" in contact_info["des"].lower())):
 			full_content = '\n Đã gửi connect request đến: '.join([full_content, hirer_link])
    
-		if(hirer_link != ""):
-			full_content = '\n Trang cá nhân nhà tuyển dụng: '.join([full_content, hirer_link])
 		if(people_link != ""):
-			full_content = '\n Trang cá nhân connection: '.join([full_content, hirer_link])
+			full_content = '\n Trang cá nhân connection: '.join([full_content, people_link])
+		else:
+			if(hirer_link != ""):
+				full_content = '\n Trang cá nhân nhà tuyển dụng: '.join([full_content, hirer_link])
 		time.sleep(2)	
 		last_time = datetime(2023, 1 , 1)
 		lead_status = "New"
 		if(request_note_str is not None and request_note_str != "" and hirer_name != ""):
+			print("here8")
 			lead_status = "Recycled"
 			mess_sent = "message sent by AdminAccount"
 		# if(hirer_profile == "" and email_info == "" and hirer_website == "" and phone_company == "" and hirer_name == "" and hirer_phone == "" and job_phone == "" and request_note_str != ""):
