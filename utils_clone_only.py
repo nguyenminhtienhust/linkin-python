@@ -891,6 +891,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										contact_id = people_info["data"]
 									else:
 										if people_info["des"] is not None and ("message" in people_info["des"].lower() or "connect" in people_info["des"].lower()):
+											request_note_str = request_note_str + "\nconnect by Huong Nguyen"
 											continue
 										else:
 											driver.execute_script("window.open('');")
