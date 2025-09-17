@@ -149,15 +149,15 @@ def check_lead_existed(title, account_name, contact):
 		return json_object
 
 def getAccountSentMessageToday():    
-    headers = {'Content-Type': "application/json", 'Accept': "application/json"}
-    check_api = "http://68.183.189.171:9999/getAccountSentMessageToday"
-    data = requests.get(check_api,headers=headers)
-    if data.status_code != 200:
-        print(data.status_code)
-        print(data.reason)
-    else:
-        json_object = data.json()
-        return json_object["data"]
+	headers = {'Content-Type': "application/json", 'Accept': "application/json"}
+	check_api = "http://68.183.189.171:9999/getAccountSentMessageToday"
+	data = requests.get(check_api,headers=headers)
+	if data.status_code != 200:
+		print(data.status_code)
+		print(data.reason)
+	else:
+		json_object = data.json()
+		return json_object["data"]
 
 
 def add_new_account(access_token,name,phone,website,address, des):
@@ -540,6 +540,26 @@ def check_lead_status_with_email(email):
 		json_object = data.json()
 		return json_object["status_count"]
 
+def get_job_href(driver,job_id,access_token,address, country, linkedin_acc):	
+	root_window = driver.window_handles[0]
+	print("\n job_id",job_id)
+	#1 job detail window 
+	driver.execute_script("window.open('');")
+	job_detail_window = driver.window_handles[1]
+	driver.switch_to.window(job_detail_window)
+	
+
+	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
+	driver.get(job_detail_url)
+	# company_element_ = driver.find_element(By.TAG_NAME,"a")
+	company_element_urls = driver.find_elements(By.CSS_SELECTOR,"a")
+	print(len(company_element_urls))
+	for company_element_url in company_element_urls:
+		company_url = company_element_url.get_attribute("href")
+		company_url_name = company_element_url.text
+		print(company_url)
+		print("company_url_name: ", company_url_name)
+	
 
 def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):	 
 	root_window = driver.window_handles[0]
