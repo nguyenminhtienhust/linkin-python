@@ -1112,7 +1112,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		time.sleep(2)	
 		last_time = datetime(2023, 1 , 1)
 		lead_status = "New"
-		if(request_note_str is not None and request_note_str != "" and hirer_name != ""):
+		if(request_note_str is not None and request_note_str != ""):
 			print("here8")
 			lead_status = "Recycled"
 			mess_sent = "message sent by AdminAccount"
@@ -1171,6 +1171,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					lead_status = "Recycled"
 				if(assigned_user_id == "9d80c69a-3bcf-4005-245b-659379197a46"):
 					assigned_user_id = ""
+				if(people_link != ""):
+					assigned_user_id = ""
 				add_new_lead(access_token=access_token,job_id = job_id, company_name=company_name, company_id = company_id,title=current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone,hirer_email = email_info,website=website,content=full_content,assigned_user_id=assigned_user_id, lead_status = lead_status, job_phone = job_phone, hirer_name = first_name_lead, refer= "", contact_id = contact_id, status_des = mess_sent)
 			else:					
 				if(lead_info["status"] == "Recycled" and lead_status == "Recycled"):
@@ -1198,6 +1200,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					if(assigned_user_id == "d6ea87ac-8c7e-a4ed-ba81-65f500a98e58"  or "sent" in lead_info["desc"]):
 						lead_status = "Recycled"
 					if(assigned_user_id == "9d80c69a-3bcf-4005-245b-659379197a46"):
+						assigned_user_id = ""
+					if(people_link != ""):
 						assigned_user_id = ""
 					edit_new_lead(access_token=access_token,lead_id =lead_id,job_id=job_id,company_name=company_name,company_id = company_id,title= current_job_title,address=address,other_address=other_address,phone_company=phone_company,hirer_phone = hirer_phone, hirer_email = email_info,website=website,content=full_content, lead_status = lead_status, job_phone = job_phone, assigned_user_id = assigned_user_id, hirer_name = first_name_lead, refer= "", contact_id = contact_id, status_des= mess_sent)
 		if(hirer_name == ""):
