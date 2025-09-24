@@ -856,7 +856,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							people_title = option_title_div.text		
 							title_list =["cto","chief technology officer","ceo","chief executive officer","founder","head of technical","project manager","hr","talent acquisition","project owner","consultant"]
 							for each_title in title_list:
-								if each_title in people_title.lower() or people_title.lower() in each_title:
+								if each_title in people_title.lower():
 									print(each_title)
 									print(people_title)
 									print("get here")
