@@ -551,14 +551,20 @@ def get_job_href(driver,job_id,access_token,address, country, linkedin_acc):
 
 	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
 	driver.get(job_detail_url)
+	time.sleep(10)
 	# company_element_ = driver.find_element(By.TAG_NAME,"a")
 	company_element_urls = driver.find_elements(By.CSS_SELECTOR,"a")
 	print(len(company_element_urls))
+	count = 0
 	for company_element_url in company_element_urls:
+		count = count + 1
+		print("element: ", count)
+		parent_element = company_element_url.find_element(By.XPATH, "..") 
 		company_url = company_element_url.get_attribute("href")
 		company_url_name = company_element_url.text
-		print(company_url)
-		print("company_url_name: ", company_url_name)
+		if("job poster" in company_url_name.lower()):
+			print(company_url)
+			print(parent_element.text) 
 	
 
 def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):	 
@@ -664,7 +670,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
 		company_name = company_element.text
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+		skiped_company_list = ["nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 		if not company_element.find_element(By.TAG_NAME,"a"):
 			print("company_url is empty")
 		else:

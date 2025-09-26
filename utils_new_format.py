@@ -611,7 +611,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		if("linkedin.com/company" in element_href  and "life" in element_href) :
 			company_url = element_href
 		if("linkedin.com/in" in element_href):
-			hirer_link = element_href
+			parent_element = element_url.find_element(By.XPATH, "..")
+			parent_element_text = parent_element.text
+			if("job poster" in parent_element_text.lower()):
+				hirer_link = element_href
 	try:		
 		current_job_title = driver.find_element(By.CLASS_NAME,"_86d63708").text    
 		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text

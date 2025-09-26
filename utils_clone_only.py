@@ -696,6 +696,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	contact_people = 0
 	people_link = ""
 	people_name = ""
+	breaker = False
 	#Get Hirer Link
 	try:
 		hirer_name_element = driver.find_element(By.CLASS_NAME,"jobs-poster__name")
@@ -857,7 +858,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							people_title = [item.lower() for item in people_title_origin]
 							title_list =["cto","chief technology officer","ceo","chief executive officer","founder","head of technical","project manager","hr","talent acquisition","project owner"]
 							for each_title in title_list:
-								if each_title in people_title.lower():
+								if each_title in people_title:
 									print(each_title)
 									print(people_title)
 									print("get here")
