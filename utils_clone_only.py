@@ -643,7 +643,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_element = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__company-name")
 		company_name = company_element.text
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+		skiped_company_list = ["racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 		# for skiped_company in skiped_company_list:
 		# 	if(skiped_company in company_name_lower):
 		# 		driver.switch_to.window(job_detail_window)
@@ -736,7 +736,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.get(hirer_link)
 					z = random.randint(3,5)
 					time.sleep(z)	
-				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				# contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				contact_info_link = hirer_link + "/overlay/contact-info/"
+				print(hirer_link)
+				print(contact_info_link)
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -755,9 +758,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
-				dismiss_button.click() 				
-				time.sleep(2)
+				# dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
+				# dismiss_button.click() 				
+				# time.sleep(2)
 				if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
 					if(contact_new_tab == 1):
 						driver.switch_to.window(contact_window)
@@ -793,7 +796,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(contact_window)
 					driver.get(hirer_link)
 					time.sleep(3)	
-				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				# contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				contact_info_link = hirer_link + "/overlay/contact-info/"
+				print(hirer_link)
+				print(contact_info_link)
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -812,9 +818,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
-				dismiss_button.click() 				
-				time.sleep(2)
+				# dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
+				# dismiss_button.click() 				
+				# time.sleep(2)
 				if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
 					if(contact_new_tab == 1):
 						driver.switch_to.window(contact_window)
@@ -854,13 +860,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						try:
 							option_li_title_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__subtitle")
 							option_title_div = option_li_title_div.find_element(By.CLASS_NAME,"lt-line-clamp--multi-line")
-							people_title_origin = option_title_div.text.split()
-							people_title = [item.lower() for item in people_title_origin]
+							people_title_origin = option_title_div.text
+							people_title = [item.lower() for item in people_title_origin.split()]
 							title_list =["cto","chief technology officer","ceo","chief executive officer","founder","head of technical","project manager","hr","talent acquisition","project owner"]
 							for each_title in title_list:
 								if each_title in people_title:
-									print(each_title)
-									print(people_title)
 									print("get here")
 									profile_click_div = option_li.find_element(By.CLASS_NAME,"artdeco-entity-lockup__image")
 									people_link = profile_click_div.find_element(By.TAG_NAME,"a").get_attribute("href")
@@ -888,7 +892,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(4)
 										request_note_str = request_note_str + "\nconnect by Huong Nguyen"
 										mess_sent = "message sent by AdminAccount"
-										add_contact(access_token = access_token,title = people_title , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
+										print("add contact.......")
+										add_contact(access_token = access_token,title = people_title_origin , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 										people_info = check_contact(people_name)
 										contact_id = people_info["data"]
 									else:
@@ -907,7 +912,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 											mess_sent = "message sent by AdminAccount"
 											time.sleep(6)
 											contact_id = people_info["data"]
-											edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
+											print("edit contact.......")
+											edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title_origin, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
 									breaker = True
 									break
 						except Exception as error:
