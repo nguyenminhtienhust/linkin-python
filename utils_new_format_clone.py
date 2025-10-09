@@ -617,7 +617,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				hirer_link = element_href
 	try:		
 		current_job_title = driver.find_element(By.CLASS_NAME,"fb42b8c8").text    
-		print(current_job_title)
 		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
@@ -817,14 +816,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								people_name = people_name_line.text
 								people_name_split = people_name.split()
 								jj = 0
-								print(people_link)
 								while(jj < len(people_name_split) and people_name_split[jj].isalpha() == False):
 									jj = jj + 1
 								if(jj < len(people_name_split)):
 									people_name_first_name = people_name_split[jj]
-								print(people_name_first_name)
 								people_info = check_contact(people_name)
-								print(people_info)
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
@@ -936,7 +932,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		message_company_sent = ""
 		message_sent_to_company = 0
 		company_about_url = ""
-		print("company_url:",company_url)
 		if(company_url != ""):
 			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 			full_content =full_content + "\n Link giới thiệu:" + company_about_url
