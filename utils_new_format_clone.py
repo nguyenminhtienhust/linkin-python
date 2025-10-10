@@ -616,12 +616,13 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:		
-		current_job_title = driver.find_element(By.CLASS_NAME,"fb42b8c8").text    
+		current_job_title = driver.find_element(By.CLASS_NAME,"_073187e6").text    
+		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
 		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
-		#detail_lan = detector.detect(job_detail_text).language
-		if(title_lan != "en" ):
+		detail_lan = detector.detect(job_detail_text).language
+		if(title_lan != "en" or detail_lan != "en"):
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(3,7)
 			time.sleep(z)
@@ -696,7 +697,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.get(hirer_link)
 			z = random.randint(5,10)			
-			hirer_name = driver.find_element(By.CLASS_NAME,"skDZOsSTXszlmeVosxMtxcyyYMaRLaGIhk").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"zfKCFGVLyIrKGCaDdOUxRSCNDcCbkuTzzfQ").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0

@@ -617,12 +617,12 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				hirer_link = element_href
 	try:		
 		current_job_title = driver.find_element(By.CLASS_NAME,"_851261f7").text    
-		print(current_job_title)
+		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
 		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
-		#detail_lan = detector.detect(job_detail_text).language
-		if(title_lan != "en" ):
+		detail_lan = detector.detect(job_detail_text).language
+		if(title_lan != "en" or detail_lan != "en"):
 			driver.switch_to.window(job_detail_window)
 			z = random.randint(3,7)
 			time.sleep(z)
