@@ -616,7 +616,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:		
-		current_job_title = driver.find_element(By.CLASS_NAME,"d60c675d").text    
+		current_job_title = driver.find_element(By.CLASS_NAME,"_6a5b93d2").text    
 		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
 		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
@@ -697,7 +697,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.get(hirer_link)
 			z = random.randint(5,10)			
-			hirer_name = driver.find_element(By.CLASS_NAME,"fGcXLQIAUKmmpRmHEMCgojKvcxlOGhAddyDM").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"ayTLUdUGaoXIqfYutggjtAFqlKsKHPijUbk").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -741,7 +741,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"JleNPbDeYBKPhTEkiuhwPsrgVdErNvtjAbrKsg")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"hDMJBgXALxRMsqbGybRGwxfBEoAcjdYaRNTNcA")
 					#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")					
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -918,7 +918,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"JleNPbDeYBKPhTEkiuhwPsrgVdErNvtjAbrKsg")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"hDMJBgXALxRMsqbGybRGwxfBEoAcjdYaRNTNcA")
 							#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							
@@ -1024,7 +1024,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"JleNPbDeYBKPhTEkiuhwPsrgVdErNvtjAbrKsg")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"hDMJBgXALxRMsqbGybRGwxfBEoAcjdYaRNTNcA")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -1100,7 +1100,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
-									hirer_detail = driver.find_element(By.CLASS_NAME,"JleNPbDeYBKPhTEkiuhwPsrgVdErNvtjAbrKsg")
+									hirer_detail = driver.find_element(By.CLASS_NAME,"hDMJBgXALxRMsqbGybRGwxfBEoAcjdYaRNTNcA")
 									hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 									driver.implicitly_wait(3)
@@ -1208,7 +1208,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										if(people_info["data"] != ""):
-											hirer_detail = driver.find_element(By.CLASS_NAME,"JleNPbDeYBKPhTEkiuhwPsrgVdErNvtjAbrKsg")
+											hirer_detail = driver.find_element(By.CLASS_NAME,"hDMJBgXALxRMsqbGybRGwxfBEoAcjdYaRNTNcA")
 											hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 											text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 											driver.implicitly_wait(3)
@@ -1567,11 +1567,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				# 	driver.close()
 				# 	time.sleep(1)
 		else:		
+			driver.switch_to.window(contact_window)
+			driver.close()#2 close  company_window
+			time.sleep(1)
 			if(company_url != ""):
 				driver.switch_to.window(company_window)
-				driver.close()#2 close  company_window
-				time.sleep(1)
-				driver.switch_to.window(contact_window)
 				driver.close()#2 close  company_window
 				time.sleep(1)
 		driver.switch_to.window(job_detail_window)

@@ -1105,12 +1105,12 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				# 	driver.switch_to.window(people_window)
 				# 	driver.close()
 				# 	time.sleep(1)
-		else:		
+		else:	
+			driver.switch_to.window(contact_window)
+			driver.close()#2 close  company_window
+			time.sleep(1)
 			if(company_url != ""):
 				driver.switch_to.window(company_window)
-				driver.close()#2 close  company_window
-				time.sleep(1)
-				driver.switch_to.window(contact_window)
 				driver.close()#2 close  company_window
 				time.sleep(1)
 		driver.switch_to.window(job_detail_window)
