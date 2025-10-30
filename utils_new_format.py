@@ -1058,6 +1058,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				print("\n edit contact")
 				edit_contact(access_token = access_token, contact_id = contact_info["data"] , title = hirer_title, name = hirer_name, email = hirer_email, phone= hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 		else:
+			lead_info = check_lead_existed(current_job_title, company_name, "")
 			company_people_url = "/people".join(company_url.rsplit("/life", 1))
 			driver.execute_script("window.open('');")
 			company_people_window = driver.window_handles[3]

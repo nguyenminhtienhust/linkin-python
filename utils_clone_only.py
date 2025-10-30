@@ -712,7 +712,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 	except NoSuchElementException as error:
 		print("Second ex: " , error)
 		pass
-	try:		
+	try:	
 		if(hirer_name != ""):	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			z = random.randint(5,10)
