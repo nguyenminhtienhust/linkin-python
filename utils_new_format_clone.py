@@ -610,6 +610,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		element_href = element_url.get_attribute("href")
 		if("linkedin.com/company" in element_href  and "life" in element_href) :
 			company_url = element_href
+			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 		if("linkedin.com/in" in element_href):
 			parent_element = element_url.find_element(By.XPATH, "..")
 			parent_element_text = parent_element.text
@@ -668,7 +669,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		driver.execute_script("window.open('');")
 		company_window = driver.window_handles[2]
 		driver.switch_to.window(company_window)
-		driver.get(company_url)
+		driver.get(company_about_url)
 		z = random.randint(3,5)
 		time.sleep(z)
 		company_name = driver.find_element(By.CLASS_NAME,"org-top-card-summary__title").text
@@ -676,7 +677,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_id = company_info["data"]
 		company_desc = company_info["des"]
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+		skiped_company_list = ["canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 		for skiped_company in skiped_company_list:
 			if(skiped_company in company_name_lower):
 				driver.switch_to.window(job_detail_window)

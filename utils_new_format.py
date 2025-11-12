@@ -553,12 +553,9 @@ def get_job_href(driver,job_id,access_token,address, country, linkedin_acc):
 	time.sleep(10)
 	# company_element_ = driver.find_element(By.TAG_NAME,"a")
 	company_element_urls = driver.find_elements(By.CSS_SELECTOR,"a")
-	print(len(company_element_urls))
 	for company_element_url in company_element_urls:
 		company_url = company_element_url.get_attribute("href")
 		company_url_name = company_element_url.text
-		print(company_url)
-		print("company_url_name: ", company_url_name)
   
 def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):	 
 	root_window = driver.window_handles[0]
@@ -610,13 +607,14 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		element_href = element_url.get_attribute("href")
 		if("linkedin.com/company" in element_href  and "life" in element_href) :
 			company_url = element_href
+			company_about_url = "/about".join(company_url.rsplit("/life", 1))
 		if("linkedin.com/in" in element_href):
 			parent_element = element_url.find_element(By.XPATH, "..")
 			parent_element_text = parent_element.text
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:		
-		current_job_title = driver.find_element(By.CLASS_NAME,"f777f4cd").text    
+		current_job_title = driver.find_element(By.CLASS_NAME,"_017211cd").text    
 		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
 		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
@@ -668,7 +666,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		driver.execute_script("window.open('');")
 		company_window = driver.window_handles[2]
 		driver.switch_to.window(company_window)
-		driver.get(company_url)
+		driver.get(company_about_url)
 		z = random.randint(3,5)
 		time.sleep(z)
 		company_name = driver.find_element(By.CLASS_NAME,"org-top-card-summary__title").text
@@ -676,7 +674,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_id = company_info["data"]
 		company_desc = company_info["des"]
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+		skiped_company_list = ["canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 		for skiped_company in skiped_company_list:
 			if(skiped_company in company_name_lower):
 				driver.switch_to.window(job_detail_window)
@@ -697,7 +695,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.get(hirer_link)
 			z = random.randint(5,10)			
-			hirer_name = driver.find_element(By.CLASS_NAME,"IRiHEFjWXOuGrQojKyiPwzJiooACBE").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"JaiUrdAKgwlLZfbukVHeAbzmRQqGaKXozY").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -741,7 +739,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"tsqUcPGHhETIHfAYSEdgoADtHTWilbE")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"bjVvHopMRJNlsQSCXffRpQAviBhXTqTcc")
 					#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")					
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -918,7 +916,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"tsqUcPGHhETIHfAYSEdgoADtHTWilbE")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"bjVvHopMRJNlsQSCXffRpQAviBhXTqTcc")
 							#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							
@@ -1024,7 +1022,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							pass	
 					if(contact_info["des"] is None or ("message" not in contact_info["des"].lower() and "connect" not in contact_info["des"].lower() and (request_note_str is None or request_note_str == ""))):	
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"tsqUcPGHhETIHfAYSEdgoADtHTWilbE")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"bjVvHopMRJNlsQSCXffRpQAviBhXTqTcc")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -1101,7 +1099,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
-									hirer_detail = driver.find_element(By.CLASS_NAME,"tsqUcPGHhETIHfAYSEdgoADtHTWilbE")
+									hirer_detail = driver.find_element(By.CLASS_NAME,"bjVvHopMRJNlsQSCXffRpQAviBhXTqTcc")
 									hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 									driver.implicitly_wait(3)
@@ -1209,7 +1207,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										if(people_info["data"] != ""):
-											hirer_detail = driver.find_element(By.CLASS_NAME,"tsqUcPGHhETIHfAYSEdgoADtHTWilbE")
+											hirer_detail = driver.find_element(By.CLASS_NAME,"bjVvHopMRJNlsQSCXffRpQAviBhXTqTcc")
 											hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 											text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 											driver.implicitly_wait(3)
@@ -1473,7 +1471,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		website = website_company
 		if(hirer_website != ""):
 			website = hirer_website
-
 		if(company_id == ""):
 			print("\n\nStarting add new account:......\n\n")
 			add_new_account(access_token = access_token, name = company_name, phone = phone_company, website = website_company + "\n" + company_about_url, address = address, des = message_company_sent)
