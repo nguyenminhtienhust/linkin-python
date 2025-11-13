@@ -29,7 +29,7 @@ from selenium.common.exceptions import NoSuchElementException
 from eld import LanguageDetector
 from fake_useragent import UserAgent
 
-from utils import (
+from utils_new_format import (
     get_lk_credentials,
     enter_ids_on_lk_signin,
     get_job_detail,
@@ -231,9 +231,9 @@ if __name__ == "__main__":
     #                "React Native","ReactJS developer","NextJS developer",
     #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php developer", "C++","Azure developer"]
-    jobs_names = ["React Native"]
-    #countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
-    countries = ["Malaysia","Australia","New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
+    jobs_names = ["front end developer","back end developer", "full stack developer"]
+    #countries = ["Malaysia","Australia and New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
+    countries = ["Australia and New Zealand"]
     #
     # jobfile = open("job.txt", "r")
     # jobs_names = jobfile.read().split(",")
@@ -303,7 +303,7 @@ if __name__ == "__main__":
                 time.sleep(x)           
             print("Country: " + country)
             print("Job: " + job_name)
-            temp_job_name = ""
+            temp_job_name = job_name
             if (country == "Malaysia"):
                 if(job_name == "Android developer"):
                     temp_job_name = "Android"
@@ -325,7 +325,7 @@ if __name__ == "__main__":
                         titleInputElement.clear()
                         time.sleep(2)
                         titleInputElement.send_keys(temp_job_name)
-
+                        time.sleep(4)
                     if(current_coutry != country):
                         current_coutry = country
                         #locationInputElement = driver.find_element(By.CLASS_NAME,"jobs-search-box__keyboard-text-input") 
@@ -335,8 +335,8 @@ if __name__ == "__main__":
                         locationInputElement.clear()
                         time.sleep(2)
                         locationInputElement.send_keys(country)
-                
-                    time.sleep(2)
+                        time.sleep(2)
+
                     searchButton = driver.find_element(By.CLASS_NAME,"jobs-search-box__submit-button")
                     searchButton.click()
                     searchButton.accessible_name
