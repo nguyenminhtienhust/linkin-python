@@ -231,7 +231,7 @@ if __name__ == "__main__":
     #                "React Native","ReactJS developer","NextJS developer",
     #                "AngularJS developer","VueJS  developer","Django","Golang", "Swift Developer","Python",
     #               "Php developer", "C++","Azure developer"]
-    jobs_names = ["front end developer","back end developer", "full stack developer"]
+    jobs_names = ["back end developer", "full stack developer"]
     #countries = ["Malaysia","Australia and New Zealand","Germany","European Union", "Thailand","Singapore","United States","United Kingdom"]
     countries = ["Australia and New Zealand"]
     #
