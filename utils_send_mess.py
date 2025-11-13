@@ -752,25 +752,26 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					message_limit = driver.find_element(By.CLASS_NAME,"msg-inmail-credits-display")
 					message_limit_number = message_limit.find_element(By.CLASS_NAME,"t-black--light").text
 					print("message_limit_number",message_limit_number)
-					message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-					message_title_input = message_box.find_element(By.TAG_NAME,"input")
-					message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
-					time.sleep(5)
+					if("free" in message_limit_number.lower()):
+						message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+						message_title_input = message_box.find_element(By.TAG_NAME,"input")
+						message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
+						time.sleep(5)
 
-					message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-					message_content_input.clear()
-					input_mess = "Greetings," + "\n\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n" + "I'm looking forward to your thoughts." + "\n\n" + "Warm regards,"
-					message_content_input.send_keys(input_mess)
-					z = random.randint(2,5)
-					time.sleep(z)
-					send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
-					if(send_button.is_enabled()):
-						z = random.randint(2,4)
+						message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+						message_content_input.clear()
+						input_mess = "Greetings," + "\n\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n" + "I'm looking forward to your thoughts." + "\n\n" + "Warm regards,"
+						message_content_input.send_keys(input_mess)
+						z = random.randint(2,5)
 						time.sleep(z)
-						# send_button.submit() 
-						request_note_str = "message by " + linkedin_acc
-						mess_sent = "message sent by AdminAccount"
-						time.sleep(3)
+						send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
+						if(send_button.is_enabled()):
+							z = random.randint(2,4)
+							time.sleep(z)
+							# send_button.submit() 
+							request_note_str = "message by " + linkedin_acc
+							mess_sent = "message sent by AdminAccount"
+							time.sleep(3)
 					if(request_note_str == ""):	
 						if (text_hirer_button == "Connect"):
 							hirer_detail_button.click()	
@@ -922,27 +923,28 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 							message_limit = driver.find_element(By.CLASS_NAME,"msg-inmail-credits-display")
 							message_limit_number = message_limit.find_element(By.CLASS_NAME,"t-black--light").text
 							print("message_limit_number",message_limit_number)
-							message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-							message_title_input = message_box.find_element(By.TAG_NAME,"input")
-							message_title_input.clear()
-							message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
-							time.sleep(2)
-
-							message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-							message_content_input.clear()
-							input_mess = "Greetings," + "\n\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n\n" + "I'm looking forward to your thoughts." + "\n\n" + "Warm regards,"
-							message_content_input.send_keys(input_mess)
-							z = random.randint(3,7)
-							time.sleep(z) 
-		
-							send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
-							if(send_button.is_enabled()):
-								z = random.randint(2,4)
-								time.sleep(z)
-								# send_button.submit() 
-								request_note_str = "message by " + linkedin_acc
-								mess_sent = "message sent by AdminAccount"
+							if("free" in message_limit_number.lower()):
+								message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+								message_title_input = message_box.find_element(By.TAG_NAME,"input")
+								message_title_input.clear()
+								message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
 								time.sleep(2)
+
+								message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+								message_content_input.clear()
+								input_mess = "Greetings," + "\n\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n\n" + "I'm looking forward to your thoughts." + "\n\n" + "Warm regards,"
+								message_content_input.send_keys(input_mess)
+								z = random.randint(3,7)
+								time.sleep(z) 
+		
+								send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
+								if(send_button.is_enabled()):
+									z = random.randint(2,4)
+									time.sleep(z)
+									# send_button.submit() 
+									request_note_str = "message by " + linkedin_acc
+									mess_sent = "message sent by AdminAccount"
+									time.sleep(2)
 							hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 							
 							text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -1097,27 +1099,28 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 									message_limit = driver.find_element(By.CLASS_NAME,"msg-inmail-credits-display")
 									message_limit_number = message_limit.find_element(By.CLASS_NAME,"t-black--light").text
 									print("message_limit_number",message_limit_number)
-									message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-									message_title_input = message_box.find_element(By.TAG_NAME,"input")
-									message_title_input.clear()
-									message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
-									time.sleep(2)
-
-									message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-									message_content_input.clear()
-									input_mess = "Greetings," + "\n\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n\n" + "I'm looking forward to your thoughts." + "\n" + "Warm regards,"
-									message_content_input.send_keys(input_mess)
-									z = random.randint(3,7)
-									time.sleep(z) 
-		
-									send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
-									if(send_button.is_enabled()):
-										z = random.randint(2,4)
-										time.sleep(z)
-										# send_button.submit() 
-										request_note_str = "message by " + linkedin_acc
-										mess_sent = "message sent by AdminAccount"
+									if("free" in message_limit_number.lower()):
+										message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+										message_title_input = message_box.find_element(By.TAG_NAME,"input")
+										message_title_input.clear()
+										message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
 										time.sleep(2)
+
+										message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+										message_content_input.clear()
+										input_mess = "Greetings," + "\n\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n\n" + "I'm looking forward to your thoughts." + "\n" + "Warm regards,"
+										message_content_input.send_keys(input_mess)
+										z = random.randint(3,7)
+										time.sleep(z) 
+		
+										send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
+										if(send_button.is_enabled()):
+											z = random.randint(2,4)
+											time.sleep(z)
+											# send_button.submit() 
+											request_note_str = "message by " + linkedin_acc
+											mess_sent = "message sent by AdminAccount"
+											time.sleep(2)
 									hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 									text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
 
@@ -1220,9 +1223,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 									breaker = True
 									break
 								else:
+									request_note_str = people_info["des"].lower()
 									if people_info["des"] is not None and ("message" in people_info["des"].lower() or "connect" in people_info["des"].lower()):
 										continue
 									else:
+										
 										driver.get(people_link)
 										time.sleep(6)
 										contact_id = people_info["data"]
@@ -1236,28 +1241,29 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 											message_limit = driver.find_element(By.CLASS_NAME,"msg-inmail-credits-display")
 											message_limit_number = message_limit.find_element(By.CLASS_NAME,"t-black--light").text
 											print("message_limit_number",message_limit_number)
-											message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
-											message_title_input = message_box.find_element(By.TAG_NAME,"input")
-											message_title_input.clear()
-											message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
-											time.sleep(2)
-
-											message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
-											message_content_input.clear()
-											input_mess = "Greetings," + "\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n\n" + "I'm looking forward to your thoughts." + "\n\n" + "Warm regards,"
-											message_content_input.send_keys(input_mess)
-											z = random.randint(3,7)
-											time.sleep(z) 
-		
-											send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
-											if(send_button.is_enabled()):
-												
-												z = random.randint(2,4)
-												time.sleep(z)
-												# send_button.submit() 
-												request_note_str = "message by " + linkedin_acc
-												mess_sent = "message sent by AdminAccount"
+											if("free" in message_limit_number.lower()):
+												message_box = driver.find_element(By.CLASS_NAME,"artdeco-text-input--container")
+												message_title_input = message_box.find_element(By.TAG_NAME,"input")
+												message_title_input.clear()
+												message_title_input.send_keys("Software/Application Developer - Offshore solution partner!")
 												time.sleep(2)
+
+												message_content_input = driver.find_element(By.CLASS_NAME,"msg-form__contenteditable")
+												message_content_input.clear()
+												input_mess = "Greetings," + "\n" + "I hope this email finds you well." + "\n\n" + "My name is Huong, and I am reaching out on behalf of Fitech JSC, a Vietnam-based technology company with a subsidiary in Singapore. We specialize in providing offshore resource solutions, catering to businesses of all sizes through our offshore development center in Vietnam." + "\n\n" + "At Fitech, we help organizations scale efficiently by offering high-quality, cost-effective software development services, ensuring flexibility and reliability in talent acquisition. We are keen to explore how Fitech can support your business’s technology needs and create a long-term, value-driven partnership." + "\n\n" + "I'm looking forward to your thoughts." + "\n\n" + "Warm regards,"
+												message_content_input.send_keys(input_mess)
+												z = random.randint(3,7)
+												time.sleep(z) 
+		
+												send_button = driver.find_element(By.CLASS_NAME,"msg-form__send-btn")
+												if(send_button.is_enabled()):
+												
+													z = random.randint(2,4)
+													time.sleep(z)
+													# send_button.submit() 
+													request_note_str = "message by " + linkedin_acc
+													mess_sent = "message sent by AdminAccount"
+													time.sleep(2)
 											if(request_note_str == ""):
 												hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")
 												text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
