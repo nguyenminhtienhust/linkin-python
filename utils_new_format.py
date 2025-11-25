@@ -705,6 +705,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				hirer_name_first_name = hirer_name_split[ii]
 			contact_info = check_contact(hirer_name)
 			if(contact_info["data"] == ""):
+				#contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
@@ -885,6 +886,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			else:
 				contact_id = contact_info["data"]
 				request_note_str = contact_info["des"]
+				#contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)

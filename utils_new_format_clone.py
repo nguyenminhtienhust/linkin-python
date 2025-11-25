@@ -698,8 +698,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.get(hirer_link)
 			z = random.randint(5,10)		
-			#element = driver.find_element(By.CSS_SELECTOR, '[data-view-name="yourValue"]')
-			hirer_name = driver.find_element(By.CLASS_NAME,"kessVNslhxNgfNaqPKKDpWKiDFJmgXvjmhgck").text	
+			hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
+			#hirer_name = driver.find_element(By.CLASS_NAME,"kessVNslhxNgfNaqPKKDpWKiDFJmgXvjmhgck").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -708,8 +708,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if(ii < len(hirer_name_split)):
 				hirer_name_first_name = hirer_name_split[ii]
 			contact_info = check_contact(hirer_name)
-			if(contact_info["data"] == ""):
-				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+			if(contact_info["data"] == ""):				 
+				#contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -728,9 +729,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
-				dismiss_button.click() 				
-				time.sleep(2)
+				# dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
+				# dismiss_button.click() 				
+				# time.sleep(2)
 				if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
 					if(contact_new_tab == 1):
 						driver.switch_to.window(contact_window)
@@ -756,7 +757,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					request_note_str = contact_info["des"]
 				else:
 					request_note_str = request_note_str + "connect by Minh Tien" 
-				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
+				#contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -775,9 +777,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				   		hirer_phone = contact_info_content.text
 					else:
 						hirer_other = contact_info_content.text
-				dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
-				dismiss_button.click() 				
-				time.sleep(2)
+				# dismiss_button = driver.find_element(By.CLASS_NAME,"artdeco-modal__dismiss")
+				# dismiss_button.click() 				
+				# time.sleep(2)
 				if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
 					driver.switch_to.window(job_detail_window)
 					driver.close()#1 close  job_detail_window
