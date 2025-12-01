@@ -617,9 +617,9 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:		
-		current_job_title = driver.find_element(By.CLASS_NAME,"_7341beb6").text    
-		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
-		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
+		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
+		#job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
+		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
 		detail_lan = detector.detect(job_detail_text).language
@@ -677,7 +677,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_id = company_info["data"]
 		company_desc = company_info["des"]
 		company_name_lower = company_name.lower()
-		skiped_company_list = ["google","qantas","canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+		skiped_company_list = ["taskify ai","paypal","google","qantas","canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 		for skiped_company in skiped_company_list:
 			if(skiped_company in company_name_lower):
 				driver.switch_to.window(job_detail_window)
@@ -698,8 +698,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.get(hirer_link)
 			z = random.randint(5,10)		
-			hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
-			#hirer_name = driver.find_element(By.CLASS_NAME,"kessVNslhxNgfNaqPKKDpWKiDFJmgXvjmhgck").text	
+			#hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
+			hirer_name = driver.find_element(By.CLASS_NAME,"KHFdJdhIMkznLvCceYZAesqYuIPRqSLdM").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -709,8 +709,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				hirer_name_first_name = hirer_name_split[ii]
 			contact_info = check_contact(hirer_name)
 			if(contact_info["data"] == ""):				 
-				#contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
-				contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
+				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				#contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -737,8 +737,11 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						driver.switch_to.window(contact_window)
 						driver.close()#2 close  company_window
 						time.sleep(2)	
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						to.window(job_detail_window)
+						time.sleep(2)
 					driver.switch_to.window(job_detail_window)
-					time.sleep(6)
 					driver.close()#1 close  job_detail_window
 					time.sleep(2)
 					driver.switch_to.window(root_window)
@@ -757,8 +760,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					request_note_str = contact_info["des"]
 				else:
 					request_note_str = request_note_str + "connect by Minh Tien" 
-				contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
-				#contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
+				#contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
+				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -898,6 +901,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.close()#2 close  company_window
 			time.sleep(1)	
+		if(company_url != ""):
+			driver.switch_to.window(company_window)
+			to.window(job_detail_window)
+			time.sleep(2)
 		driver.switch_to.window(job_detail_window)
 		driver.close()#1 close  job_detail_window
 		time.sleep(1)

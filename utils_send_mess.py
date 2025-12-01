@@ -695,7 +695,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.switch_to.window(contact_window)
 			driver.get(hirer_link)
 			z = random.randint(5,10)			
-			hirer_name = driver.find_element(By.CLASS_NAME,"kessVNslhxNgfNaqPKKDpWKiDFJmgXvjmhgck").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"KHFdJdhIMkznLvCceYZAesqYuIPRqSLdM").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -733,6 +733,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						driver.switch_to.window(contact_window)
 						driver.close()#2 close  company_window
 						time.sleep(2)	
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						to.window(job_detail_window)
+						time.sleep(2)
 					driver.switch_to.window(job_detail_window)
 					time.sleep(6)
 					driver.close()#1 close  job_detail_window
@@ -740,7 +744,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead") ):
-					hirer_detail = driver.find_element(By.CLASS_NAME,"cQrrhTBqHjIbpRsuTXjQXIEfWwGcXqPlkPiu")
+					hirer_detail = driver.find_element(By.CLASS_NAME,"rvgCUbPXVMVWtwmEYvfjtzdHUlTmHIMxaE")
 					#hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"pvs-profile-actions__action")
 					hirer_detail_button = hirer_detail.find_element(By.CLASS_NAME,"artdeco-button--primary")					
 					text_hirer_button = hirer_detail_button.find_element(By.CLASS_NAME,"artdeco-button__text").text
@@ -907,6 +911,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				dismiss_button.click() 				
 				time.sleep(2)
 				if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						to.window(job_detail_window)
+						time.sleep(2)
 					driver.switch_to.window(job_detail_window)
 					driver.close()#1 close  job_detail_window
 					time.sleep(1)
@@ -915,7 +923,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if(lead_info["status"] is None or lead_info["status"] == "" or (lead_info["status"] is not None and lead_info["status"] != "Converted" and lead_info["status"] != "Assigned" and lead_info["status"] != "In Process" and lead_info["status"] != "Dead")):
 					if(contact_info["des"] is None or ("connect" not in contact_info["des"].lower() and "message" not in contact_info["des"].lower())):
 						try:
-							hirer_detail = driver.find_element(By.CLASS_NAME,"cQrrhTBqHjIbpRsuTXjQXIEfWwGcXqPlkPiu")
+							hirer_detail = driver.find_element(By.CLASS_NAME,"rvgCUbPXVMVWtwmEYvfjtzdHUlTmHIMxaE")
 							entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 							message_button = entry_point.find_element(By.TAG_NAME,"button")
 							if(message_button.is_enabled()):
@@ -1090,7 +1098,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								people_info = check_contact(people_name)
 								if(people_info["data"] == ""):
 									driver.get(people_link)
-									hirer_detail = driver.find_element(By.CLASS_NAME,"cQrrhTBqHjIbpRsuTXjQXIEfWwGcXqPlkPiu")
+									hirer_detail = driver.find_element(By.CLASS_NAME,"rvgCUbPXVMVWtwmEYvfjtzdHUlTmHIMxaE")
 									entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 									message_button = entry_point.find_element(By.TAG_NAME,"button")
 									if(message_button.is_enabled()):
@@ -1231,7 +1239,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										if(people_info["data"] != ""):
-											hirer_detail = driver.find_element(By.CLASS_NAME,"cQrrhTBqHjIbpRsuTXjQXIEfWwGcXqPlkPiu")
+											hirer_detail = driver.find_element(By.CLASS_NAME,"rvgCUbPXVMVWtwmEYvfjtzdHUlTmHIMxaE")
 											entry_point = hirer_detail.find_element(By.CLASS_NAME,"entry-point")
 											message_button = entry_point.find_element(By.TAG_NAME,"button")
 											if(message_button.is_enabled()):

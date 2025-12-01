@@ -733,6 +733,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						driver.switch_to.window(contact_window)
 						driver.close()#2 close  company_window
 						time.sleep(2)	
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						to.window(job_detail_window)
+						time.sleep(2)
 					driver.switch_to.window(job_detail_window)
 					time.sleep(6)
 					driver.close()#1 close  job_detail_window
@@ -910,6 +914,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				dismiss_button.click() 				
 				time.sleep(2)
 				if("gov" in hirer_email.lower() or "edu" in hirer_email.lower()):
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						to.window(job_detail_window)
+						time.sleep(2)
 					driver.switch_to.window(job_detail_window)
 					driver.close()#1 close  job_detail_window
 					time.sleep(1)
