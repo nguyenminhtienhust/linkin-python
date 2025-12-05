@@ -616,7 +616,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			parent_element_text = parent_element.text
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
-	try:		
+	try:
+		#current_job_title = driver.find_element(By.CLASS_NAME,"_3e806e53").text  		
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
 		#job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
 		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
@@ -682,7 +683,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if(skiped_company in company_name_lower):
 				if(company_url != ""):
 					driver.switch_to.window(company_window)
-					to.window(job_detail_window)
+					driver.close()
 					time.sleep(2)
 				driver.switch_to.window(job_detail_window)
 				z = random.randint(3,7)
@@ -703,7 +704,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.get(hirer_link)
 			z = random.randint(5,10)		
 			#hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
-			hirer_name = driver.find_element(By.CLASS_NAME,"iJmvYhqGPiqgaVHPQkrCAjcvFatuMNQ").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"GWoUTgquxKzcpPNnXsXTXZuGKrTWeCJwnZo").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -714,7 +715,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			contact_info = check_contact(hirer_name)
 			if(contact_info["data"] == ""):				 
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
-				#contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
+				#contact_info_link = driver.find_element(By.CLASS_NAME,"_1f4ba9a9").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
 				contact_info_list = driver.find_elements(By.CLASS_NAME,"pv-contact-info__contact-type")
@@ -751,7 +752,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return						
 				print("\n add contact")    
-				request_note_str = "connect by Minh Tien" 
+				request_note_str = "connect by Huong Nguyen" 
 				mess_sent = "message sent by AdminAccount"
 				add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 				contact_info = check_contact(hirer_name)
@@ -763,8 +764,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if contact_info["des"] is not None and ("message" in contact_info["des"].lower() or "connect" in contact_info["des"].lower()):
 					request_note_str = contact_info["des"]
 				else:
-					request_note_str = request_note_str + "connect by Minh Tien" 
-				#contact_info_link = driver.find_element(By.CLASS_NAME,"_097d40b0").get_attribute("href")
+					request_note_str =contact_info["des"] + "\nconnect by Huong Nguyen" 
+				#contact_info_link = driver.find_element(By.CLASS_NAME,"_1f4ba9a9").get_attribute("href")
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
 				time.sleep(3)
@@ -835,7 +836,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
-									request_note_str = request_note_str + "connect by Minh Tien" 
+									request_note_str = request_note_str + "connect by Huong Nguyen" 
 									mess_sent = "message sent by AdminAccount"
 									add_contact(access_token = access_token,title = people_title_origin , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 									people_info = check_contact(people_name)
@@ -852,7 +853,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										breaker = True
-										request_note_str = request_note_str + "connect by Minh Tien" 
+										request_note_str = people_info["des"] + "\nconnect by Huong Nguyen" 
 										mess_sent = "message sent by AdminAccount"
 										edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title_origin, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
 										break
@@ -862,7 +863,6 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				else:
 					break
 			lead_info = check_lead_existed(current_job_title, company_name, people_name)
-			print(lead_info)
 	except NoSuchElementException as error:
 		print("Second ex: " , error)
 		pass

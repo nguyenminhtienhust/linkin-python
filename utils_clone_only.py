@@ -662,6 +662,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		company_name_lower = company_name.lower() 
 		for skiped_company in skiped_company_list:
 			if(skiped_company in company_name_lower):
+				if(company_url != ""):
+					driver.switch_to.window(company_window)
+					driver.close()
+					time.sleep(2)
 				driver.switch_to.window(job_detail_window)
 				z = random.randint(3,7)
 				time.sleep(z)
