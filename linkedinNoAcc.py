@@ -32,6 +32,9 @@ if sys.version_info.major == 3:
 else:
     from urllib import urlencode
     from urlparse import urlparse, urlunparse, parse_qs,unquote
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.common.action_chains import ActionChains
 # from fake_useragent import UserAgent
 
 from utils_No_Acc import (
@@ -153,8 +156,8 @@ def extract_original_referer(url):
         start = url.index('original_referer=') + len('original_referer=')
         # The value continues to the end of the string
         extracted = url[start:]
-        return unquote(extracted)
-    return None
+        return unquote(extracted)      
+    return url
 def get_info_from_result_el(result_el):
     r = []
     r.append(get_name_info_from_result_el(result_el))
@@ -263,6 +266,12 @@ if __name__ == "__main__":
     # user_agent = ua.random
     #user_agent = "Mozilla/5.0 (Windows NT 10.0; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/114.0.0.0 Safari/537.36"
     chrome_options = webdriver.ChromeOptions()
+    # prefs = {"profile.default_content_setting_values.notifications" : 2}
+    # chrome_options.add_experimental_option("prefs",prefs)
+    # chrome_options.add_argument("--disable-notifications")
+    # chrome_options.add_argument('--disable-popup-blocking')
+    # chrome_options.add_argument('--disable-infobars')
+    chrome_options.add_argument("--incognito")
     chrome_options.add_argument('--disable-blink-features=AutomationControlled')
     # chrome_options.add_argument(f'--user-agent={user_agent}')
     chrome_options.add_experimental_option("useAutomationExtension", False)
@@ -308,8 +317,14 @@ if __name__ == "__main__":
         content_li_span_text = content_li.find_element(By.TAG_NAME,"span").text
         if(content_li_span_text.lower() == "jobs"):
             content_li.click()
-            time.sleep(10)
+            time.sleep(3)
             break
+    # if(driver.find_element(By.CLASS_NAME, "top-level-modal-container") ):
+    #     el = driver.find_element(By.CLASS_NAME, "top-level-modal-container") 
+    #     driver.execute_script("arguments[0].remove();", el) 
+    #     time.sleep(3)
+
+
     dismiss_button = driver.find_element(By.CLASS_NAME,"modal__dismiss")
     dismiss_button.click() 				
     time.sleep(2)
@@ -382,9 +397,11 @@ if __name__ == "__main__":
                     query.pop('geoId', None)
                     u = u._replace(query=urlencode(query, True))
                     driver.get(urlunparse(u))
-                    
-                    
                     time.sleep(3)
+                    # if(driver.find_element(By.CLASS_NAME, "top-level-modal-container") ):
+                    #     el = driver.find_element(By.CLASS_NAME, "top-level-modal-container") 
+                    #     driver.execute_script("arguments[0].remove();", el) 
+                    #     time.sleep(2)
                     filter_list = driver.find_element(By.CLASS_NAME,"filters__list") 
                     filter_li = filter_list.find_elements(By.TAG_NAME,"li")[0]
                     filter_li_btn = filter_li.find_elements(By.TAG_NAME,"button")[0]
@@ -392,17 +409,21 @@ if __name__ == "__main__":
                     filter_li_btn.click()
                     time.sleep(2)
                     past_week = filter_li.find_element(By.CSS_SELECTOR, '[id*="f_TPR-2"]')   
-                    print(past_week.get_attribute('value'))                        
-                    time.sleep(2)                        
+                    # print(past_week.get_attribute('value'))                                             
                     past_week.click()
-                    time.sleep(1)  
+                    time.sleep(2)  
                     done_btn = filter_li.find_elements(By.TAG_NAME,"button")[1]
                     done_btn.click()
-                    time.sleep(10)
+                    time.sleep(3)
 
                     authwall_url = driver.current_url
                     clear_url = extract_original_referer(authwall_url)
-                    driver.get(clear_url)                  
+                    driver.get(clear_url)  
+                    time.sleep(2)   
+                    # if(driver.find_element(By.CLASS_NAME, "top-level-modal-container") ):
+                    #     el = driver.find_element(By.CLASS_NAME, "top-level-modal-container") 
+                    #     driver.execute_script("arguments[0].remove();", el)     
+                    #     time.sleep(2)            
                     done = True
                 except NoSuchElementException as error:
                     print("search data fill in: ",error)  

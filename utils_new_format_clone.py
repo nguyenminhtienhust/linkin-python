@@ -617,10 +617,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:
-		#current_job_title = driver.find_element(By.CLASS_NAME,"_3e806e53").text  		
-		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		#job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
-		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
+		current_job_title = driver.find_element(By.CLASS_NAME,"_5bf0b581").text  		
+		#current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
+		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
+		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
 		detail_lan = detector.detect(job_detail_text).language
@@ -673,25 +673,38 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		driver.get(company_about_url)
 		z = random.randint(3,5)
 		time.sleep(z)
-		company_name = driver.find_element(By.CLASS_NAME,"org-top-card-summary__title").text
-		company_info = check_company_existed(company_name)
-		company_id = company_info["data"]
-		company_desc = company_info["des"]
-		company_name_lower = company_name.lower()
-		skiped_company_list = ["taskify ai","paypal","google","qantas","canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
-		for skiped_company in skiped_company_list:
-			if(skiped_company in company_name_lower):
-				if(company_url != ""):
-					driver.switch_to.window(company_window)
-					driver.close()
-					time.sleep(2)
-				driver.switch_to.window(job_detail_window)
-				z = random.randint(3,7)
-				time.sleep(z)
-				driver.close()#1 close  job_detail_window
-				time.sleep(1)
-				driver.switch_to.window(root_window)
-				return 
+		if(driver.find_element(By.CLASS_NAME,"artdeco-empty-state")):
+			print("company page unvailable")
+			driver.switch_to.window(company_window)
+			driver.close()
+			time.sleep(2)
+			driver.switch_to.window(job_detail_window)
+			z = random.randint(3,7)
+			time.sleep(z)
+			driver.close()#1 close  job_detail_window
+			time.sleep(1)
+			driver.switch_to.window(root_window)
+			return 
+		else:
+			company_name = driver.find_element(By.CLASS_NAME,"org-top-card-summary__title").text
+			company_info = check_company_existed(company_name)
+			company_id = company_info["data"]
+			company_desc = company_info["des"]
+			company_name_lower = company_name.lower()
+			skiped_company_list = ["taskify ai","paypal","google","qantas","canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+			for skiped_company in skiped_company_list:
+				if(skiped_company in company_name_lower):
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						driver.close()
+						time.sleep(2)
+					driver.switch_to.window(job_detail_window)
+					z = random.randint(3,7)
+					time.sleep(z)
+					driver.close()#1 close  job_detail_window
+					time.sleep(1)
+					driver.switch_to.window(root_window)
+					return 
 	except Exception as error:
 		print("not found company name", error)
 		pass
