@@ -669,7 +669,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		driver.get(company_about_url)
 		z = random.randint(3,5)
 		time.sleep(z)
-		if(driver.find_element(By.CLASS_NAME,"artdeco-empty-state")):
+		company_link = driver.current_url
+		if("unavailable" in company_link.lower()):
 			print("company page unvailable")
 			driver.switch_to.window(company_window)
 			driver.close()

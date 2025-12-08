@@ -673,7 +673,8 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 		driver.get(company_about_url)
 		z = random.randint(3,5)
 		time.sleep(z)
-		if(driver.find_element(By.CLASS_NAME,"artdeco-empty-state")):
+		company_link = driver.current_url
+		if("unavailable" in company_link.lower()):
 			print("company page unvailable")
 			driver.switch_to.window(company_window)
 			driver.close()
@@ -717,7 +718,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.get(hirer_link)
 			z = random.randint(5,10)		
 			#hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
-			hirer_name = driver.find_element(By.CLASS_NAME,"GWoUTgquxKzcpPNnXsXTXZuGKrTWeCJwnZo").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"aULtpaWoUDgsIiUDkPhlwLCRuaeg").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -765,7 +766,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return						
 				print("\n add contact")    
-				request_note_str = "connect by Huong Nguyen" 
+				request_note_str = "connect by Thuy" 
 				mess_sent = "message sent by AdminAccount"
 				add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 				contact_info = check_contact(hirer_name)
@@ -777,7 +778,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				if contact_info["des"] is not None and ("message" in contact_info["des"].lower() or "connect" in contact_info["des"].lower()):
 					request_note_str = contact_info["des"]
 				else:
-					request_note_str =contact_info["des"] + "\nconnect by Huong Nguyen" 
+					request_note_str =contact_info["des"] + "\nconnect by Thuy" 
 				#contact_info_link = driver.find_element(By.CLASS_NAME,"_1f4ba9a9").get_attribute("href")
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
@@ -849,7 +850,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
-									request_note_str = request_note_str + "connect by Huong Nguyen" 
+									request_note_str = request_note_str + "connect by Thuy" 
 									mess_sent = "message sent by AdminAccount"
 									add_contact(access_token = access_token,title = people_title_origin , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 									people_info = check_contact(people_name)
@@ -866,7 +867,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										breaker = True
-										request_note_str = people_info["des"] + "\nconnect by Huong Nguyen" 
+										request_note_str = people_info["des"] + "\nconnect by Thuy" 
 										mess_sent = "message sent by AdminAccount"
 										edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title_origin, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
 										break
