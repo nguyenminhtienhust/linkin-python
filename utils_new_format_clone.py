@@ -570,6 +570,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 
 	job_detail_url = 'https://www.linkedin.com/jobs/view/' + job_id
 	driver.get(job_detail_url)
+	#driver.get(job_link)
 	y = random.randint(10,20)
 	time.sleep(y)
 	company_url = ""
@@ -617,10 +618,10 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:
-		current_job_title = driver.find_element(By.CLASS_NAME,"_5bf0b581").text  		
-		#current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
-		job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
-		#job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
+		#current_job_title = driver.find_element(By.CLASS_NAME,"_210daa93").text  		
+		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
+		#job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
+		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
 		detector = LanguageDetector()
 		title_lan = detector.detect(current_job_title).language
 		detail_lan = detector.detect(job_detail_text).language
@@ -718,7 +719,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.get(hirer_link)
 			z = random.randint(5,10)		
 			#hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
-			hirer_name = driver.find_element(By.CLASS_NAME,"aULtpaWoUDgsIiUDkPhlwLCRuaeg").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"FzdPZoMVUzIQnttwYqerKOrMnjbBVfQPGAcGo").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -758,7 +759,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 						time.sleep(2)	
 					if(company_url != ""):
 						driver.switch_to.window(company_window)
-						to.window(job_detail_window)
+						driver.close()
 						time.sleep(2)
 					driver.switch_to.window(job_detail_window)
 					driver.close()#1 close  job_detail_window
@@ -766,7 +767,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return						
 				print("\n add contact")    
-				request_note_str = "connect by Thuy" 
+				request_note_str = "connect by Tien" 
 				mess_sent = "message sent by AdminAccount"
 				add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 				contact_info = check_contact(hirer_name)
@@ -777,8 +778,19 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 				contact_id = contact_info["data"]
 				if contact_info["des"] is not None and ("message" in contact_info["des"].lower() or "connect" in contact_info["des"].lower()):
 					request_note_str = contact_info["des"]
-				else:
-					request_note_str =contact_info["des"] + "\nconnect by Thuy" 
+					driver.close()#2 close  company_window
+					time.sleep(2)	
+					if(company_url != ""):
+						driver.switch_to.window(company_window)
+						driver.close()
+						time.sleep(2)
+					driver.switch_to.window(job_detail_window)
+					driver.close()#1 close  job_detail_window
+					time.sleep(2)
+					driver.switch_to.window(root_window)
+					return	
+				elif contact_info["des"] is not None:
+					request_note_str =contact_info["des"] + "\nconnect by Tien" 
 				#contact_info_link = driver.find_element(By.CLASS_NAME,"_1f4ba9a9").get_attribute("href")
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
@@ -850,7 +862,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
-									request_note_str = request_note_str + "connect by Thuy" 
+									request_note_str = request_note_str + "connect by Tien" 
 									mess_sent = "message sent by AdminAccount"
 									add_contact(access_token = access_token,title = people_title_origin , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 									people_info = check_contact(people_name)
@@ -867,7 +879,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										breaker = True
-										request_note_str = people_info["des"] + "\nconnect by Thuy" 
+										request_note_str = people_info["des"] + "\nconnect by Tien" 
 										mess_sent = "message sent by AdminAccount"
 										edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title_origin, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
 										break
