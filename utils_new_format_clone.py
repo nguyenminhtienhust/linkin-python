@@ -618,7 +618,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			if("job poster" in parent_element_text.lower()):
 				hirer_link = element_href
 	try:
-		#current_job_title = driver.find_element(By.CLASS_NAME,"_210daa93").text  		
+		#current_job_title = driver.find_element(By.CLASS_NAME,"_41a3ecfa").text  		
 		current_job_title = driver.find_element(By.CLASS_NAME,"job-details-jobs-unified-top-card__job-title").text    
 		#job_detail_text = driver.find_element(By.CSS_SELECTOR, "[data-testid='expandable-text-box']").text
 		job_detail_text = driver.find_element(By.CLASS_NAME,"jobs-box__html-content").text
@@ -693,7 +693,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			company_id = company_info["data"]
 			company_desc = company_info["des"]
 			company_name_lower = company_name.lower()
-			skiped_company_list = ["taskify ai","paypal","google","qantas","canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
+			skiped_company_list = ["twine","taskify ai","paypal","google","qantas","canonical","sony","jpmorganchase","dropbox","h&m","dis","transport for london","campus","transport for nsw","rolls-royce","ebay","tp-link","ericsson","racing","braintrust","united nations","worldquant","nvidia","xiaomi","kpmg","state of washington","wa country health service","city of boston","htx (home team science & technology agency)","women's and children's health network","binance","asic","uc davis health informatics","commonwealth of pennsylvania","uber","grab","paribas","centre for strategic infocomm technologies","govtech","minnesota housing","police","authority","national","bureau","notary","airway","airline","lufthansa","booking.com","united nations","grab","federal","canva","tesla","netflix","walmart","government","tripadvisor","general motors","barclays","formula 1","gitlab","bank","boeing","easyjet","bp","ikea","oracle","amazon","google","microsoft","siemens","visa","university","airlines","shopee","millennium","aribus","mastercard","meta","volvo","airbnb","bloomberg","openai","mcdonald's","lego","facebook","bbc","department","dhl","ministry","workforce australia for individuals","american express","cnn","philips","ibm","cisco","agoda","spotify","nokia","paypal", "audi", "disney", "dhl", "bosch", "council","lgbtq+","standard chartered","expressvpn","jollibee","liberty","shopify","universal","lenovo","college","hitachi","electrolux","the guardian","skyscanner","new york times","mercedes","formula one","institute"]
 			for skiped_company in skiped_company_list:
 				if(skiped_company in company_name_lower):
 					if(company_url != ""):
@@ -719,7 +719,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			driver.get(hirer_link)
 			z = random.randint(5,10)		
 			#hirer_name = driver.find_element(By.CSS_SELECTOR, '[data-view-name="profile-top-card-verified-badge"]').text
-			hirer_name = driver.find_element(By.CLASS_NAME,"FzdPZoMVUzIQnttwYqerKOrMnjbBVfQPGAcGo").text	
+			hirer_name = driver.find_element(By.CLASS_NAME,"ehdhCSVVuuZwOaaDYkiovjFtutJmBKvMXxdWnk").text	
 			lead_info = check_lead_existed(current_job_title, company_name, hirer_name)
 			hirer_name_split = hirer_name.split()
 			ii = 0
@@ -767,7 +767,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return						
 				print("\n add contact")    
-				request_note_str = "connect by Tien" 
+				request_note_str = "connect by Huong" 
 				mess_sent = "message sent by AdminAccount"
 				add_contact(access_token = access_token,title = hirer_title , name = hirer_name, email = hirer_email, phone = hirer_phone, des = request_note_str, link = contact_info_link, account_id= company_id)
 				contact_info = check_contact(hirer_name)
@@ -790,7 +790,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 					driver.switch_to.window(root_window)
 					return	
 				elif contact_info["des"] is not None:
-					request_note_str =contact_info["des"] + "\nconnect by Tien" 
+					request_note_str =contact_info["des"] + "\nconnect by Huong" 
 				#contact_info_link = driver.find_element(By.CLASS_NAME,"_1f4ba9a9").get_attribute("href")
 				contact_info_link = driver.find_element(By.ID,"top-card-text-details-contact-info").get_attribute("href")
 				driver.get(contact_info_link)
@@ -862,7 +862,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 								if(people_info["data"] == ""):
 									print("here2")
 									driver.get(people_link)
-									request_note_str = request_note_str + "connect by Tien" 
+									request_note_str = request_note_str + "connect by Huong" 
 									mess_sent = "message sent by AdminAccount"
 									add_contact(access_token = access_token,title = people_title_origin , name = people_name, email = "", phone = "", des = request_note_str, link = people_link, account_id= company_id)
 									people_info = check_contact(people_name)
@@ -879,7 +879,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 										time.sleep(6)
 										contact_id = people_info["data"]
 										breaker = True
-										request_note_str = people_info["des"] + "\nconnect by Tien" 
+										request_note_str = people_info["des"] + "\nconnect by Huong" 
 										mess_sent = "message sent by AdminAccount"
 										edit_contact(access_token = access_token, contact_id = people_info["data"] , title = people_title_origin, name = people_name, email = "", phone= "", des = request_note_str, link = people_link, account_id= company_id)
 										break
@@ -927,7 +927,7 @@ def get_job_detail(driver,job_id,access_token,address, country, linkedin_acc):
 			email_info = job_emails[0]
 			full_content = '\n Email được lấy từ job description.'
 	if("gov" in email_info.lower() or "edu" in email_info.lower()):
-		if(hirer_link != ""):
+		if(hirer_link != "" and people_link == ""):
 			driver.switch_to.window(contact_window)
 			driver.close()#2 close  company_window
 			time.sleep(1)	
